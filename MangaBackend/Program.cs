@@ -6,7 +6,6 @@ using Services.Services;
 using Services.Services.Base;
 using NLog;
 using NLog.Web;
-using System.Configuration;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");

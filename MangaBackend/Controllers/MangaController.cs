@@ -80,7 +80,7 @@ namespace MangaBackend.Controllers
             return Ok(result);
         }
 
-        [HttpPut("/addGenreToManga")]
+        [HttpPut("/api/addGenreToManga")]
         public async Task<IActionResult> addGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
         {
             var result = await _mangaService.AddGenresToManga(mangaDTO);
@@ -89,6 +89,17 @@ namespace MangaBackend.Controllers
             {
                 return BadRequest(result.MessageWhatWrong);
             }
+
+            return Ok(result);
+        }
+
+        [HttpGet("/api/test")]
+        public async Task<IActionResult> test() 
+        {
+            var result = new
+            {
+                message = "it is working ...."
+            };
 
             return Ok(result);
         }
