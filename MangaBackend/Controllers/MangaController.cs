@@ -8,11 +8,14 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class MangaController : ControllerBase
     {
+        private readonly ILogger<MangaController> _logger;
+
         private readonly IMangaService _mangaService;
 
-        public MangaController(IMangaService mangaService)
+        public MangaController(IMangaService mangaService, ILogger<MangaController> logger)
         {
             _mangaService = mangaService;
+            _logger = logger;
         }
 
         [HttpGet]

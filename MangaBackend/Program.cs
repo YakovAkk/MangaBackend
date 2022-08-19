@@ -22,9 +22,21 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
-    builder.Services.AddDbContext<AppDBContent>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabase"))
-    .EnableSensitiveDataLogging());
+    //builder.Services.AddDbContext<AppDBContent>(options =>
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabaseMSSQL"))
+    //.EnableSensitiveDataLogging());
+
+    try
+    {
+        builder.Services.AddDbContext<AppDBContent>(options =>
+        options.UseMySQL(builder.Configuration.GetConnectionString("LocalDatabaseMYSQL")).EnableSensitiveDataLogging());
+        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL"));
+    }
+    catch (Exception ex)
+    {
+        logger.Error("Conected was intrerupted. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL") + "/n" + ex.Message);
+        throw;
+    }
 
     builder.Services.AddControllers();
 

@@ -1,6 +1,6 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Logging;
 
 namespace Data.Database
 {
@@ -12,7 +12,15 @@ namespace Data.Database
 
         public AppDBContent(DbContextOptions<AppDBContent> options) : base(options)
         {
-            Database.EnsureCreated();
+            try
+            {
+                Database.EnsureCreated();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
     }
 }
