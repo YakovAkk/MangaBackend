@@ -6,3 +6,15 @@
 2022-08-19 15:00:48.9820 Info Adding target FileTarget(Name=fileTarget)
 2022-08-19 15:00:49.0264 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\Programming\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
 2022-08-19 15:00:50.1058 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\Programming\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-19 22:02:54.2379 Info Message Template Auto Format enabled
+2022-08-19 22:02:54.2821 Info Adding target FileTarget(Name=fileTarget)
+2022-08-19 22:02:54.3002 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-19 22:02:54.7112 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-20 10:01:51.8225 Info Message Template Auto Format enabled
+2022-08-20 10:01:51.9480 Info Adding target FileTarget(Name=fileTarget)
+2022-08-20 10:01:52.0006 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-20 10:01:52.8816 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-20 10:06:27.0974 Info Message Template Auto Format enabled
+2022-08-20 10:06:27.1787 Info Adding target FileTarget(Name=fileTarget)
+2022-08-20 10:06:27.2059 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2022-08-20 10:06:27.7651 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
