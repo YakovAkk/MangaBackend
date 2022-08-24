@@ -102,7 +102,7 @@ namespace MangaBackend.Controllers
             var result = new
             {
                 message = "it is working ....",
-
+                data = Environment.GetEnvironmentVariable("ASPNETCORE_DataOfCompipation")
             };
 
             return Ok(result);
