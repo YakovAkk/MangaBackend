@@ -101,7 +101,8 @@ namespace MangaBackend.Controllers
         {
             var result = new
             {
-                message = "it is working ...."
+                message = "it is working ....",
+
             };
 
             return Ok(result);
