@@ -27,7 +27,7 @@ namespace MangaBackend.Controllers
             {
                 var message = new
                 {
-                    result = "The Database doesn't have any category"
+                    result = "The Database doesn't have any manga"
                 };
                 return BadRequest(message);
             }

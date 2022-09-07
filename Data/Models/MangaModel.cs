@@ -14,10 +14,8 @@ namespace Data.Models
         public string Description { get; set; }
         public string MessageWhatWrong { get; set; }
 
-
         public virtual List<GenreModel> Genres { get; set; }
         public virtual List<GlavaMangaModel> PathToFoldersWithGlava { get; set; }
-
 
         public MangaModel()
         {

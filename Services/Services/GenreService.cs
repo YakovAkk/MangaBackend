@@ -21,6 +21,17 @@ namespace Services.Services
 
             return await _repository.CreateAsync(model);
         }
+
+        public override async Task<List<GenreModel>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public override async Task<GenreModel> GetByIdAsync(string id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
         public async override Task<GenreModel> UpdateAsync(GenreDTO item)
         {
             if(String.IsNullOrEmpty(item.Id))

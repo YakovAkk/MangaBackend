@@ -13,7 +13,7 @@ namespace Repositories.Repositories
         }
         public override async Task<List<MangaModel>> GetAllAsync()
         {
-            var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres).ToListAsync();
+            var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).ToListAsync();
 
             if (list == null)
             {
@@ -32,7 +32,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var manga = await _db.Mangas.AsNoTracking().Include(m => m.Genres).FirstOrDefaultAsync(i => i.Id == id);
+            var manga = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
 
             if (manga == null)
             {

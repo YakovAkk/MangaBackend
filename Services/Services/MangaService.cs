@@ -1,18 +1,24 @@
 ﻿using Data.Models;
+using Microsoft.Extensions.Configuration;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.Services.Base;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using Services.Storage.Base;
 
 namespace Services.Services
 {
     public class MangaService : BaseService<MangaModel, MangaDTO>, IMangaService
     {
+        private readonly ILocalStorage _localStorage;
         private readonly IGenreRepository _genreRepository;
         private readonly IMangaRepository _mangaRepository;
-        public MangaService(IMangaRepository repository, IGenreRepository genreRepository) : base(repository)
+        public MangaService(IMangaRepository repository, IGenreRepository genreRepository, ILocalStorage localStorage) : base(repository)
         {
             _genreRepository = genreRepository;
             _mangaRepository = repository;
+            _localStorage = localStorage;
         }
 
         public override async Task<MangaModel> AddAsync(MangaDTO item)
@@ -23,7 +29,7 @@ namespace Services.Services
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The database doesn't contain any genres"
+                    MessageWhatWrong = "The database doesn't contain the genres"
                 };
             }
 
@@ -68,6 +74,47 @@ namespace Services.Services
 
             return res;
         }
+
+        public override async Task<List<MangaModel>> GetAllAsync()
+        {
+
+            var result = await _mangaRepository.GetAllAsync();
+
+            if (result.Count == 0)
+            {
+                var message = new
+                {
+                    result = "The Database doesn't have any manga"
+                };
+                return new List<MangaModel>();
+            }
+
+            foreach (var item in result)
+            {
+                item.PathToTitlePicture = $"{_localStorage.RelativePath}{item.PathToTitlePicture}";
+                foreach (var res in item.PathToFoldersWithGlava)
+                {
+                    res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
+                }
+            }
+
+            return result;
+        }
+
+        public override async Task<MangaModel> GetByIdAsync(string id)
+        {
+            var result = await _mangaRepository.GetByIdAsync(id);
+
+            result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
+
+            foreach (var res in result.PathToFoldersWithGlava)
+            {
+                res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
+            }
+
+            return result;
+        }
+
         public async override Task<MangaModel> UpdateAsync(MangaDTO item)
         {
             if (String.IsNullOrEmpty(item.Id))

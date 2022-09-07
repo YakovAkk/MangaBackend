@@ -6,6 +6,8 @@ using Services.Services;
 using Services.Services.Base;
 using NLog;
 using NLog.Web;
+using Services.Storage;
+using Services.Storage.Base;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -22,15 +24,31 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
-    //builder.Services.AddDbContext<AppDBContent>(options =>
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabaseMSSQL"))
-    //.EnableSensitiveDataLogging());
+    builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
     try
     {
-        builder.Services.AddDbContext<AppDBContent>(options =>
-        options.UseMySQL(builder.Configuration.GetConnectionString("LocalDatabaseMYSQL")).EnableSensitiveDataLogging());
-        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL"));
+        var typeOfConnection = builder.Configuration.GetSection("Others")["TypeOfConnection"];
+
+        switch (typeOfConnection)
+        {
+            case "LocalDatabaseMYSQL":
+                {
+                    builder.Services.AddDbContext<AppDBContent>(options =>
+                    options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
+                    logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
+                    break;
+                }
+            case "LocalDatabaseMSSQL":
+                {
+                    builder.Services.AddDbContext<AppDBContent>(options =>
+                    options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
+                    logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
+                    break;
+                }
+            default:
+                break;
+        }
     }
     catch (Exception ex)
     {

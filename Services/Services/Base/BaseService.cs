@@ -12,14 +12,8 @@ namespace Services.Services.Base
         {
             _repository = repository;
         }
-        public async virtual Task<List<TR>> GetAllAsync()
-        {
-            return await _repository.GetAllAsync();
-        }
-        public async virtual Task<TR> GetByIdAsync(string id)
-        {
-            return await _repository.GetByIdAsync(id);
-        }
+        public abstract Task<List<TR>> GetAllAsync();
+        public abstract Task<TR> GetByIdAsync(string id);
         public async virtual Task<TR> DeleteAsync(string id)
         {
             return await _repository.DeleteAsync(id);
