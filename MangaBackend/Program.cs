@@ -8,6 +8,7 @@ using NLog;
 using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
+using MangaBackend.Validate;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -26,34 +27,39 @@ try
 
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
-    try
-    {
-        var typeOfConnection = builder.Configuration.GetSection("Others")["TypeOfConnection"];
+    var validator = new Validator(builder.Configuration);
 
-        switch (typeOfConnection)
-        {
-            case "LocalDatabaseMYSQL":
-                {
-                    builder.Services.AddDbContext<AppDBContent>(options =>
-                    options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
-                    logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
-                    break;
-                }
-            case "LocalDatabaseMSSQL":
-                {
-                    builder.Services.AddDbContext<AppDBContent>(options =>
-                    options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
-                    logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
-                    break;
-                }
-            default:
-                break;
-        }
-    }
-    catch (Exception ex)
+    if (await validator.ValidateAppsettingsJson())
     {
-        logger.Error("Conected was intrerupted. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL") + "/n" + ex.Message);
-        throw;
+        try
+        {
+            var typeOfConnection = builder.Configuration.GetSection("Others")["TypeOfConnection"];
+
+            switch (typeOfConnection)
+            {
+                case "LocalDatabaseMYSQL":
+                    {
+                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
+                        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
+                        break;
+                    }
+                case "LocalDatabaseMSSQL":
+                    {
+                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
+                        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.Error("Conected was intrerupted. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL") + "/n" + ex.Message);
+            throw;
+        }
     }
 
     builder.Services.AddControllers();
