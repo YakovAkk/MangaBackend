@@ -3,7 +3,9 @@ using Services.DTO.Base;
 
 namespace Services.Services.Base
 {
-    public interface IService<TReturn, TInput> where TReturn : IModel where TInput : IModelDTO
+    public interface IService<TReturn, TInput> 
+        where TReturn : IModel 
+        where TInput : IModelDTO
     {
         Task<TReturn> AddAsync(TInput item);
         Task<TReturn> UpdateAsync(TInput item);

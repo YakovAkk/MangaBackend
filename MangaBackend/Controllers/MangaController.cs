@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Services.Base;
+using Services.StatusCode;
+using Services.Wrappers.Base;
 
 namespace MangaBackend.Controllers
 {
@@ -8,14 +10,16 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class MangaController : ControllerBase
     {
+        private readonly IWrapperMangaService _wrapper;
         private readonly ILogger<MangaController> _logger;
 
         private readonly IMangaService _mangaService;
 
-        public MangaController(IMangaService mangaService, ILogger<MangaController> logger)
+        public MangaController(IMangaService mangaService, ILogger<MangaController> logger, IWrapperMangaService wrapper)
         {
             _mangaService = mangaService;
             _logger = logger;
+            _wrapper = wrapper;
         }
 
         [HttpGet]
@@ -23,64 +27,70 @@ namespace MangaBackend.Controllers
         {
             var result = await _mangaService.GetAllAsync();
 
-            if (result.Count == 0)
+            var wrapResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                var message = new
-                {
-                    result = "The Database doesn't have any manga"
-                };
-                return BadRequest(message);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
         [HttpGet("{Id}")]
         public async Task<IActionResult> getMangaById([FromRoute] string Id)
         {
             var result = await _mangaService.GetByIdAsync(Id);
 
-            if (result.MessageWhatWrong != null && result.MessageWhatWrong.Trim() != "")
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
         [HttpPost]
         public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
         {
             var result = await _mangaService.AddAsync(mangaDTO);
 
-            if (result.MessageWhatWrong != null && result.MessageWhatWrong.Trim() != "")
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
         [HttpDelete("{Id}")]
         public async Task<IActionResult> deleteMangaById([FromRoute] string Id)
         {
             var result = await _mangaService.DeleteAsync(Id);
 
-            if (result.MessageWhatWrong != null && result.MessageWhatWrong.Trim() != "")
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
         [HttpPut]
         public async Task<IActionResult> updateMangaById([FromBody] MangaDTO mangaDTO)
         {
             var result = await _mangaService.UpdateAsync(mangaDTO);
 
-            if (result.MessageWhatWrong != null && result.MessageWhatWrong.Trim() != "")
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
 
         [HttpPut("/api/addGenreToManga")]
@@ -88,24 +98,15 @@ namespace MangaBackend.Controllers
         {
             var result = await _mangaService.AddGenresToManga(mangaDTO);
 
-            if (result.MessageWhatWrong != null && result.MessageWhatWrong.Trim() != "")
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
-
-        [HttpGet("/api/test")]
-        public async Task<IActionResult> test() 
-        {
-            var result = new
-            {
-                message = "it is working ....",
-                data = Environment.GetEnvironmentVariable("ASPNETCORE_DataOfCompipation")
-            };
-
-            return Ok(result);
-        }
+   
     }
 }

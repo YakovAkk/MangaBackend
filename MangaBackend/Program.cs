@@ -1,4 +1,3 @@
-using Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories;
 using Repositories.Repositories.Base;
@@ -9,6 +8,9 @@ using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
 using MangaBackend.Validate;
+using Services.Wrappers.Base;
+using Services.Wrappers;
+using Data.Database;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -25,7 +27,13 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
+    builder.Services.AddTransient<IWrapperGenreService, WrapperResopnseGenreService>();
+    builder.Services.AddTransient<IWrapperMangaService, WrapperResopnseMangaService>();
+
+
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
+
+
 
     var validator = new Validator(builder.Configuration);
 
@@ -65,8 +73,8 @@ try
     builder.Services.AddControllers();
 
     builder.Services.AddControllersWithViews()
-        .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -77,6 +85,8 @@ try
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
+
+
 
     var app = builder.Build();
 

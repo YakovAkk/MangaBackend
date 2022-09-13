@@ -1,10 +1,7 @@
 ﻿using Data.Models;
-using Microsoft.Extensions.Configuration;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.Services.Base;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
 using Services.Storage.Base;
 
 namespace Services.Services
@@ -14,7 +11,10 @@ namespace Services.Services
         private readonly ILocalStorage _localStorage;
         private readonly IGenreRepository _genreRepository;
         private readonly IMangaRepository _mangaRepository;
-        public MangaService(IMangaRepository repository, IGenreRepository genreRepository, ILocalStorage localStorage) : base(repository)
+        public MangaService(
+            IMangaRepository repository,
+            IGenreRepository genreRepository, 
+            ILocalStorage localStorage) : base(repository)
         {
             _genreRepository = genreRepository;
             _mangaRepository = repository;

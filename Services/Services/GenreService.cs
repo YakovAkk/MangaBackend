@@ -7,10 +7,7 @@ namespace Services.Services
 {
     public class GenreService : BaseService<GenreModel, GenreDTO>, IGenreService
     {
-
-        public GenreService(IGenreRepository repository) : base(repository)
-        {
-        }
+        public GenreService(IGenreRepository repository) : base(repository) { }
         public override async Task<GenreModel> AddAsync(GenreDTO item)
         {
             var model = new GenreModel()
