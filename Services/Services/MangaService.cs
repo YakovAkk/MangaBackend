@@ -1,10 +1,7 @@
 ﻿using Data.Models;
-using Microsoft.Extensions.Configuration;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.Services.Base;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
 using Services.Storage.Base;
 
 namespace Services.Services
@@ -75,7 +72,42 @@ namespace Services.Services
             return res;
         }
 
-        public override async Task<List<MangaModel>> GetAllAsync()
+        public override async Task<IList<MangaModel>> AddRange(IList<MangaDTO> list)
+        {
+            var listModels = new List<MangaModel>();
+
+            foreach (var item in list)
+            {
+                var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
+
+                if (genres.Count == 0)
+                {
+                    return new List<MangaModel>();
+                }
+
+                var manga = new MangaModel()
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    PathToTitlePicture = item.PathToTitlePicture,
+                    Description = item.Description,
+                    MessageWhatWrong = "",
+                    AgeRating = item.AgeRating,
+                    ReleaseYear = item.ReleaseYear,
+                    Author = item.Author,
+                    NumbetOfChapters = item.NumbetOfChapters,
+                    IsFavorite = item.IsFavorite,
+                    PathToFoldersWithGlava = item.PathToFoldersWithGlava,
+                    Genres = genres
+                };
+
+                listModels.Add(manga);
+            }
+
+            return await _mangaRepository.AddRange(listModels);
+        }
+
+        public override async Task<IList<MangaModel>> GetAllAsync()
         {
 
             var result = await _mangaRepository.GetAllAsync();
@@ -150,6 +182,10 @@ namespace Services.Services
             manga.PathToTitlePicture = item.PathToTitlePicture;
             manga.Genres = genres;
             manga.PathToTitlePicture = item.PathToTitlePicture;
+            manga.Author = item.Author;
+            manga.NumbetOfChapters = item.NumbetOfChapters;
+            manga.IsFavorite = item.IsFavorite;
+            manga.AgeRating = item.AgeRating;
 
             return await _repository.UpdateAsync(manga);
         }

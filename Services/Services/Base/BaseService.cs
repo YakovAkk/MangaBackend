@@ -12,7 +12,9 @@ namespace Services.Services.Base
         {
             _repository = repository;
         }
-        public abstract Task<List<TR>> GetAllAsync();
+
+        public abstract Task<IList<TR>> AddRange(IList<TI> list);
+        public abstract Task<IList<TR>> GetAllAsync();
         public abstract Task<TR> GetByIdAsync(string id);
         public async virtual Task<TR> DeleteAsync(string id)
         {
@@ -20,5 +22,9 @@ namespace Services.Services.Base
         }
         public abstract Task<TR> AddAsync(TI item);
         public abstract Task<TR> UpdateAsync(TI item);
+        public async Task<IList<TR>> GetCertainAmount(int amount)
+        {
+            return await _repository.GetCertainAmount(amount);
+        }
     }
 }

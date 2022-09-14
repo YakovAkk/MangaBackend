@@ -18,7 +18,37 @@ namespace MangaBackend.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("all/{amount}")]
+        public async Task<IActionResult> getAll([FromRoute] string amount)
+        {
+            int amountOfGenres = 0;
+
+            var IsCanParse = Int32.TryParse(amount, out amountOfGenres);
+
+            if (!IsCanParse)
+            {
+                var message = new
+                {
+                    result = "Incorrect anount of genres"
+                };
+                return BadRequest(message);
+            }
+
+            var result = await _genreService.GetCertainAmount(amountOfGenres);
+
+            if (result.Count == 0)
+            {
+                var message = new
+                {
+                    result = "The Database doesn't have any category"
+                };
+                return BadRequest(message);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("all")]
         public async Task<IActionResult> getAll()
         {
             var result = await _genreService.GetAllAsync();

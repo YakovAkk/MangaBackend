@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
+using Services.FillerService.Base;
 using Services.Services.Base;
 
 namespace MangaBackend.Controllers
@@ -9,77 +10,44 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class FillerController : ControllerBase
     {
-        private readonly IMangaService _mangaService;
-        private readonly IGenreService _genreService;
+        private readonly IFillerSwervice _fillerService;
 
-        public FillerController(IMangaService mangaService, IGenreService genreService)
+        public FillerController(IFillerSwervice fillerService)
         {
-            _mangaService = mangaService;
-            _genreService = genreService;
+            _fillerService = fillerService;
         }
 
         [HttpPost]
         public async Task<IActionResult> createManga()
         {
-            var ganreDTO = new GenreDTO()
-            {
-                Name = "Action"
-            };
-            var resultGenre = await _genreService.AddAsync(ganreDTO);
-            if (!String.IsNullOrEmpty(resultGenre.MessageWhatWrong))
-            {
-                return BadRequest(resultGenre.MessageWhatWrong);
-            }
+            var resultGenres = await _fillerService.AddGenres();
 
-            var genres = await _genreService.GetAllAsync();
-
-            if (genres.Count == 0)
+            if (!resultGenres.IsSuccess) 
             {
-                var message = new
+                var res = new
                 {
-                    genres = "The Database doesn't have any genres"
+                    mess = $"Genres wasn't added because {resultGenres.MessageWhatWrong}"
                 };
-                return BadRequest(message);
+                return BadRequest(res);
             }
 
-            var genres_id = new List<string>();
-            foreach (var genre in genres)
+            var resultMangas = await _fillerService.AddMangas();
+
+            if (!resultMangas.IsSuccess)
             {
-                genres_id.Add(genre.Id);
+                var res = new
+                {
+                    mess = $"Mangas wasn't added because {resultMangas.MessageWhatWrong}"
+                };
+                return BadRequest(res);
             }
 
-            var itemToFoldersWithGlava = new GlavaMangaModel()
+            var result = new
             {
-                NumberOfGlava = 1,
-                LinkToFirstPicture = "Manga/Attack+of+the+Titans/Glava+1/01.jpg",
-                AmountOfPictures = 54
+                mess = $"Everything was added"
             };
 
-            var PathToFoldersWithGlava = new List<GlavaMangaModel>();
-            PathToFoldersWithGlava.Add(itemToFoldersWithGlava);
-
-            var mangaDTO = new MangaDTO()
-            {
-                Name = "Attack of the Titans",
-                PathToTitlePicture = "Manga/Attack+of+the+Titans/TitleImage.jpg",
-                genres_id = genres_id,
-                PathToFoldersWithGlava = PathToFoldersWithGlava,
-                Description = "Давным-давно человечество было всего лишь «их» кормом, до тех пор, пока оно не построило гигантскую стену вокруг своей страны. С тех пор прошло сто лет мира и большинство людей жили счастливой, беззаботной жизнью. Но за долгие годы спокойствия пришлось заплатить огромную цену, и в 845 году они снова познали чувство ужаса и беспомощности – стена, которая была их единственным спасением, пала. «Они» прорвались. Половина человечества съедена, треть территории навсегда потеряна..."
-            };
-
-            var resultManga = await _mangaService.AddAsync(mangaDTO);
-
-            if (!String.IsNullOrEmpty(resultManga.MessageWhatWrong))
-            {
-                return BadRequest(resultManga.MessageWhatWrong);
-            }
-
-            var res = new
-            {
-                mess = "All Items was added to Database"
-            };
-
-            return Ok(res);
+            return Ok(result);
         }
     }
 }

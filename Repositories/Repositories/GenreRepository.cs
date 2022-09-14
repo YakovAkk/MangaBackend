@@ -14,7 +14,7 @@ namespace Repositories.Repositories
         {
             _mangaRepository = mangaRepository;
         }
-        public async override Task<List<GenreModel>> GetAllAsync()
+        public async override Task<IList<GenreModel>> GetAllAsync()
         {
             var list = await _db.Genres.Include(m => m.Mangas).ToListAsync();
 
@@ -41,7 +41,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre isn't contained in the database!"
+                    MessageWhatWrong = $"The genre with id = {id} isn't contained in the database!"
                 };
             }
 
@@ -53,7 +53,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "Item was null"
+                    MessageWhatWrong = $"The Item was null"
                 };
             }
 
@@ -63,7 +63,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre is contained in the database!"
+                    MessageWhatWrong = $"The genre {item.Name} is contained in the database!"
                 };
             }
 
@@ -73,7 +73,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre hasn't added in the database!"
+                    MessageWhatWrong = $"The genre {item.Name} hasn't added in the database!"
                 };
             }
 
@@ -85,7 +85,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre hasn't added in the database!"
+                    MessageWhatWrong = $"The genre {item.Name} hasn't added in the database!"
                 };
             }
 
@@ -107,7 +107,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre isn't contained in the database!"
+                    MessageWhatWrong = $"The genre with id = {id} isn't contained in the database!"
                 };
             }
 
@@ -137,7 +137,7 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The Model wan't updated"
+                    MessageWhatWrong = $"The genre {item.Name} wan't updated"
                 };
             }
 
@@ -149,11 +149,43 @@ namespace Repositories.Repositories
             {
                 return new GenreModel()
                 {
-                    MessageWhatWrong = "The genre hasn't updated in the database!"
+                    MessageWhatWrong = $"The genre {item.Name} hasn't updated in the database!"
                 };
             }
 
             return genre;
+        }
+        public async override Task<IList<GenreModel>> AddRange(IList<GenreModel> items)
+        {
+            var result = new List<GenreModel>();
+
+            if (items == null && items.Count == 0)
+            {
+                return new List<GenreModel>();
+            }
+
+            foreach (var item in items)
+            {
+                result.Add(await CreateAsync(item));
+            };
+
+            return result;
+        }
+        public async override Task<IList<GenreModel>> GetCertainAmount(int amount)
+        {
+            if (amount < 0)
+            {
+                return new List<GenreModel>();
+            }
+
+            var list = await _db.Genres.Include(m => m.Mangas).Take(amount).ToListAsync();
+
+            if (list == null)
+            {
+                return new List<GenreModel>();
+            }
+
+            return list;
         }
     }
 }
