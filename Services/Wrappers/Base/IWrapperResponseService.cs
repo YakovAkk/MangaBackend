@@ -3,7 +3,7 @@ using Services.Response.Base;
 
 namespace Services.Wrappers.Base
 {
-    public interface IWrapperResopnseService<TR, TI>
+    public interface IWrapperResponseService<TR, TI>
         where TR : IResponseModel
         where TI : IModel
     {

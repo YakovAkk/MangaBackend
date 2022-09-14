@@ -5,10 +5,9 @@ using Services.Wrappers.Base;
 
 namespace Services.Wrappers
 {
-    public class WrapperResopnseGenreService : IWrapperResopnseService<ResponseModel, GenreModel>, IWrapperGenreService
+    public class WrapperResponseMangaService : IWrapperResopnseService<ResponseModel, MangaModel>, IWrapperMangaService
     {
-
-        public ResponseModel WrapTheResponseModel(GenreModel response)
+        public ResponseModel WrapTheResponseModel(MangaModel response)
         {
             var wrappedResponse = new ResponseModel();
 
@@ -27,8 +26,7 @@ namespace Services.Wrappers
 
             return wrappedResponse;
         }
-
-        public ResponseModel WrapTheResponseListOfModels(IEnumerable<GenreModel> response)
+        public ResponseModel WrapTheResponseListOfModels(IEnumerable<MangaModel> response)
         {
             var wrappedResponse = new ResponseModel();
 
@@ -47,6 +45,5 @@ namespace Services.Wrappers
 
             return wrappedResponse;
         }
-
     }
 }
