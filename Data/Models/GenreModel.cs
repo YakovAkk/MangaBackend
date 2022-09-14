@@ -10,8 +10,13 @@ namespace Data.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string? Id { get; set; }
         public string Name { get; set; }
+        public bool IsFavorite { get; set; }
         public string MessageWhatWrong { get; set; }
-
         public virtual List<MangaModel> Mangas { get; set; }
+
+        public GenreModel()
+        {
+            IsFavorite = false;
+        }
     }
 }

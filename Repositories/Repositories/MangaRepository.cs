@@ -11,7 +11,7 @@ namespace Repositories.Repositories
         {
 
         }
-        public override async Task<List<MangaModel>> GetAllAsync()
+        public override async Task<IList<MangaModel>> GetAllAsync()
         {
             var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).ToListAsync();
 
@@ -38,7 +38,7 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga isn't contained in the database!"
+                    MessageWhatWrong = $"The manga with id = {id} isn't contained in the database!"
                 };
             }
 
@@ -64,18 +64,24 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga is contained in the database!"
+                    MessageWhatWrong = $"The manga {item.Name} is contained in the database!"
                 };
             }
 
             var addedItem = new MangaModel()
             {
+                Id = item.Id,
                 Name = item.Name,
                 PathToTitlePicture = item.PathToTitlePicture,
                 Description = item.Description,
-                Genres = item.Genres,
+                MessageWhatWrong = "",
+                AgeRating = item.AgeRating,
+                ReleaseYear = item.ReleaseYear,
+                Author = item.Author,
+                NumbetOfChapters = item.NumbetOfChapters,
+                IsFavorite = item.IsFavorite,
                 PathToFoldersWithGlava = item.PathToFoldersWithGlava,
-                MessageWhatWrong = ""
+                Genres = item.Genres
             };
 
             var result = await _db.Mangas.AddAsync(addedItem);
@@ -84,7 +90,7 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga hasn't added in the database!"
+                    MessageWhatWrong = $"The manga {item.Name} hasn't added in the database!"
                 };
 
             }
@@ -97,7 +103,7 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga hasn't added in the database!"
+                    MessageWhatWrong = $"The manga {item.Name} hasn't added in the database!"
                 };
             }
 
@@ -119,7 +125,7 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga isn't contained in the database!"
+                    MessageWhatWrong = $"The manga with id = {id} isn't contained in the database!"
                 };
             }
 
@@ -141,7 +147,7 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The genre hasn't updated in the database!"
+                    MessageWhatWrong = $"The manga {item.Name} hasn't updated in the database!"
                 };
             }
 
@@ -153,11 +159,44 @@ namespace Repositories.Repositories
             {
                 return new MangaModel()
                 {
-                    MessageWhatWrong = "The manga hasn't added in the database!"
+                    MessageWhatWrong = $"The manga {item.Name} hasn't added in the database!"
                 };
             }
 
             return manga;
+        }
+        public async override Task<IList<MangaModel>> AddRange(IList<MangaModel> items)
+        {
+            var result = new List<MangaModel>();
+
+            if(items == null && items.Count == 0)
+            {
+                return new List<MangaModel>();
+            }
+
+            foreach (var item in items)
+            {
+                result.Add(await CreateAsync(item));              
+            };
+
+            return result;
+        }
+        public async override Task<IList<MangaModel>> GetCertainAmount(int amount)
+        {
+            if(amount < 0)
+            {
+                return new List<MangaModel>();
+            }
+
+            var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres)
+                .Include(m => m.PathToFoldersWithGlava).Take(amount).ToListAsync();
+
+            if (list == null)
+            {
+                return new List<MangaModel>();
+            }
+
+            return list;
         }
     }
 }

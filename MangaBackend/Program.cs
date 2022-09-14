@@ -9,6 +9,8 @@ using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
 using MangaBackend.Validate;
+using Services.FillerService.Base;
+using Services.FillerService;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -26,6 +28,10 @@ try
     builder.Services.AddTransient<IGenreService, GenreService>();
 
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
+
+
+    builder.Services.AddTransient<IFillerSwervice, FillerService>();
+    
 
     var validator = new Validator(builder.Configuration);
 

@@ -22,7 +22,25 @@ namespace Services.Services
             return await _repository.CreateAsync(model);
         }
 
-        public override async Task<List<GenreModel>> GetAllAsync()
+        public override async Task<IList<GenreModel>> AddRange(IList<GenreDTO> list)
+        {
+            var listModels = new List<GenreModel>();
+
+            foreach (var item in list)
+            {
+                var genre = new GenreModel()
+                {
+                    Name = item.Name,
+                    MessageWhatWrong = ""
+                };
+
+                listModels.Add(genre);
+            }
+
+            return await _repository.AddRange(listModels);
+        }
+
+        public override async Task<IList<GenreModel>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
