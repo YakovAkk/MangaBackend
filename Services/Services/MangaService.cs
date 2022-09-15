@@ -11,7 +11,10 @@ namespace Services.Services
         private readonly ILocalStorage _localStorage;
         private readonly IGenreRepository _genreRepository;
         private readonly IMangaRepository _mangaRepository;
-        public MangaService(IMangaRepository repository, IGenreRepository genreRepository, ILocalStorage localStorage) : base(repository)
+        public MangaService(
+            IMangaRepository repository,
+            IGenreRepository genreRepository, 
+            ILocalStorage localStorage) : base(repository)
         {
             _genreRepository = genreRepository;
             _mangaRepository = repository;

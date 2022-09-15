@@ -1,4 +1,3 @@
-using Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories;
 using Repositories.Repositories.Base;
@@ -9,6 +8,9 @@ using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
 using MangaBackend.Validate;
+using Services.Wrappers.Base;
+using Services.Wrappers;
+using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
 
@@ -26,6 +28,10 @@ try
 
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
+
+    builder.Services.AddTransient<IWrapperGenreService, WrapperResopnseGenreService>();
+    builder.Services.AddTransient<IWrapperMangaService, WrapperResopnseMangaService>();
+
 
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
@@ -83,6 +89,8 @@ try
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
+
+
 
     var app = builder.Build();
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Services.Base;
+using Services.StatusCode;
+using Services.Wrappers.Base;
 
 namespace MangaBackend.Controllers
 {
@@ -8,14 +10,16 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class GenreController : ControllerBase
     {
+        private readonly IWrapperGenreService _wrapper;
         private readonly ILogger<GenreController> _logger;
 
         private readonly IGenreService _genreService;
 
-        public GenreController(IGenreService genreService, ILogger<GenreController> logger)
+        public GenreController(IGenreService genreService, ILogger<GenreController> logger, IWrapperGenreService wrapper)
         {
             _genreService = genreService;
             _logger = logger;
+            _wrapper = wrapper;
         }
 
         [HttpGet("all/favorite")]
@@ -96,24 +100,29 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.AddAsync(mangaDTO);
 
-            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
-        [HttpPost("set/favorite/{Id}")]
-        public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> deleteMangaById([FromRoute] string Id)
         {
             var result = await _genreService.AddToFavorite(Id);
 
-            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
         [HttpDelete("set/favorite/{Id}")]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
@@ -132,12 +141,14 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.UpdateAsync(mangaDTO);
 
-            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapResult);
             }
 
-            return Ok(result);
+            return Ok(wrapResult);
         }
     }
 }
