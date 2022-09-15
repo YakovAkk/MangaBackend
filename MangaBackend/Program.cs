@@ -9,10 +9,10 @@ using Services.Storage;
 using Services.Storage.Base;
 using MangaBackend.Validate;
 using Services.Wrappers.Base;
-using Services.Wrappers;
 using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
+using Services.Wrappers;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -29,8 +29,8 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
-    builder.Services.AddTransient<IWrapperGenreService, WrapperResopnseGenreService>();
-    builder.Services.AddTransient<IWrapperMangaService, WrapperResopnseMangaService>();
+    builder.Services.AddTransient<IWrapperGenreService, WrapperResponseGenreService>();
+    builder.Services.AddTransient<IWrapperMangaService, WrapperResponseMangaService>();
 
 
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();

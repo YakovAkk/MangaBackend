@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
+using Services.Response;
 using Services.Services.Base;
 using Services.StatusCode;
 using Services.Wrappers.Base;
@@ -27,17 +28,16 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.GetAllFavoriteAsync();
 
-            if (result.Count == 0)
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                var message = new
-                {
-                    result = "The Database doesn't have any category"
-                };
-                return BadRequest(message);
+                return BadRequest(wrapperResult);
             }
 
-            return Ok(result);
+            return Ok(wrapperResult);
         }
+
         [HttpGet("all/{amount}")]
         public async Task<IActionResult> GetCertainNumber([FromRoute] string amount)
         {
@@ -47,54 +47,57 @@ namespace MangaBackend.Controllers
 
             if (!IsCanParse)
             {
-                var message = new
+                var message = new ResponseModel()
                 {
-                    result = "Incorrect number of genres"
+                    data = null,
+                    ErrorMessage = "Incorrect number of genres",
+                    StatusCode = CodeStatus.ErrorWithData      
                 };
                 return BadRequest(message);
             }
 
             var result = await _genreService.GetCertainAmount(amountOfGenres);
 
-            if (result.Count == 0)
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                var message = new
-                {
-                    result = "The Database doesn't have any category"
-                };
-                return BadRequest(message);
+                return BadRequest(wrapperResult.ErrorMessage);
             }
 
-            return Ok(result);
+            return Ok(wrapperResult);
         }
+
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _genreService.GetAllAsync();
 
-            if (result.Count == 0)
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                var message = new
-                {
-                    result = "The Database doesn't have any category"
-                };
-                return BadRequest(message);
+                return BadRequest(wrapperResult);
             }
 
-            return Ok(result);
+            return Ok(wrapperResult);
         }
+
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetGenreById([FromRoute] string Id)
         {
             var result = await _genreService.GetByIdAsync(Id);
 
-            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapperResult);
             }
 
-            return Ok(result);
+            return Ok(wrapperResult);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
         {
@@ -110,32 +113,36 @@ namespace MangaBackend.Controllers
             return Ok(wrapResult);
         }
 
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> deleteMangaById([FromRoute] string Id)
+        [HttpPost("set/favorite/{Id}")]
+        public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
         {
             var result = await _genreService.AddToFavorite(Id);
 
-            var wrapResult = _wrapper.WrapTheResponseModel(result);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
 
-            if (wrapResult.StatusCode != CodeStatus.Successful)
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapResult);
+                return BadRequest(wrapperResult);
             }
 
-            return Ok(wrapResult);
+            return Ok(wrapperResult);
         }
+
         [HttpDelete("set/favorite/{Id}")]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
         {
             var result = await _genreService.RemoveFavorite(Id);
 
-            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(result.MessageWhatWrong);
+                return BadRequest(wrapperResult);
             }
 
-            return Ok(result);
+            return Ok(wrapperResult);
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
         {
@@ -150,5 +157,6 @@ namespace MangaBackend.Controllers
 
             return Ok(wrapResult);
         }
+        
     }
 }

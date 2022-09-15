@@ -5,7 +5,7 @@ using Services.Wrappers.Base;
 
 namespace Services.Wrappers
 {
-    public class WrapperResponseMangaService : IWrapperResopnseService<ResponseModel, MangaModel>, IWrapperMangaService
+    public class WrapperResponseMangaService : IWrapperResponseService<ResponseModel, MangaModel>, IWrapperMangaService
     {
         public ResponseModel WrapTheResponseModel(MangaModel response)
         {

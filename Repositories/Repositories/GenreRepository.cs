@@ -178,7 +178,7 @@ namespace Repositories.Repositories
                 return new List<GenreModel>();
             }
 
-            var list = await _db.Genres.Include(m => m.Mangas).Take(amount).ToListAsync();
+            var list = await _db.Genres.Take(amount).ToListAsync();
 
             if (list == null)
             {

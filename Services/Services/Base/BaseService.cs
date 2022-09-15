@@ -24,8 +24,6 @@ namespace Services.Services.Base
         {
             return await _repository.DeleteAsync(id);
         }
-        public abstract Task<TR> AddAsync(TI item);
-        public abstract Task<TR> UpdateAsync(TI item);
         public async virtual Task<IList<TR>> GetCertainAmount(int amount)
         {
             return await _repository.GetCertainAmount(amount);
