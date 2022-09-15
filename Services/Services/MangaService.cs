@@ -21,18 +21,8 @@ namespace Services.Services
             _localStorage = localStorage;
         }
 
-        public override async Task<MangaModel> AddAsync(MangaDTO item)
+        private MangaModel ConverterModelDTOToModel(MangaDTO item, List<GenreModel> genres)
         {
-            var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
-
-            if (genres.Count == 0)
-            {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = "The database doesn't contain the genres"
-                };
-            }
-
             var model = new MangaModel()
             {
                 Id = item.Id,
@@ -41,8 +31,29 @@ namespace Services.Services
                 Description = item.Description,
                 MessageWhatWrong = "",
                 PathToFoldersWithGlava = item.PathToFoldersWithGlava,
+                AgeRating = item.AgeRating,
+                Author = item.Author,
+                IsFavorite = item.IsFavorite,
+                NumbetOfChapters = item.NumbetOfChapters,
+                ReleaseYear = item.ReleaseYear,
                 Genres = genres
             };
+
+            return model;
+        }
+        public override async Task<MangaModel> AddAsync(MangaDTO item)
+        {
+            var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
+
+            if (!genres.Any())
+            {
+                return new MangaModel()
+                {
+                    MessageWhatWrong = "The database doesn't contain the genres"
+                };
+            }
+
+            var model = ConverterModelDTOToModel(item, genres);
 
             return await _repository.CreateAsync(model);
         }
@@ -74,8 +85,7 @@ namespace Services.Services
 
             return res;
         }
-
-        public override async Task<IList<MangaModel>> AddRange(IList<MangaDTO> list)
+        public async override Task<IList<MangaModel>> AddRange(IList<MangaDTO> list)
         {
             var listModels = new List<MangaModel>();
 
@@ -83,39 +93,24 @@ namespace Services.Services
             {
                 var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
-                if (genres.Count == 0)
+                if (!genres.Any())
                 {
                     return new List<MangaModel>();
                 }
 
-                var manga = new MangaModel()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    PathToTitlePicture = item.PathToTitlePicture,
-                    Description = item.Description,
-                    MessageWhatWrong = "",
-                    AgeRating = item.AgeRating,
-                    ReleaseYear = item.ReleaseYear,
-                    Author = item.Author,
-                    NumbetOfChapters = item.NumbetOfChapters,
-                    IsFavorite = item.IsFavorite,
-                    PathToFoldersWithGlava = item.PathToFoldersWithGlava,
-                    Genres = genres
-                };
+                var manga = ConverterModelDTOToModel(item, genres);
 
                 listModels.Add(manga);
             }
 
             return await _mangaRepository.AddRange(listModels);
         }
-
-        public override async Task<IList<MangaModel>> GetAllAsync()
+        public async override Task<IList<MangaModel>> GetAllAsync()
         {
 
             var result = await _mangaRepository.GetAllAsync();
 
-            if (result.Count == 0)
+            if (!result.Any())
             {
                 var message = new
                 {
@@ -135,8 +130,7 @@ namespace Services.Services
 
             return result;
         }
-
-        public override async Task<MangaModel> GetByIdAsync(string id)
+        public async override Task<MangaModel> GetByIdAsync(string id)
         {
             var result = await _mangaRepository.GetByIdAsync(id);
 
@@ -149,7 +143,6 @@ namespace Services.Services
 
             return result;
         }
-
         public async override Task<MangaModel> UpdateAsync(MangaDTO item)
         {
             if (String.IsNullOrEmpty(item.Id))
@@ -162,7 +155,7 @@ namespace Services.Services
 
             var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
-            if (genres.Count == 0)
+            if (!genres.Any())
             {
                 return new MangaModel()
                 {
@@ -180,15 +173,7 @@ namespace Services.Services
                 };
             };
 
-            manga.Description = item.Description;
-            manga.Name = item.Name;
-            manga.PathToTitlePicture = item.PathToTitlePicture;
-            manga.Genres = genres;
-            manga.PathToTitlePicture = item.PathToTitlePicture;
-            manga.Author = item.Author;
-            manga.NumbetOfChapters = item.NumbetOfChapters;
-            manga.IsFavorite = item.IsFavorite;
-            manga.AgeRating = item.AgeRating;
+            manga = ConverterModelDTOToModel(item, genres);
 
             return await _repository.UpdateAsync(manga);
         }

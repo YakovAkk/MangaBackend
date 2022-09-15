@@ -68,23 +68,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            var addedItem = new MangaModel()
-            {
-                Id = item.Id,
-                Name = item.Name,
-                PathToTitlePicture = item.PathToTitlePicture,
-                Description = item.Description,
-                MessageWhatWrong = "",
-                AgeRating = item.AgeRating,
-                ReleaseYear = item.ReleaseYear,
-                Author = item.Author,
-                NumbetOfChapters = item.NumbetOfChapters,
-                IsFavorite = item.IsFavorite,
-                PathToFoldersWithGlava = item.PathToFoldersWithGlava,
-                Genres = item.Genres
-            };
+            item.MessageWhatWrong = "";
 
-            var result = await _db.Mangas.AddAsync(addedItem);
+            var result = await _db.Mangas.AddAsync(item);
 
             if (result == null)
             {
@@ -97,7 +83,7 @@ namespace Repositories.Repositories
 
             await _db.SaveChangesAsync();
 
-            manga = await _db.Mangas.Include(m => m.Genres).FirstOrDefaultAsync(i => i.Name == addedItem.Name);
+            manga = await _db.Mangas.Include(m => m.Genres).FirstOrDefaultAsync(i => i.Name == item.Name);
 
             if (manga == null)
             {
@@ -169,7 +155,7 @@ namespace Repositories.Repositories
         {
             var result = new List<MangaModel>();
 
-            if(items == null && items.Count == 0)
+            if(items == null && !items.Any())
             {
                 return new List<MangaModel>();
             }

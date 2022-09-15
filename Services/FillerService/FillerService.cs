@@ -78,7 +78,7 @@ namespace Services.FillerService
 
             var resultGenre = await _genreService.AddRange(listOfGenres);
 
-            if (resultGenre.Count == 0)
+            if (!resultGenre.Any())
             {
                 return new ResponseFillDTO()
                 {
@@ -98,7 +98,7 @@ namespace Services.FillerService
         {
             var genres = await _genreService.GetAllAsync();
 
-            if (genres.Count == 0)
+            if (!genres.Any())
             {
                 return new ResponseFillDTO()
                 {
@@ -115,7 +115,7 @@ namespace Services.FillerService
 
             var resultManga = await _mangaService.AddRange(mangas);
 
-            if (resultManga.Count == 0)
+            if (!resultManga.Any())
             {
                 return new ResponseFillDTO()
                 {

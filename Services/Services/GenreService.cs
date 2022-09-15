@@ -19,34 +19,37 @@ namespace Services.Services
             return await _repository.CreateAsync(model);
         }
 
+        private GenreModel ConverterModelDTOToModel(GenreDTO item)
+        {
+            var model = new GenreModel()
+            {
+                Name = item.Name,
+                MessageWhatWrong = ""
+            };
+
+            return model;
+        }
         public override async Task<IList<GenreModel>> AddRange(IList<GenreDTO> list)
         {
             var listModels = new List<GenreModel>();
 
             foreach (var item in list)
             {
-                var genre = new GenreModel()
-                {
-                    Name = item.Name,
-                    MessageWhatWrong = ""
-                };
+                var genre = ConverterModelDTOToModel(item);
 
                 listModels.Add(genre);
             }
 
             return await _repository.AddRange(listModels);
         }
-
         public override async Task<IList<GenreModel>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
-
         public override async Task<GenreModel> GetByIdAsync(string id)
         {
             return await _repository.GetByIdAsync(id);
         }
-
         public async override Task<GenreModel> UpdateAsync(GenreDTO item)
         {
             if(String.IsNullOrEmpty(item.Id))
@@ -67,7 +70,7 @@ namespace Services.Services
                 };
             };
 
-            genre.Name = item.Name;
+            genre = ConverterModelDTOToModel(item);
 
             return await _repository.UpdateAsync(genre);
         }

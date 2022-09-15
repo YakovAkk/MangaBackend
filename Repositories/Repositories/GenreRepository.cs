@@ -159,9 +159,9 @@ namespace Repositories.Repositories
         {
             var result = new List<GenreModel>();
 
-            if (items == null && items.Count == 0)
+            if (items == null && !items.Any())
             {
-                return new List<GenreModel>();
+                return result;
             }
 
             foreach (var item in items)
@@ -187,7 +187,7 @@ namespace Repositories.Repositories
 
             return list;
         }
-        public async override  Task<IList<GenreModel>> GetAllFavoriteAsync()
+        public async override Task<IList<GenreModel>> GetAllFavoriteAsync()
         {
             var list = await _db.Genres.Where(i => i.IsFavorite).ToListAsync();
 

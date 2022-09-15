@@ -7,12 +7,11 @@ namespace Services.Wrappers
 {
     public class WrapperResponseGenreService : IWrapperResponseService<ResponseModel, GenreModel>, IWrapperGenreService
     {
-
         public ResponseModel WrapTheResponseModel(GenreModel response)
         {
             var wrappedResponse = new ResponseModel();
 
-            if (!string.IsNullOrEmpty(response.MessageWhatWrong))
+            if (!String.IsNullOrEmpty(response.MessageWhatWrong))
             {
                 wrappedResponse.data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
@@ -27,12 +26,11 @@ namespace Services.Wrappers
 
             return wrappedResponse;
         }
-
         public ResponseModel WrapTheResponseListOfModels(IEnumerable<GenreModel> response)
         {
             var wrappedResponse = new ResponseModel();
 
-            if (response.Count() == 0)
+            if (!response.Any())
             {
                 wrappedResponse.data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
@@ -47,6 +45,5 @@ namespace Services.Wrappers
 
             return wrappedResponse;
         }
-
     }
 }

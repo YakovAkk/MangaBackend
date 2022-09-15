@@ -11,7 +11,7 @@ namespace Services.Wrappers
         {
             var wrappedResponse = new ResponseModel();
 
-            if (!string.IsNullOrEmpty(response.MessageWhatWrong))
+            if (!String.IsNullOrEmpty(response.MessageWhatWrong))
             {
                 wrappedResponse.data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
@@ -30,7 +30,7 @@ namespace Services.Wrappers
         {
             var wrappedResponse = new ResponseModel();
 
-            if (response.Count() == 0)
+            if (!response.Any())
             {
                 wrappedResponse.data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
