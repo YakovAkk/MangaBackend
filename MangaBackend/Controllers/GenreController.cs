@@ -18,10 +18,26 @@ namespace MangaBackend.Controllers
             _logger = logger;
         }
 
-        [HttpGet("all/{amount}")]
-        public async Task<IActionResult> getAll([FromRoute] string amount)
+        [HttpGet("all/favorite")]
+        public async Task<IActionResult> GetfavoriteGentes()
         {
-            int amountOfGenres = 0;
+            var result = await _genreService.GetAllFavoriteAsync();
+
+            if (result.Count == 0)
+            {
+                var message = new
+                {
+                    result = "The Database doesn't have any category"
+                };
+                return BadRequest(message);
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("all/{amount}")]
+        public async Task<IActionResult> GetCertainNumber([FromRoute] string amount)
+        {
+            var amountOfGenres = 0;
 
             var IsCanParse = Int32.TryParse(amount, out amountOfGenres);
 
@@ -29,7 +45,7 @@ namespace MangaBackend.Controllers
             {
                 var message = new
                 {
-                    result = "Incorrect anount of genres"
+                    result = "Incorrect number of genres"
                 };
                 return BadRequest(message);
             }
@@ -47,9 +63,8 @@ namespace MangaBackend.Controllers
 
             return Ok(result);
         }
-
         [HttpGet("all")]
-        public async Task<IActionResult> getAll()
+        public async Task<IActionResult> GetAll()
         {
             var result = await _genreService.GetAllAsync();
 
@@ -64,9 +79,8 @@ namespace MangaBackend.Controllers
 
             return Ok(result);
         }
-
         [HttpGet("{Id}")]
-        public async Task<IActionResult> getMangaById([FromRoute] string Id)
+        public async Task<IActionResult> GetGenreById([FromRoute] string Id)
         {
             var result = await _genreService.GetByIdAsync(Id);
 
@@ -77,9 +91,8 @@ namespace MangaBackend.Controllers
 
             return Ok(result);
         }
-
         [HttpPost]
-        public async Task<IActionResult> createManga([FromBody] GenreDTO mangaDTO)
+        public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
         {
             var result = await _genreService.AddAsync(mangaDTO);
 
@@ -90,11 +103,10 @@ namespace MangaBackend.Controllers
 
             return Ok(result);
         }
-
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> deleteMangaById([FromRoute] string Id)
+        [HttpPost("set/favorite/{Id}")]
+        public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
         {
-            var result = await _genreService.DeleteAsync(Id);
+            var result = await _genreService.AddToFavorite(Id);
 
             if (!String.IsNullOrEmpty(result.MessageWhatWrong))
             {
@@ -103,9 +115,20 @@ namespace MangaBackend.Controllers
 
             return Ok(result);
         }
+        [HttpDelete("set/favorite/{Id}")]
+        public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
+        {
+            var result = await _genreService.RemoveFavorite(Id);
 
+            if (!String.IsNullOrEmpty(result.MessageWhatWrong))
+            {
+                return BadRequest(result.MessageWhatWrong);
+            }
+
+            return Ok(result);
+        }
         [HttpPut]
-        public async Task<IActionResult> updateMangaById([FromBody] GenreDTO mangaDTO)
+        public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
         {
             var result = await _genreService.UpdateAsync(mangaDTO);
 

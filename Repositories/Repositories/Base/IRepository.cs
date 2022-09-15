@@ -4,6 +4,9 @@ namespace Repositories.Repositories.Base
 {
     public interface IRepository<T> where T : IModel
     {
+        Task<T> RemoveFavorite(string Id);
+        Task<T> AddToFavorite(string Id);
+        Task<IList<T>> GetAllFavoriteAsync();
         Task<IList<T>> GetCertainAmount(int amount);
         Task<IList<T>> AddRange(IList<T> items);
         Task<T> GetByIdAsync(string id);

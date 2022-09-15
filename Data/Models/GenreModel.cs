@@ -17,6 +17,7 @@ namespace Data.Models
         public GenreModel()
         {
             IsFavorite = false;
+            Mangas = new List<MangaModel>();
         }
     }
 }

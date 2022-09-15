@@ -22,9 +22,21 @@ namespace Services.Services.Base
         }
         public abstract Task<TR> AddAsync(TI item);
         public abstract Task<TR> UpdateAsync(TI item);
-        public async Task<IList<TR>> GetCertainAmount(int amount)
+        public async virtual Task<IList<TR>> GetCertainAmount(int amount)
         {
             return await _repository.GetCertainAmount(amount);
+        }
+        public async virtual Task<IList<TR>> GetAllFavoriteAsync()
+        {
+            return await _repository.GetAllFavoriteAsync();
+        }
+        public async virtual Task<TR> AddToFavorite(string Id)
+        {
+            return await _repository.AddToFavorite(Id);
+        }
+        public async virtual Task<TR> RemoveFavorite(string Id)
+        {
+            return await _repository.RemoveFavorite(Id);
         }
     }
 }

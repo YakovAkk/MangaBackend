@@ -16,7 +16,7 @@ namespace Repositories.Repositories
         }
         public async override Task<IList<GenreModel>> GetAllAsync()
         {
-            var list = await _db.Genres.Include(m => m.Mangas).ToListAsync();
+            var list = await _db.Genres.ToListAsync();
 
             if (list == null)
             {
@@ -186,6 +186,53 @@ namespace Repositories.Repositories
             }
 
             return list;
+        }
+        public async override  Task<IList<GenreModel>> GetAllFavoriteAsync()
+        {
+            var list = await _db.Genres.Where(i => i.IsFavorite).ToListAsync();
+
+            if (list == null)
+            {
+                return new List<GenreModel>();
+            }
+
+            return list;
+        }
+        public async override Task<GenreModel> AddToFavorite(string Id)
+        {
+            var genre = await GetByIdAsync(Id);
+
+            if (!String.IsNullOrEmpty(genre.MessageWhatWrong))
+            {
+                return new GenreModel()
+                {
+                    MessageWhatWrong = genre.MessageWhatWrong
+                };
+            }
+
+            genre.IsFavorite = true;
+
+            await _db.SaveChangesAsync();
+
+            return genre;
+        }
+        public async override Task<GenreModel> RemoveFavorite(string Id)
+        {
+            var genre = await GetByIdAsync(Id);
+
+            if (!String.IsNullOrEmpty(genre.MessageWhatWrong))
+            {
+                return new GenreModel()
+                {
+                    MessageWhatWrong = genre.MessageWhatWrong
+                };
+            }
+
+            genre.IsFavorite = false;
+
+            await _db.SaveChangesAsync();
+
+            return genre;
         }
     }
 }

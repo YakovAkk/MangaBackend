@@ -11,7 +11,7 @@ namespace Repositories.Repositories
         {
 
         }
-        public override async Task<IList<MangaModel>> GetAllAsync()
+        public async override Task<IList<MangaModel>> GetAllAsync()
         {
             var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).ToListAsync();
 
@@ -197,6 +197,53 @@ namespace Repositories.Repositories
             }
 
             return list;
+        }
+        public async override Task<IList<MangaModel>> GetAllFavoriteAsync()
+        {
+            var list = await _db.Mangas.Where(i => i.IsFavorite).ToListAsync();
+
+            if (list == null)
+            {
+                return new List<MangaModel>();
+            }
+
+            return list;
+        }
+        public async override Task<MangaModel> AddToFavorite(string Id)
+        {
+            var manga = await GetByIdAsync(Id);
+
+            if (!String.IsNullOrEmpty(manga.MessageWhatWrong))
+            {
+                return new MangaModel()
+                {
+                    MessageWhatWrong = manga.MessageWhatWrong
+                };
+            }
+
+            manga.IsFavorite = true;
+
+            await _db.SaveChangesAsync();
+
+            return manga;
+        }
+        public async override Task<MangaModel> RemoveFavorite(string Id)
+        {
+            var manga = await GetByIdAsync(Id);
+
+            if (!String.IsNullOrEmpty(manga.MessageWhatWrong))
+            {
+                return new MangaModel()
+                {
+                    MessageWhatWrong = manga.MessageWhatWrong
+                };
+            }
+
+            manga.IsFavorite = false;
+
+            await _db.SaveChangesAsync();
+
+            return manga;
         }
     }
 }
