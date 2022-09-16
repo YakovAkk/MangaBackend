@@ -7,7 +7,7 @@ namespace Repositories.Repositories.Base
         Task<T> RemoveFavorite(string Id);
         Task<T> AddToFavorite(string Id);
         Task<IList<T>> GetAllFavoriteAsync();
-        Task<IList<T>> GetCertainAmount(int amount);
+        Task<IList<T>> GetCertainPage(int sizeOfPage, int page);
         Task<IList<T>> AddRange(IList<T> items);
         Task<T> GetByIdAsync(string id);
         Task<T> DeleteAsync(string id);

@@ -171,14 +171,9 @@ namespace Repositories.Repositories
 
             return result;
         }
-        public async override Task<IList<GenreModel>> GetCertainAmount(int amount)
+        public async override Task<IList<GenreModel>> GetCertainPage(int sizeOfPage, int page)
         {
-            if (amount < 0)
-            {
-                return new List<GenreModel>();
-            }
-
-            var list = await _db.Genres.Take(amount).ToListAsync();
+            var list = await _db.Genres.Skip(page * sizeOfPage).Take(sizeOfPage).ToListAsync();
 
             if (list == null)
             {

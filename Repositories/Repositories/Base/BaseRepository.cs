@@ -16,9 +16,9 @@ namespace Repositories.Repositories.Base
         public abstract Task<T> GetByIdAsync(string id);
         public abstract Task<T> UpdateAsync(T item);
         public abstract Task<IList<T>> AddRange(IList<T> items);
-        public abstract Task<IList<T>> GetCertainAmount(int amount);
         public abstract Task<IList<T>> GetAllFavoriteAsync();
         public abstract Task<T> AddToFavorite(string Id);
         public abstract Task<T> RemoveFavorite(string Id);
+        public abstract Task<IList<T>> GetCertainPage(int sizeOfPage, int page);
     }
 }

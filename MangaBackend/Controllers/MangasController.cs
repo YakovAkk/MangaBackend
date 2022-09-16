@@ -9,21 +9,22 @@ namespace MangaBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MangaController : ControllerBase
+    public class MangasController : ControllerBase
     {
         private readonly IWrapperMangaService _wrapper;
-        private readonly ILogger<MangaController> _logger;
+        private readonly ILogger<MangasController> _logger;
 
         private readonly IMangaService _mangaService;
 
-        public MangaController(IMangaService mangaService, ILogger<MangaController> logger, IWrapperMangaService wrapper)
+        public MangasController(IMangaService mangaService, ILogger<MangasController> logger, IWrapperMangaService wrapper)
         {
             _mangaService = mangaService;
             _logger = logger;
             _wrapper = wrapper;
         }
 
-        [HttpGet("all/favorite")]
+        [HttpGet("favorite")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetfavoriteMangas()
         {
 
@@ -33,44 +34,61 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
 
         }
 
-        [HttpGet("all/{amount}")]
-        public async Task<IActionResult> GetCertainNumber([FromRoute] string amount)
+        [HttpGet("pagination/{pagesize}/{page}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
         {
-            var amountOfGenres = 0;
+            var pageSize = 0;
 
-            var IsCanParse = Int32.TryParse(amount, out amountOfGenres);
+            var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
 
-            if (!IsCanParse)
+            if (!IsCanParsePageSize && pageSize < 0)
             {
                 var message = new ResponseModel()
                 {
                     data = null,
-                    ErrorMessage = "Incorrect number of genres",
+                    ErrorMessage = "Incorrect number of pagesize",
                     StatusCode = CodeStatus.ErrorWithData
                 };
                 return BadRequest(message);
             }
 
-            var result = await _mangaService.GetCertainAmount(amountOfGenres);
+            var numberOfPage = 0;
+
+            var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
+
+            if (!IsCanParseNumberOfPage && numberOfPage < 0)
+            {
+                var message = new ResponseModel()
+                {
+                    data = null,
+                    ErrorMessage = "Incorrect number of page",
+                    StatusCode = CodeStatus.ErrorWithData
+                };
+                return BadRequest(message);
+            }
+
+            var result = await _mangaService.GetCertainPage(pageSize, numberOfPage);
 
             var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult.ErrorMessage);
+                return NotFound(wrapperResult.ErrorMessage);
             }
 
             return Ok(wrapperResult);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await _mangaService.GetAllAsync();
@@ -79,13 +97,14 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
         }
 
         [HttpGet("{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> getMangaById([FromRoute] string Id)
         {
             var result = await _mangaService.GetByIdAsync(Id);
@@ -94,13 +113,14 @@ namespace MangaBackend.Controllers
 
             if (wrapResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapResult);
+                return NotFound(wrapResult);
             }
 
             return Ok(wrapResult);
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
         {
             var result = await _mangaService.AddAsync(mangaDTO);
@@ -116,6 +136,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateMangaById([FromBody] MangaDTO mangaDTO)
         {
             var result = await _mangaService.UpdateAsync(mangaDTO);
@@ -130,7 +151,8 @@ namespace MangaBackend.Controllers
             return Ok(wrapResult);
         }
 
-        [HttpPut("/api/addGenreToManga")]
+        [HttpPut("addGenreToManga")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
         {
             var result = await _mangaService.AddGenresToManga(mangaDTO);
@@ -146,6 +168,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpDelete("set/favorite/{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
         {
             var result = await _mangaService.RemoveFavorite(Id);
@@ -161,6 +184,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpPost("set/favorite/{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
         {
             var result = await _mangaService.AddToFavorite(Id);

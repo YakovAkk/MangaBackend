@@ -9,21 +9,22 @@ namespace MangaBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class GenresController : ControllerBase
     {
         private readonly IWrapperGenreService _wrapper;
-        private readonly ILogger<GenreController> _logger;
+        private readonly ILogger<GenresController> _logger;
 
         private readonly IGenreService _genreService;
 
-        public GenreController(IGenreService genreService, ILogger<GenreController> logger, IWrapperGenreService wrapper)
+        public GenresController(IGenreService genreService, ILogger<GenresController> logger, IWrapperGenreService wrapper)
         {
             _genreService = genreService;
             _logger = logger;
             _wrapper = wrapper;
         }
 
-        [HttpGet("all/favorite")]
+        [HttpGet("favorite")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetfavoriteGentes()
         {
             var result = await _genreService.GetAllFavoriteAsync();
@@ -32,43 +33,60 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
         }
 
-        [HttpGet("all/{amount}")]
-        public async Task<IActionResult> GetCertainNumber([FromRoute] string amount)
+        [HttpGet("pagination/{pagesize}/{page}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize , string page)
         {
-            var amountOfGenres = 0;
+            var pageSize = 0;
 
-            var IsCanParse = Int32.TryParse(amount, out amountOfGenres);
+            var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
 
-            if (!IsCanParse)
+            if (!IsCanParsePageSize && pageSize < 0)
             {
                 var message = new ResponseModel()
                 {
                     data = null,
-                    ErrorMessage = "Incorrect number of genres",
+                    ErrorMessage = "Incorrect number of pagesize",
                     StatusCode = CodeStatus.ErrorWithData      
                 };
                 return BadRequest(message);
             }
 
-            var result = await _genreService.GetCertainAmount(amountOfGenres);
+            var numberOfPage = 0;
+
+            var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
+
+            if (!IsCanParseNumberOfPage && numberOfPage < 0)
+            {
+                var message = new ResponseModel()
+                {
+                    data = null,
+                    ErrorMessage = "Incorrect number of page",
+                    StatusCode = CodeStatus.ErrorWithData
+                };
+                return BadRequest(message);
+            }
+
+            var result = await _genreService.GetCertainPage(pageSize, numberOfPage);
 
             var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult.ErrorMessage);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var result = await _genreService.GetAllAsync();
@@ -77,13 +95,14 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
         }
 
         [HttpGet("{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetGenreById([FromRoute] string Id)
         {
             var result = await _genreService.GetByIdAsync(Id);
@@ -92,13 +111,14 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return BadRequest(wrapperResult);
+                return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
         {
             var result = await _genreService.AddAsync(mangaDTO);
@@ -114,6 +134,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpPost("set/favorite/{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
         {
             var result = await _genreService.AddToFavorite(Id);
@@ -129,6 +150,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpDelete("set/favorite/{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
         {
             var result = await _genreService.RemoveFavorite(Id);
@@ -144,6 +166,7 @@ namespace MangaBackend.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
         {
             var result = await _genreService.UpdateAsync(mangaDTO);

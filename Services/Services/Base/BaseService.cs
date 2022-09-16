@@ -24,9 +24,9 @@ namespace Services.Services.Base
         {
             return await _repository.DeleteAsync(id);
         }
-        public async virtual Task<IList<TR>> GetCertainAmount(int amount)
+        public async virtual Task<IList<TR>> GetCertainPage(int sizeOfPage, int page)
         {
-            return await _repository.GetCertainAmount(amount);
+            return await _repository.GetCertainPage(sizeOfPage, page);
         }
         public async virtual Task<IList<TR>> GetAllFavoriteAsync()
         {

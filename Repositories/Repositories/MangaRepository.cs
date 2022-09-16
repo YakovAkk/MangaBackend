@@ -167,15 +167,11 @@ namespace Repositories.Repositories
 
             return result;
         }
-        public async override Task<IList<MangaModel>> GetCertainAmount(int amount)
+        public async override Task<IList<MangaModel>> GetCertainPage(int sizeOfPage, int page)
         {
-            if(amount < 0)
-            {
-                return new List<MangaModel>();
-            }
 
             var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres)
-                .Include(m => m.PathToFoldersWithGlava).Take(amount).ToListAsync();
+                .Include(m => m.PathToFoldersWithGlava).Skip(page * sizeOfPage).Take(sizeOfPage).ToListAsync();
 
             if (list == null)
             {

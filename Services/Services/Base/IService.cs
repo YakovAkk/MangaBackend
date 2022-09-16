@@ -10,7 +10,7 @@ namespace Services.Services.Base
         Task<TReturn> RemoveFavorite(string Id);
         Task<TReturn> AddToFavorite(string Id);
         Task<IList<TReturn>> GetAllFavoriteAsync();
-        Task<IList<TReturn>> GetCertainAmount(int amount);
+        Task<IList<TReturn>> GetCertainPage(int sizeOfPage, int page);
         Task<IList<TReturn>> AddRange(IList<TInput> list);
         Task<TReturn> AddAsync(TInput item);
         Task<TReturn> UpdateAsync(TInput item);
