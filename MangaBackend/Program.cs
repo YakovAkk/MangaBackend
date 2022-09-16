@@ -37,7 +37,8 @@ try
 
 
     builder.Services.AddTransient<IFillerSwervice, FillerService>();
-    
+
+    builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
     var validator = new Validator(builder.Configuration);
 

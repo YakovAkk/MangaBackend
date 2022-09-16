@@ -1,4 +1,6 @@
-﻿using Data.Models;
+﻿using AutoMapper;
+using Data.Models;
+using Repositories.Models;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.Services.Base;
@@ -7,40 +9,23 @@ namespace Services.Services
 {
     public class GenreService : BaseService<GenreModel, GenreDTO>, IGenreService
     {
-        public GenreService(IGenreRepository repository) : base(repository) { }
+       
+        public GenreService(IGenreRepository repository, IMapper mapper) : base(repository, mapper) 
+        {
+        }
         public override async Task<GenreModel> AddAsync(GenreDTO item)
         {
-            var model = new GenreModel()
-            {
-                Name = item.Name,
-                MessageWhatWrong = ""
-            };
+            var model = _mapper.Map<GenreModel>(item);
 
             return await _repository.CreateAsync(model);
         }
-
         private GenreModel ConverterModelDTOToModel(GenreDTO item)
         {
-            var model = new GenreModel()
-            {
-                Name = item.Name,
-                MessageWhatWrong = ""
-            };
-
-            return model;
+            return _mapper.Map<GenreModel>(item);
         }
         public override async Task<IList<GenreModel>> AddRange(IList<GenreDTO> list)
         {
-            var listModels = new List<GenreModel>();
-
-            foreach (var item in list)
-            {
-                var genre = ConverterModelDTOToModel(item);
-
-                listModels.Add(genre);
-            }
-
-            return await _repository.AddRange(listModels);
+            return await _repository.AddRange(_mapper.Map<List<GenreModel>>(list));
         }
         public override async Task<IList<GenreModel>> GetAllAsync()
         {
@@ -70,9 +55,7 @@ namespace Services.Services
                 };
             };
 
-            genre = ConverterModelDTOToModel(item);
-
-            return await _repository.UpdateAsync(genre);
+            return await _repository.UpdateAsync(_mapper.Map<GenreModel>(item));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Data.Models.Base;
+﻿using AutoMapper;
+using Data.Models.Base;
+using Repositories.Models.Base;
 using Repositories.Repositories.Base;
 using Services.DTO.Base;
 
@@ -9,10 +11,11 @@ namespace Services.Services.Base
         where TI : IModelDTO
     {
         protected IRepository<TR> _repository;
-
-        public BaseService(IRepository<TR> repository)
+        protected IMapper _mapper;
+        public BaseService(IRepository<TR> repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public abstract Task<IList<TR>> AddRange(IList<TI> list);

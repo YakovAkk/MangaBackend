@@ -1,6 +1,8 @@
-﻿using Data.Database;
+﻿using AutoMapper;
+using Data.Database;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Models;
 using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories
@@ -9,8 +11,7 @@ namespace Repositories.Repositories
     {
 
         private readonly IMangaRepository _mangaRepository;
-
-        public GenreRepository(AppDBContent db, IMangaRepository mangaRepository) : base(db)
+        public GenreRepository(AppDBContent db, IMangaRepository mangaRepository, IMapper mapper) : base(db,mapper)
         {
             _mangaRepository = mangaRepository;
         }
@@ -23,7 +24,9 @@ namespace Repositories.Repositories
                 return new List<GenreModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<GenreModel>>(list);
+
+            return result;
         }
         public async override Task<GenreModel> GetByIdAsync(string id)
         {
@@ -45,7 +48,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return genre;
+            var model = _mapper.Map<GenreModel>(genre);
+
+            return model;
         }
         public async override Task<GenreModel> CreateAsync(GenreModel item)
         {
@@ -67,7 +72,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var result = await _db.Genres.AddAsync(item);
+            var result = await _db.Genres.AddAsync(_mapper.Map<GenreEntity>(item));
 
             if (result == null)
             {
@@ -89,7 +94,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return genre;
+            var model = _mapper.Map<GenreModel>(genre);
+
+            return model;
         }
         public async override Task<GenreModel> DeleteAsync(string id)
         {
@@ -119,7 +126,10 @@ namespace Repositories.Repositories
 
             await _db.SaveChangesAsync();
 
-            return genre;
+            var model = _mapper.Map<GenreModel>(genre);
+
+            return model;
+
         }
         public async override Task<GenreModel> UpdateAsync(GenreModel item)
         {
@@ -131,7 +141,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var result = _db.Genres.Update(item);
+            var result = _db.Genres.Update(_mapper.Map<GenreEntity>(item));
 
             if(result == null)
             {
@@ -153,7 +163,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return genre;
+            var model = _mapper.Map<GenreModel>(genre);
+
+            return model;
         }
         public async override Task<IList<GenreModel>> AddRange(IList<GenreModel> items)
         {
@@ -180,7 +192,9 @@ namespace Repositories.Repositories
                 return new List<GenreModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<GenreModel>>(list);
+
+            return result;
         }
         public async override Task<IList<GenreModel>> GetAllFavoriteAsync()
         {
@@ -191,7 +205,9 @@ namespace Repositories.Repositories
                 return new List<GenreModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<GenreModel>>(list);
+
+            return result;
         }
         public async override Task<GenreModel> AddToFavorite(string Id)
         {

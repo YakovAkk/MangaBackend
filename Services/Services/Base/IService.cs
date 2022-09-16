@@ -1,4 +1,5 @@
 ﻿using Data.Models.Base;
+using Repositories.Models.Base;
 using Services.DTO.Base;
 
 namespace Services.Services.Base

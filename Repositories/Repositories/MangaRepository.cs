@@ -1,26 +1,32 @@
-﻿using Data.Database;
+﻿using AutoMapper;
+using Data.Database;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Models;
 using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories
 {
     public class MangaRepository : BaseRepository<MangaModel>, IMangaRepository
     {
-        public MangaRepository(AppDBContent db) : base(db)
+        
+        public MangaRepository(AppDBContent db, IMapper mapper) : base(db, mapper)
         {
 
         }
         public async override Task<IList<MangaModel>> GetAllAsync()
         {
-            var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).ToListAsync();
+            var list = await _db.Mangas.AsNoTracking().Include(m => m.Genres)
+                .Include(m => m.PathToFoldersWithGlava).ToListAsync();
 
             if (list == null)
             {
                 return new List<MangaModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<MangaModel>>(list);
+
+            return result;
         }
         public async override Task<MangaModel> DeleteAsync(string id)
         {
@@ -32,7 +38,8 @@ namespace Repositories.Repositories
                 };
             }
 
-            var manga = await _db.Mangas.AsNoTracking().Include(m => m.Genres).Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
+            var manga = await _db.Mangas.AsNoTracking().Include(m => m.Genres)
+                .Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
 
             if (manga == null)
             {
@@ -46,7 +53,9 @@ namespace Repositories.Repositories
 
             await _db.SaveChangesAsync();
 
-            return manga;
+            var model = _mapper.Map<MangaModel>(manga);
+
+            return model;
         }
         public async override Task<MangaModel> CreateAsync(MangaModel item)
         {
@@ -68,9 +77,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            item.MessageWhatWrong = "";
-
-            var result = await _db.Mangas.AddAsync(item);
+            var result = await _db.Mangas.AddAsync(_mapper.Map<MangaEntity>(item));
 
             if (result == null)
             {
@@ -93,7 +100,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return manga;
+            var model = _mapper.Map<MangaModel>(manga);
+
+            return model;
         }
         public async override Task<MangaModel> GetByIdAsync(string id)
         {
@@ -115,7 +124,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return manga;
+            var model = _mapper.Map<MangaModel>(manga);
+
+            return model;
         }
         public async override Task<MangaModel> UpdateAsync(MangaModel item)
         {
@@ -127,7 +138,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var result = _db.Mangas.Update(item);
+            var result = _db.Mangas.Update(_mapper.Map<MangaEntity>(item));
 
             if (result == null)
             {
@@ -149,7 +160,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            return manga;
+            var model = _mapper.Map<MangaModel>(manga);
+
+            return model;
         }
         public async override Task<IList<MangaModel>> AddRange(IList<MangaModel> items)
         {
@@ -178,7 +191,9 @@ namespace Repositories.Repositories
                 return new List<MangaModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<MangaModel>>(list);
+
+            return result;
         }
         public async override Task<IList<MangaModel>> GetAllFavoriteAsync()
         {
@@ -189,7 +204,9 @@ namespace Repositories.Repositories
                 return new List<MangaModel>();
             }
 
-            return list;
+            var result = _mapper.Map<List<MangaModel>>(list);
+
+            return result;
         }
         public async override Task<MangaModel> AddToFavorite(string Id)
         {

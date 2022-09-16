@@ -1,14 +1,18 @@
-﻿using Data.Database;
+﻿using AutoMapper;
+using Data.Database;
 using Data.Models.Base;
+using Repositories.Models.Base;
 
 namespace Repositories.Repositories.Base
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : IModel
     {
         protected AppDBContent _db { get; set; }
-        public BaseRepository(AppDBContent db)
+        protected IMapper _mapper;
+        public BaseRepository(AppDBContent db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
         public abstract Task<IList<T>> GetAllAsync();
         public abstract Task<T> CreateAsync(T item);

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
-    public class GlavaMangaModel
+    public class GlavaMangaEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1,4 +1,6 @@
-﻿using Data.Models;
+﻿using AutoMapper;
+using Data.Models;
+using Repositories.Models;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.Services.Base;
@@ -11,36 +13,18 @@ namespace Services.Services
         private readonly ILocalStorage _localStorage;
         private readonly IGenreRepository _genreRepository;
         private readonly IMangaRepository _mangaRepository;
+
         public MangaService(
             IMangaRepository repository,
             IGenreRepository genreRepository, 
-            ILocalStorage localStorage) : base(repository)
+            ILocalStorage localStorage, IMapper mapper) : base(repository,mapper)
         {
             _genreRepository = genreRepository;
             _mangaRepository = repository;
             _localStorage = localStorage;
+
         }
 
-        private MangaModel ConverterModelDTOToModel(MangaDTO item, List<GenreModel> genres)
-        {
-            var model = new MangaModel()
-            {
-                Id = item.Id,
-                Name = item.Name,
-                PathToTitlePicture = item.PathToTitlePicture,
-                Description = item.Description,
-                MessageWhatWrong = "",
-                PathToFoldersWithGlava = item.PathToFoldersWithGlava,
-                AgeRating = item.AgeRating,
-                Author = item.Author,
-                IsFavorite = item.IsFavorite,
-                NumbetOfChapters = item.NumbetOfChapters,
-                ReleaseYear = item.ReleaseYear,
-                Genres = genres
-            };
-
-            return model;
-        }
         public override async Task<MangaModel> AddAsync(MangaDTO item)
         {
             var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
@@ -53,7 +37,7 @@ namespace Services.Services
                 };
             }
 
-            var model = ConverterModelDTOToModel(item, genres);
+            var model = _mapper.Map<MangaModel>(item);
 
             return await _repository.CreateAsync(model);
         }
@@ -71,7 +55,11 @@ namespace Services.Services
 
             var allGenres = await _genreRepository.GetAllAsync();
 
-            manga.Genres.AddRange(allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id)));
+            var genreModels = allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id));
+
+            var list = _mapper.Map<List<GenreEntity>>(genreModels);
+
+            manga.Genres.AddRange(list);
 
             var res = await _mangaRepository.UpdateAsync(manga);
 
@@ -98,7 +86,7 @@ namespace Services.Services
                     return new List<MangaModel>();
                 }
 
-                var manga = ConverterModelDTOToModel(item, genres);
+                var manga = _mapper.Map<MangaModel>(item);
 
                 listModels.Add(manga);
             }
@@ -173,7 +161,7 @@ namespace Services.Services
                 };
             };
 
-            manga = ConverterModelDTOToModel(item, genres);
+            manga = _mapper.Map<MangaModel>(item);
 
             return await _repository.UpdateAsync(manga);
         }

@@ -1,4 +1,5 @@
 ﻿using Data.Models.Base;
+using Repositories.Models.Base;
 using Services.Response.Base;
 
 namespace Services.Wrappers.Base
