@@ -58,7 +58,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Id == item.Id);
+            var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
             if (manga != null)
             {
