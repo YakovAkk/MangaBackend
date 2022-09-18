@@ -73,22 +73,13 @@ namespace Services.Services
 
             return res;
         }
-        public async override Task<IList<MangaModel>> AddRange(IList<MangaDTO> list)
+        public async override Task<IList<MangaModel>> AddRange(IList<MangaModel> list)
         {
             var listModels = new List<MangaModel>();
 
             foreach (var item in list)
             {
-                var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
-
-                if (!genres.Any())
-                {
-                    return new List<MangaModel>();
-                }
-
-                var manga = _mapper.Map<MangaModel>(item);
-
-                listModels.Add(manga);
+                listModels.Add(item);
             }
 
             return await _mangaRepository.AddRange(listModels);

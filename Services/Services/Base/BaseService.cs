@@ -18,7 +18,7 @@ namespace Services.Services.Base
             _mapper = mapper;
         }
 
-        public abstract Task<IList<TR>> AddRange(IList<TI> list);
+        public abstract Task<IList<TR>> AddRange(IList<TR> list);
         public abstract Task<IList<TR>> GetAllAsync();
         public abstract Task<TR> GetByIdAsync(string id);
         public abstract Task<TR> AddAsync(TI item);

@@ -26,6 +26,12 @@ namespace Repositories.Repositories
 
             var result = _mapper.Map<List<GenreModel>>(list);
 
+            //var result = new List<GenreModel>();
+            //foreach (var item in list)
+            //{
+            //    result.Add(_mapper.Map<GenreModel>(item));
+            //}
+
             return result;
         }
         public async override Task<GenreModel> GetByIdAsync(string id)
@@ -72,7 +78,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            var result = await _db.Genres.AddAsync(_mapper.Map<GenreEntity>(item));
+            var m = _mapper.Map<GenreEntity>(item);
+
+            var result = await _db.Genres.AddAsync(m);
 
             if (result == null)
             {

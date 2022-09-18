@@ -22,6 +22,7 @@ namespace Repositories.Models
         {
             Genres = new List<GenreEntity>();
             PathToFoldersWithGlava = new List<GlavaMangaEntity>();
+            IsFavorite = false;
         }
     }
 }

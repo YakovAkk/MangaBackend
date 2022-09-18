@@ -23,8 +23,8 @@ namespace MangaBackend.Mapping
             .ForMember(dst => dst.Mangas, opt => opt.MapFrom(src => src.Mangas));
 
 
-            CreateMap<List<GenreModel>, List<GenreEntity>>();
-            CreateMap<List<GenreEntity>, List<GenreModel>>();
+            //CreateMap<List<GenreModel>, List<GenreEntity>>();
+            //CreateMap<List<GenreEntity>, List<GenreModel>>();
 
             CreateMap<GenreDTO, GenreModel>();
             CreateMap<GenreModel, GenreDTO>();

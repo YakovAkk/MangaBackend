@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using AutoMapper;
+using Data.Models;
 using Repositories.Models;
 using Services.DTO;
 using Services.FillerService.Base;
@@ -10,11 +11,12 @@ namespace Services.FillerService
     {
         private readonly IMangaService _mangaService;
         private readonly IGenreService _genreService;
-
-        public FillerService(IMangaService mangaService, IGenreService genreService)
+        private readonly IMapper _mapper;
+        public FillerService(IMangaService mangaService, IGenreService genreService, IMapper mapper)
         {
             _mangaService = mangaService;
             _genreService = genreService;
+            _mapper = mapper;
         }
 
         public async Task<ResponseFillDTO> AddGenres()
@@ -77,7 +79,7 @@ namespace Services.FillerService
                 new GenreDTO("Yaoi")
             };
 
-            var resultGenre = await _genreService.AddRange(listOfGenres);
+            var resultGenre = await _genreService.AddRange(_mapper.Map<List<GenreModel>>(listOfGenres));
 
             if (!resultGenre.Any())
             {
@@ -107,11 +109,11 @@ namespace Services.FillerService
                 };
             }
 
-            var mangas = new List<MangaDTO>();
-            mangas.Add(CreateAttackOfTheTitansManga(genres));
-            mangas.Add(CreateNarutoManga(genres));
-            mangas.Add(CreateSevenDeadlySinsManga(genres));
-            mangas.Add(CreateTokyoGhoulSinsManga(genres));
+            var mangas = new List<MangaModel>();
+            mangas.Add(CreateAttackOfTheTitansManga(_mapper.Map<List<GenreEntity>>(genres)));
+            mangas.Add(CreateNarutoManga(_mapper.Map<List<GenreEntity>>(genres)));
+            mangas.Add(CreateSevenDeadlySinsManga(_mapper.Map<List<GenreEntity>>(genres)));
+            mangas.Add(CreateTokyoGhoulSinsManga(_mapper.Map<List<GenreEntity>>(genres)));
 
             var resultManga = await _mangaService.AddRange(mangas);
 
@@ -130,7 +132,7 @@ namespace Services.FillerService
                 MessageWhatWrong = ""
             };
         }
-        private MangaDTO CreateAttackOfTheTitansManga(IList<GenreModel> genres)
+        private MangaModel CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -147,10 +149,10 @@ namespace Services.FillerService
                "Survival"
             };
 
-            var genres_id = new List<string>();
+            var genres_list = new List<GenreEntity>();
             foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
             {
-                genres_id.Add(genre.Id);
+                genres_list.Add(genre);
             }
 
             var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
@@ -169,20 +171,21 @@ namespace Services.FillerService
                 }
             };
 
-            return new MangaDTO()
+            return new MangaModel()
             {
                 Name = "Attack of the Titans",
                 PathToTitlePicture = "manga/attackofthetitans/titleimage.jpg",
-                genres_id = genres_id,
+                Genres = genres_list,
                 PathToFoldersWithGlava = PathToFoldersWithGlava,
                 Description = "Давным-давно человечество было всего лишь «их» кормом, до тех пор, пока оно не построило гигантскую стену вокруг своей страны. С тех пор прошло сто лет мира и большинство людей жили счастливой, беззаботной жизнью. Но за долгие годы спокойствия пришлось заплатить огромную цену, и в 845 году они снова познали чувство ужаса и беспомощности – стена, которая была их единственным спасением, пала. «Они» прорвались. Половина человечества съедена, треть территории навсегда потеряна...",
                 NumbetOfChapters = 140,
                 AgeRating = "18+",
                 Author = "ISAYAMA Hajime",
-                ReleaseYear = 2009
+                ReleaseYear = 2009,
+
             };
         }
-        private MangaDTO CreateNarutoManga(IList<GenreModel> genres)
+        private MangaModel CreateNarutoManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -205,10 +208,10 @@ namespace Services.FillerService
                "Cruel world"
             };
 
-            var genres_id = new List<string>();
+            var genres_list = new List<GenreEntity>();
             foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
             {
-                genres_id.Add(genre.Id);
+                genres_list.Add(genre);
             }
 
             var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
@@ -221,11 +224,11 @@ namespace Services.FillerService
                 }
             };
 
-            return new MangaDTO()
+            return new MangaModel()
             {
                 Name = "Naruto",
                 PathToTitlePicture = "manga/naruto/titleimage.jpg",
-                genres_id = genres_id,
+                Genres = genres_list,
                 PathToFoldersWithGlava = PathToFoldersWithGlava,
                 Description = "Двенадцать лет назад, мощный Девятихвостый Демон-Лис напал на деревню ниндзя, Коноху. Демон был быстро побежден и запечатан в младенце по имени Наруто Узумаки. Но для этого, главному ниндзя Конохи, четвёртому хокаге пришлось пожертвовать жизнью... Теперь, по прошествии 12-и лет, Наруто является номером один среди придурков ниндзя, который полон решимости стать следующим Хокаге и получить признание всех, кто когда-либо сомневался в нем!",
                 NumbetOfChapters = 702,
@@ -234,7 +237,7 @@ namespace Services.FillerService
                 ReleaseYear = 1999
             };
         }
-        private MangaDTO CreateSevenDeadlySinsManga(IList<GenreModel> genres)
+        private MangaModel CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -267,10 +270,10 @@ namespace Services.FillerService
                "Amnesia / Memory Loss"
             };
 
-            var genres_id = new List<string>();
+            var genres_list = new List<GenreEntity>();
             foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
             {
-                genres_id.Add(genre.Id);
+                genres_list.Add(genre);
             }
 
             var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
@@ -283,11 +286,11 @@ namespace Services.FillerService
                 }
             };
 
-            return new MangaDTO()
+            return new MangaModel()
             {
                 Name = "Seven Deadly Sins",
                 PathToTitlePicture = "manga/sevendeadlysins/titleimage.jpg",
-                genres_id = genres_id,
+                Genres = genres_list,
                 PathToFoldersWithGlava = PathToFoldersWithGlava,
                 Description = "В королевстве Лионесс несколько рыцарей, прозванных «Семью смертными грехами» пыталисиь совершить государственный переворот. Им не позволили это сделать члены «Святого рыцарства». История на этом не завершилась и возобновилась спустя десять лет. Королевская семья была арестована, а сбежать удалось дочери короля Элизабет. Она полагает, что единственным шансом спастись выступают рыцари и, переодевшись так, чтобы её не узнали, отправилась искать Мелиодаса и его соратников. Она оказывается в таверне, не подозревая, что попала по назначению и отыскала рыцаря, на которого делала ставку. В Британии наконец-то настали спокойные дни, но опять-таки временно. Смельчакам рыцарям и Элизабет предстояло вовлечься в борьбу с Десятью заповедями. Весь мир оказался под серьезной угрозой. Печать вследствие происходящих событий была вскрыта, и демоны могли безо всяких препятствий покинули заточение, а в нем они провели века. Мерлин, Диана, Банд, Эсканор, Кинг и Хоук взялись за оружие и ступили на тропу войны, ведь интересы мира и королевства были превыше. После таких сражений рыцарям полагался отдых, но без новых приключений им не обойтись, а те будут ещё круче прежних.",
                 NumbetOfChapters = 378,
@@ -296,7 +299,7 @@ namespace Services.FillerService
                 ReleaseYear = 2012
             };
         }
-        private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreModel> genres)
+        private MangaModel CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -324,10 +327,10 @@ namespace Services.FillerService
                "Skills / abilities" 
             };
 
-            var genres_id = new List<string>();
+            var genres_list = new List<GenreEntity>();
             foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
             {
-                genres_id.Add(genre.Id);
+                genres_list.Add(genre);
             }
 
             var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
@@ -340,11 +343,11 @@ namespace Services.FillerService
                 }
             };
 
-            return new MangaDTO()
+            return new MangaModel()
             {
                 Name = "TokyoGhoul",
                 PathToTitlePicture = "manga/tokyoghoul/titleimage.jpg",
-                genres_id = genres_id,
+                Genres = genres_list,
                 PathToFoldersWithGlava = PathToFoldersWithGlava,
                 Description = "Раса гулей существует с незапамятных времен. Её представители вовсе не против людей, они их даже любят — преимущественно в сыром виде. Любители человечины внешне неотличимы от нас, сильны, быстры и живучи — но их мало, потому гули выработали строгие правила охоты и маскировки, а нарушителей наказывают сами или по-тихому сдают борцам с нечистью. В век науки люди знают про гулей, но как говорится, привыкли. Власти не считают людоедов угрозой, более того, рассматривают их как идеальную основу для создания суперсолдат. Эксперименты идут уже давно…" +
                 " Ничего этого не ведал Канэки Кэн, робкий и невзрачный токийский первокурсник, безнадежно влюбленный в красавицу-интеллектуалку Ризэ, частую гостью в кафе «Место встречи», где парень подрабатывает официантом. Не думал Кэн, что скоро самому придётся стать гулем, и многие знакомые предстанут в неожиданном свете. Главному герою предстоит мучительный поиск нового пути, ибо он понял, что люди и гули похожи: просто одни друг друга жрут в прямом смысле, другие — в переносном. Правда жизни жестока, переделать её нельзя, и силен тот, кто не отворачивается. А дальше уж как-нибудь!",

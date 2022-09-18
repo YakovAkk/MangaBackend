@@ -23,9 +23,9 @@ namespace Services.Services
         {
             return _mapper.Map<GenreModel>(item);
         }
-        public override async Task<IList<GenreModel>> AddRange(IList<GenreDTO> list)
+        public override async Task<IList<GenreModel>> AddRange(IList<GenreModel> list)
         {
-            return await _repository.AddRange(_mapper.Map<List<GenreModel>>(list));
+            return await _repository.AddRange(list);
         }
         public override async Task<IList<GenreModel>> GetAllAsync()
         {

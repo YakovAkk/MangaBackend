@@ -22,7 +22,7 @@ namespace MangaBackend.Controllers
         {
             var resultGenres = await _fillerService.AddGenres();
 
-            if (!resultGenres.IsSuccess) 
+            if (!resultGenres.IsSuccess)
             {
                 var res = new
                 {
