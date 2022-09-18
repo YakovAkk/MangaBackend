@@ -67,7 +67,7 @@ namespace Repositories.Repositories
                 };
             }
 
-            var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Id == item.Id);
+            var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
             if (manga != null)
             {
@@ -77,7 +77,9 @@ namespace Repositories.Repositories
                 };
             }
 
-            var result = await _db.Mangas.AddAsync(_mapper.Map<MangaEntity>(item));
+            var m = _mapper.Map<MangaEntity>(item);
+
+            var result = await _db.Mangas.AddAsync(m);
 
             if (result == null)
             {
@@ -166,8 +168,6 @@ namespace Repositories.Repositories
         }
         public async override Task<IList<MangaModel>> AddRange(IList<MangaModel> items)
         {
-            var result = new List<MangaModel>();
-
             if(items == null && !items.Any())
             {
                 return new List<MangaModel>();
@@ -175,10 +175,15 @@ namespace Repositories.Repositories
 
             foreach (var item in items)
             {
-                result.Add(await CreateAsync(item));              
+                var model = await CreateAsync(item);
+                
+                if(!String.IsNullOrEmpty(model.MessageWhatWrong))
+                {
+                    items.Remove(item);
+                }
             };
 
-            return result;
+            return items;
         }
         public async override Task<IList<MangaModel>> GetCertainPage(int sizeOfPage, int page)
         {
