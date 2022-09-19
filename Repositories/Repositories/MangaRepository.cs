@@ -157,12 +157,17 @@ namespace Repositories.Repositories
 
             if(items == null && !items.Any())
             {
-                return new List<MangaModel>();
+                return result;
             }
 
             foreach (var item in items)
             {
-                result.Add(await CreateAsync(item));              
+                var model = await CreateAsync(item);
+
+                if (string.IsNullOrEmpty(model.MessageWhatWrong))
+                {
+                    result.Add(model);
+                }        
             };
 
             return result;

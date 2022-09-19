@@ -14,6 +14,7 @@ namespace Data.Database
         {
             try
             {
+                Database.EnsureDeleted();
                 Database.EnsureCreated();
             }
             catch (Exception ex)

@@ -22,30 +22,30 @@ namespace MangaBackend.Controllers
         {
             var resultGenres = await _fillerService.AddGenres();
 
+            var result = new ResponseFillDTO
+            {
+                IsSuccess = true,
+                MessageWhatWrong = ""
+            };
+
             if (!resultGenres.IsSuccess) 
             {
-                var res = new
-                {
-                    mess = $"Genres wasn't added because {resultGenres.MessageWhatWrong}"
-                };
-                return BadRequest(res);
+                result.IsSuccess = false;
+                result.MessageWhatWrong += $"Genres wasn't added because {resultGenres.MessageWhatWrong}";
             }
 
             var resultMangas = await _fillerService.AddMangas();
 
             if (!resultMangas.IsSuccess)
             {
-                var res = new
-                {
-                    mess = $"Mangas wasn't added because {resultMangas.MessageWhatWrong}"
-                };
-                return BadRequest(res);
+                result.IsSuccess = false;
+                result.MessageWhatWrong += $"      Mangas wasn't added because {resultMangas.MessageWhatWrong}";
             }
 
-            var result = new
+            if (!result.IsSuccess)
             {
-                mess = $"Everything was added"
-            };
+                return BadRequest(result);
+            }
 
             return Ok(result);
         }

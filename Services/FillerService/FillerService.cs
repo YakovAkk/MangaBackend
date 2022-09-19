@@ -83,7 +83,7 @@ namespace Services.FillerService
                 return new ResponseFillDTO()
                 {
                     IsSuccess = false,
-                    MessageWhatWrong = "Wasn't added any Genres"
+                    MessageWhatWrong = "The Ganres is already conteited in the database"
                 };
             }
 
@@ -93,7 +93,6 @@ namespace Services.FillerService
                 MessageWhatWrong = ""
             };
         }
-
         public async Task<ResponseFillDTO> AddMangas()
         {
             var genres = await _genreService.GetAllAsync();
@@ -120,7 +119,7 @@ namespace Services.FillerService
                 return new ResponseFillDTO()
                 {
                     IsSuccess = false,
-                    MessageWhatWrong = "Wasn't added any mangas"
+                    MessageWhatWrong = "The Mangas is already conteited in the database"
                 };
             }
 
@@ -130,7 +129,6 @@ namespace Services.FillerService
                 MessageWhatWrong = ""
             };
         }
-
         private MangaDTO CreateAttackOfTheTitansManga(IList<GenreModel> genres)
         {
             var genresForTheManga = new List<string>()
@@ -183,7 +181,6 @@ namespace Services.FillerService
                 ReleaseYear = 2009
             };
         }
-
         private MangaDTO CreateNarutoManga(IList<GenreModel> genres)
         {
             var genresForTheManga = new List<string>()
@@ -236,7 +233,6 @@ namespace Services.FillerService
                 ReleaseYear = 1999
             };
         }
-
         private MangaDTO CreateSevenDeadlySinsManga(IList<GenreModel> genres)
         {
             var genresForTheManga = new List<string>()
@@ -299,7 +295,6 @@ namespace Services.FillerService
                 ReleaseYear = 2012
             };
         }
-
         private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreModel> genres)
         {
             var genresForTheManga = new List<string>()
