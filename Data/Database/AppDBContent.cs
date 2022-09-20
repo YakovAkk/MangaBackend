@@ -6,7 +6,7 @@ namespace Data.Database
 {
     public class AppDBContent : DbContext
     {
-        public DbSet<GlavaMangaModel> glavaManga { get; set; }
+        public DbSet<GlavaMangaModel> GlavaManga { get; set; }
         public DbSet<MangaModel> Mangas { get; set; }
         public DbSet<GenreModel> Genres { get; set; }
 
@@ -14,7 +14,6 @@ namespace Data.Database
         {
             try
             {
-                Database.EnsureDeleted();
                 Database.EnsureCreated();
             }
             catch (Exception ex)

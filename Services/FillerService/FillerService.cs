@@ -5,7 +5,7 @@ using Services.Services.Base;
 
 namespace Services.FillerService
 {
-    public class FillerService : IFillerSwervice
+    public class FillerService : IFillerService
     {
         private readonly IMangaService _mangaService;
         private readonly IGenreService _genreService;
@@ -129,6 +129,30 @@ namespace Services.FillerService
                 MessageWhatWrong = ""
             };
         }
+
+        public async Task<ResponseFillDTO> DeleteAll()
+        {
+            var genrelist = await _genreService.GetAllAsync();
+
+            foreach (var genre in genrelist)
+            {
+                await _genreService.DeleteAsync(genre.Id);
+            }
+
+            var mangalist = await _mangaService.GetAllAsync();
+
+            foreach (var manga in mangalist)
+            {
+                await _mangaService.DeleteAsync(manga.Id);
+            }
+
+            return new ResponseFillDTO()
+            {
+                IsSuccess = true,
+                MessageWhatWrong = ""
+            };
+        }
+
         private MangaDTO CreateAttackOfTheTitansManga(IList<GenreModel> genres)
         {
             var genresForTheManga = new List<string>()

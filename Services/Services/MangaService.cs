@@ -107,7 +107,6 @@ namespace Services.Services
         }
         public async override Task<IList<MangaModel>> GetAllAsync()
         {
-
             var result = await _mangaRepository.GetAllAsync();
 
             if (!result.Any())

@@ -10,15 +10,15 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class FillerController : ControllerBase
     {
-        private readonly IFillerSwervice _fillerService;
+        private readonly IFillerService _fillerService;
 
-        public FillerController(IFillerSwervice fillerService)
+        public FillerController(IFillerService fillerService)
         {
             _fillerService = fillerService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> createManga()
+        public async Task<IActionResult> FillTheDatabase()
         {
             var resultGenres = await _fillerService.AddGenres();
 
@@ -41,6 +41,19 @@ namespace MangaBackend.Controllers
                 result.IsSuccess = false;
                 result.MessageWhatWrong += $"      Mangas wasn't added because {resultMangas.MessageWhatWrong}";
             }
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> ClearDatabase()
+        {
+            var result = await _fillerService.DeleteAll();
 
             if (!result.IsSuccess)
             {

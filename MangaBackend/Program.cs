@@ -36,7 +36,7 @@ try
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
 
-    builder.Services.AddTransient<IFillerSwervice, FillerService>();
+    builder.Services.AddTransient<IFillerService, FillerService>();
     
 
     var validator = new Validator(builder.Configuration);
