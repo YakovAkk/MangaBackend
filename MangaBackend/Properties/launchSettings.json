@@ -20,9 +20,10 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_DataOfCompipation": "9/15/2022 3:21:08 PM"
+        "ASPNETCORE_DataOfCompipation": "9/20/2022 7:12:14 PM"
       },
-      "applicationUrl": "https://localhost:5000;http://localhost:5001"
+      "applicationUrl": "https://localhost:5000;http://localhost:5001",
+      "launchUrl": "https://localhost:5000/swagger/index.html"
     },
     "Docker": {
       "commandName": "Docker",
@@ -31,7 +32,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "ASPNETCORE_DataOfCompipation": "9/15/2022 3:21:08 PM"
+        "ASPNETCORE_DataOfCompipation": "9/20/2022 7:12:14 PM"
       }
     }
   }
