@@ -176,5 +176,9 @@ namespace Services.Services
 
             return await _repository.UpdateAsync(manga);
         }
+        public async Task<List<MangaModel>> FiltrationByDate(int year)
+        {
+            return await _mangaRepository.FiltrationByDate(year);
+        }
     }
 }

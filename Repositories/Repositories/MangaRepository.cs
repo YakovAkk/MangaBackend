@@ -232,5 +232,32 @@ namespace Repositories.Repositories
 
             return manga;
         }
+        public async override Task<IList<MangaModel>> FiltrationByName(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return new List<MangaModel>();
+            }
+
+            var result = await _db.Mangas.Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
+
+            if (!result.Any())
+            {
+                return new List<MangaModel>();
+            }
+
+            return result;
+        }
+        public async Task<List<MangaModel>> FiltrationByDate(int year)
+        {
+            var result = await _db.Mangas.Where(i => i.ReleaseYear > year).ToListAsync();
+
+            if(result == null)
+            {
+                return new List<MangaModel>();
+            }
+
+            return result;
+        }
     }
 }

@@ -40,5 +40,9 @@ namespace Services.Services.Base
         {
             return await _repository.RemoveFavorite(Id);
         }
+        public async virtual Task<IList<TR>> FiltrationByName(string name)
+        {
+            return await _repository.FiltrationByName(name);
+        }
     }
 }
