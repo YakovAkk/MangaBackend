@@ -20,5 +20,6 @@ namespace Repositories.Repositories.Base
         public abstract Task<T> AddToFavorite(string Id);
         public abstract Task<T> RemoveFavorite(string Id);
         public abstract Task<IList<T>> GetCertainPage(int sizeOfPage, int page);
+        public abstract Task<IList<T>> FiltrationByName(string name);
     }
 }

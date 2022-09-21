@@ -7,7 +7,6 @@ namespace Repositories.Repositories
 {
     public class GenreRepository : BaseRepository<GenreModel>, IGenreRepository
     {
-
         private readonly IMangaRepository _mangaRepository;
 
         public GenreRepository(AppDBContent db, IMangaRepository mangaRepository) : base(db)
@@ -233,6 +232,22 @@ namespace Repositories.Repositories
             await _db.SaveChangesAsync();
 
             return genre;
+        }
+        public async override Task<IList<GenreModel>> FiltrationByName(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return new List<GenreModel>();
+            }
+
+            var result = await _db.Genres.Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
+
+            if (!result.Any())
+            {
+                return new List<GenreModel>();
+            }
+
+            return result;
         }
     }
 }

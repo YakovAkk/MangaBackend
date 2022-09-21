@@ -41,6 +41,38 @@ namespace MangaBackend.Controllers
 
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _mangaService.GetAllAsync();
+
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return NotFound(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
+        }
+
+        [HttpGet("{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> getMangaById([FromRoute] string Id)
+        {
+            var result = await _mangaService.GetByIdAsync(Id);
+
+            var wrapResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapResult.StatusCode != CodeStatus.Successful)
+            {
+                return NotFound(wrapResult);
+            }
+
+            return Ok(wrapResult);
+        }
+
         [HttpGet("pagination/{pagesize}/{page}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
@@ -81,42 +113,10 @@ namespace MangaBackend.Controllers
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
             {
-                return NotFound(wrapperResult.ErrorMessage);
-            }
-
-            return Ok(wrapperResult);
-        }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-        {
-            var result = await _mangaService.GetAllAsync();
-
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
-            {
                 return NotFound(wrapperResult);
             }
 
             return Ok(wrapperResult);
-        }
-
-        [HttpGet("{Id}")]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> getMangaById([FromRoute] string Id)
-        {
-            var result = await _mangaService.GetByIdAsync(Id);
-
-            var wrapResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapResult.StatusCode != CodeStatus.Successful)
-            {
-                return NotFound(wrapResult);
-            }
-
-            return Ok(wrapResult);
         }
 
         [HttpPost]
@@ -133,6 +133,70 @@ namespace MangaBackend.Controllers
             }
 
             return Ok(wrapResult);
+        }
+
+        [HttpPost("set/favorite/{Id}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
+        {
+            var result = await _mangaService.AddToFavorite(Id);
+
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
+        }
+
+        [HttpPost("filtrarionbyname/{name}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
+        {
+            var result = await _mangaService.FiltrationByName(name);
+
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
+        }
+
+
+        [HttpPost("filtrarionbydate/{year}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FiltrarionMangaByDate ([FromRoute] string year)
+        {
+            var yearnum = 0;
+
+            var IsCanParsePageSize = Int32.TryParse(year, out yearnum);
+
+            if (!IsCanParsePageSize && yearnum < 0)
+            {
+                var message = new ResponseModel()
+                {
+                    data = null,
+                    ErrorMessage = "Incorrect year",
+                    StatusCode = CodeStatus.ErrorWithData
+                };
+                return BadRequest(message);
+            }
+
+            var result = await _mangaService.FiltrationByDate(yearnum);
+
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
         }
 
         [HttpPut]
@@ -172,22 +236,6 @@ namespace MangaBackend.Controllers
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
         {
             var result = await _mangaService.RemoveFavorite(Id);
-
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
-            {
-                return BadRequest(wrapperResult);
-            }
-
-            return Ok(wrapperResult);
-        }
-
-        [HttpPost("set/favorite/{Id}")]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
-        {
-            var result = await _mangaService.AddToFavorite(Id);
 
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
 

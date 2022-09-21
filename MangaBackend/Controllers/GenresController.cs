@@ -149,6 +149,22 @@ namespace MangaBackend.Controllers
             return Ok(wrapperResult);
         }
 
+        [HttpPost("filtrarion/{name}")]
+        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
+        {
+            var result = await _genreService.FiltrationByName(name);
+
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
+        }
+
         [HttpDelete("set/favorite/{Id}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)

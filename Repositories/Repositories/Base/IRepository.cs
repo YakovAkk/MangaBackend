@@ -14,5 +14,6 @@ namespace Repositories.Repositories.Base
         Task<IList<T>> GetAllAsync();
         Task<T> CreateAsync(T item);
         Task<T> UpdateAsync(T item);
+        Task<IList<T>> FiltrationByName(string name);
     }
 }
