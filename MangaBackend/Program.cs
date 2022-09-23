@@ -13,6 +13,8 @@ using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
 using Services.Wrappers;
+using AutoWrapper;
+using MangaBackend.ResponceModelForWrapper;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -109,6 +111,8 @@ try
         AllowCredentials();
 
     });
+
+    app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseCustomSchema = true });
 
     app.UseHttpsRedirection();
 

@@ -5,7 +5,7 @@ namespace Services.Response
 {
     public class ResponseModel : IResponseModel
     {
-        public object data { get; set; }
+        public object Data { get; set; }
         public string ErrorMessage { get; set; }
         public CodeStatus StatusCode { get; set; }
     }

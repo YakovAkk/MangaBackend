@@ -13,14 +13,14 @@ namespace Services.Wrappers
 
             if (!String.IsNullOrEmpty(response.MessageWhatWrong))
             {
-                wrappedResponse.data = null;
+                wrappedResponse.Data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
                 wrappedResponse.ErrorMessage = response.MessageWhatWrong;
 
                 return wrappedResponse;
             }
 
-            wrappedResponse.data = response;
+            wrappedResponse.Data = response;
             wrappedResponse.StatusCode = CodeStatus.Successful;
             wrappedResponse.ErrorMessage = "";
 
@@ -32,14 +32,14 @@ namespace Services.Wrappers
 
             if (!response.Any())
             {
-                wrappedResponse.data = null;
+                wrappedResponse.Data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
-                wrappedResponse.ErrorMessage = "The Database doesn't have any manga";
+                wrappedResponse.ErrorMessage = "The Database doesn't have any genre";
 
                 return wrappedResponse;
             }
 
-            wrappedResponse.data = response;
+            wrappedResponse.Data = response;
             wrappedResponse.StatusCode = CodeStatus.Successful;
             wrappedResponse.ErrorMessage = "";
 

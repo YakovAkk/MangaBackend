@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+
+using AutoWrapper.Wrappers;
+using MangaBackend.ResponceModelForWrapper;
+using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Response;
 using Services.Services.Base;
@@ -51,7 +55,7 @@ namespace MangaBackend.Controllers
             {
                 var message = new ResponseModel()
                 {
-                    data = null,
+                    Data = null,
                     ErrorMessage = "Incorrect number of pagesize",
                     StatusCode = CodeStatus.ErrorWithData      
                 };
@@ -66,7 +70,7 @@ namespace MangaBackend.Controllers
             {
                 var message = new ResponseModel()
                 {
-                    data = null,
+                    Data = null,
                     ErrorMessage = "Incorrect number of page",
                     StatusCode = CodeStatus.ErrorWithData
                 };
@@ -91,14 +95,17 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.GetAllAsync();
 
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            //var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
-            {
-                return NotFound(wrapperResult);
-            }
+            //if (wrapperResult.StatusCode != CodeStatus.Successful)
+            //{
+            //    return NotFound(wrapperResult);
+            //}
 
-            return Ok(wrapperResult);
+            //return Ok(new ApiResponse(result, (int)CodeStatus.Successful));
+
+            return BadRequest(new ErrorResponse() { ErrorMessage = "AAAAAAAA"});
+            //return Ok(new ApiResponse(result));
         }
 
         [HttpGet("{Id}")]
@@ -107,14 +114,14 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.GetByIdAsync(Id);
 
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            //var wrapperResult = _wrapper.WrapTheResponseModel(result);
 
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
-            {
-                return NotFound(wrapperResult);
-            }
+            //if (wrapperResult.StatusCode != CodeStatus.Successful)
+            //{
+            //    return NotFound(wrapperResult);
+            //}
 
-            return Ok(wrapperResult);
+            return Ok();
         }
 
         [HttpPost]
