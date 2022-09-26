@@ -53,7 +53,14 @@ namespace Services.Services
 
             var allGenres = await _genreRepository.GetAllAsync();
 
-            manga.Genres.AddRange(allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id)));
+            var genres = allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id));
+
+            if (!genres.Any())
+            {
+                throw new Exception("The genres are incorrect");
+            }
+
+            manga.Genres.AddRange(genres);
 
             try
             {
