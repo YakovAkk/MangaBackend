@@ -15,14 +15,14 @@ namespace Services.Wrappers
             {
                 wrappedResponse.Data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
-                wrappedResponse.ErrorMessage = response.MessageWhatWrong;
+                wrappedResponse.Message = response.MessageWhatWrong;
 
                 return wrappedResponse;
             }
 
             wrappedResponse.Data = response;
             wrappedResponse.StatusCode = CodeStatus.Successful;
-            wrappedResponse.ErrorMessage = "";
+            wrappedResponse.Message = "";
 
             return wrappedResponse;
         }
@@ -34,14 +34,14 @@ namespace Services.Wrappers
             {
                 wrappedResponse.Data = null;
                 wrappedResponse.StatusCode = CodeStatus.Empty;
-                wrappedResponse.ErrorMessage = "The Database doesn't have any genre";
+                wrappedResponse.Message = "The Database doesn't have any genre";
 
                 return wrappedResponse;
             }
 
             wrappedResponse.Data = response;
             wrappedResponse.StatusCode = CodeStatus.Successful;
-            wrappedResponse.ErrorMessage = "";
+            wrappedResponse.Message = "";
 
             return wrappedResponse;
         }

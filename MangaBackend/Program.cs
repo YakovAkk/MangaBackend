@@ -14,7 +14,7 @@ using Services.FillerService.Base;
 using Services.FillerService;
 using Services.Wrappers;
 using AutoWrapper;
-using MangaBackend.ResponceModelForWrapper;
+using Services.Response;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -112,7 +112,7 @@ try
 
     });
 
-    app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseCustomSchema = true });
+    app.UseApiResponseAndExceptionWrapper();
 
     app.UseHttpsRedirection();
 

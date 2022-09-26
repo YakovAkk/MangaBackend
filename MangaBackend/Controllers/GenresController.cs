@@ -1,7 +1,4 @@
-﻿
-
-using AutoWrapper.Wrappers;
-using MangaBackend.ResponceModelForWrapper;
+﻿using AutoWrapper.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Response;
@@ -51,12 +48,12 @@ namespace MangaBackend.Controllers
 
             var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
 
-            if (!IsCanParsePageSize && pageSize < 0)
+            if (!IsCanParsePageSize || pageSize < 0)
             {
                 var message = new ResponseModel()
                 {
                     Data = null,
-                    ErrorMessage = "Incorrect number of pagesize",
+                    Message = "Incorrect number of pagesize",
                     StatusCode = CodeStatus.ErrorWithData      
                 };
                 return BadRequest(message);
@@ -66,12 +63,12 @@ namespace MangaBackend.Controllers
 
             var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
 
-            if (!IsCanParseNumberOfPage && numberOfPage < 0)
+            if (!IsCanParseNumberOfPage || numberOfPage < 0)
             {
                 var message = new ResponseModel()
                 {
                     Data = null,
-                    ErrorMessage = "Incorrect number of page",
+                    Message = "Incorrect number of page",
                     StatusCode = CodeStatus.ErrorWithData
                 };
                 return BadRequest(message);
@@ -95,17 +92,14 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.GetAllAsync();
 
-            //var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
-            //if (wrapperResult.StatusCode != CodeStatus.Successful)
-            //{
-            //    return NotFound(wrapperResult);
-            //}
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return NotFound(wrapperResult);
+            }
 
-            //return Ok(new ApiResponse(result, (int)CodeStatus.Successful));
-
-            return BadRequest(new ErrorResponse() { ErrorMessage = "AAAAAAAA"});
-            //return Ok(new ApiResponse(result));
+            return Ok(wrapperResult);
         }
 
         [HttpGet("{Id}")]
@@ -114,14 +108,14 @@ namespace MangaBackend.Controllers
         {
             var result = await _genreService.GetByIdAsync(Id);
 
-            //var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
 
-            //if (wrapperResult.StatusCode != CodeStatus.Successful)
-            //{
-            //    return NotFound(wrapperResult);
-            //}
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return NotFound(wrapperResult);
+            }
 
-            return Ok();
+            return Ok(wrapperResult);
         }
 
         [HttpPost]

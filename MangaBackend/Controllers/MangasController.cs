@@ -86,7 +86,7 @@ namespace MangaBackend.Controllers
                 var message = new ResponseModel()
                 {
                     Data = null,
-                    ErrorMessage = "Incorrect number of pagesize",
+                    Message = "Incorrect number of pagesize",
                     StatusCode = CodeStatus.ErrorWithData
                 };
                 return BadRequest(message);
@@ -101,7 +101,7 @@ namespace MangaBackend.Controllers
                 var message = new ResponseModel()
                 {
                     Data = null,
-                    ErrorMessage = "Incorrect number of page",
+                    Message = "Incorrect number of page",
                     StatusCode = CodeStatus.ErrorWithData
                 };
                 return BadRequest(message);
@@ -181,7 +181,7 @@ namespace MangaBackend.Controllers
                 var message = new ResponseModel()
                 {
                     Data = null,
-                    ErrorMessage = "Incorrect year",
+                    Message = "Incorrect year",
                     StatusCode = CodeStatus.ErrorWithData
                 };
                 return BadRequest(message);
