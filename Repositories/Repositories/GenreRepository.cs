@@ -5,7 +5,7 @@ using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories
 {
-    public class GenreRepository : BaseRepository<GenreModel>, IGenreRepository
+    public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
     {
         private readonly IMangaRepository _mangaRepository;
 
@@ -13,67 +13,52 @@ namespace Repositories.Repositories
         {
             _mangaRepository = mangaRepository;
         }
-        public async override Task<IList<GenreModel>> GetAllAsync()
+        public async override Task<IList<GenreEntity>> GetAllAsync()
         {
             var list = await _db.Genres.ToListAsync();
 
             if (list == null)
             {
-                return new List<GenreModel>();
+                return new List<GenreEntity>();
             }
 
             return list;
         }
-        public async override Task<GenreModel> GetByIdAsync(string id)
+        public async override Task<GenreEntity> GetByIdAsync(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = "Id was null"
-                };
+                throw new Exception("Id was null or empty");
             }
 
-            var genre = await _db.Genres.Include(m => m.Mangas).FirstOrDefaultAsync(i => i.Id == id);
+            var genre = await _db.Genres.Include(m => m.Mangas).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 
             if (genre == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre with id = {id} isn't contained in the database!"
-                };
+                throw new Exception($"The manga with id = {id} isn't contained in the database!");
             }
 
             return genre;
         }
-        public async override Task<GenreModel> CreateAsync(GenreModel item)
+        public async override Task<GenreEntity> CreateAsync(GenreEntity item)
         {
             if (item == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The Item was null"
-                };
+                throw new Exception("The item was null");
             }
 
             var genre = await _db.Genres.FirstOrDefaultAsync(i => i.Name == item.Name);
 
             if (genre != null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre {item.Name} is contained in the database!"
-                };
+                throw new Exception($"The genre {item.Name} is contained in the database!");
             }
 
             var result = await _db.Genres.AddAsync(item);
 
             if (result == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre {item.Name} hasn't added in the database!"
-                };
+                throw new Exception($"The genre {item.Name} hasn't added in the database!");
             }
 
             await _db.SaveChangesAsync();
@@ -82,32 +67,23 @@ namespace Repositories.Repositories
 
             if (genre == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre {item.Name} hasn't added in the database!"
-                };
+                throw new Exception($"The genre {item.Name} hasn't added in the database!");
             }
 
             return genre;
         }
-        public async override Task<GenreModel> DeleteAsync(string id)
+        public async override Task<GenreEntity> DeleteAsync(string id)
         {
-            if (id == null)
+            if (!String.IsNullOrEmpty(id))
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = "Id was null"
-                };
+                throw new Exception("Id was null or empty");
             }
 
             var genre = await _db.Genres.Include(g => g.Mangas).FirstOrDefaultAsync(i => i.Id == id);
 
             if (genre == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre with id = {id} isn't contained in the database!"
-                };
+                throw new Exception($"The genre with id = {id} isn't contained in the database!");
             }
 
             _db.Genres.Remove(genre);
@@ -120,24 +96,18 @@ namespace Repositories.Repositories
 
             return genre;
         }
-        public async override Task<GenreModel> UpdateAsync(GenreModel item)
+        public async override Task<GenreEntity> UpdateAsync(GenreEntity item)
         {
             if (item == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = "Item was null"
-                };
+                throw new Exception("Item was null");
             }
 
             var result = _db.Genres.Update(item);
 
             if(result == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre {item.Name} wan't updated"
-                };
+                throw new Exception($"The genre {item.Name} wan't updated");
             }
 
             await _db.SaveChangesAsync();
@@ -146,17 +116,14 @@ namespace Repositories.Repositories
 
             if (genre == null)
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = $"The genre {item.Name} hasn't updated in the database!"
-                };
+                throw new Exception($"The genre {item.Name} hasn't updated in the database!");
             }
 
             return genre;
         }
-        public async override Task<IList<GenreModel>> AddRange(IList<GenreModel> items)
+        public async override Task<IList<GenreEntity>> AddRange(IList<GenreEntity> items)
         {
-            var result = new List<GenreModel>();
+            var result = new List<GenreEntity>();
 
             if (items == null && !items.Any())
             {
@@ -165,86 +132,91 @@ namespace Repositories.Repositories
 
             foreach (var item in items)
             {
-                var model = await CreateAsync(item);
-
-                if (string.IsNullOrEmpty(model.MessageWhatWrong))
+                try
                 {
+                    var model = await CreateAsync(item);
                     result.Add(model);
+                }
+                catch (Exception)
+                {
+                    continue;
                 }
             };
 
             return result;
         }
-        public async override Task<IList<GenreModel>> GetCertainPage(int sizeOfPage, int page)
+        public async override Task<IList<GenreEntity>> GetCertainPage(int sizeOfPage, int page)
         {
-            var list = await _db.Genres.Skip(page * sizeOfPage).Take(sizeOfPage).ToListAsync();
+            var list = await _db.Genres.Skip((page - 1) * sizeOfPage).Take(sizeOfPage).ToListAsync();
 
             if (list == null)
             {
-                return new List<GenreModel>();
+                return new List<GenreEntity>();
             }
 
             return list;
         }
-        public async override Task<IList<GenreModel>> GetAllFavoriteAsync()
+        public async override Task<IList<GenreEntity>> GetAllFavoriteAsync()
         {
             var list = await _db.Genres.Where(i => i.IsFavorite).ToListAsync();
 
             if (list == null)
             {
-                return new List<GenreModel>();
+                return new List<GenreEntity>();
             }
 
             return list;
         }
-        public async override Task<GenreModel> AddToFavorite(string Id)
+        public async override Task<GenreEntity> AddToFavorite(string Id)
         {
-            var genre = await GetByIdAsync(Id);
-
-            if (!String.IsNullOrEmpty(genre.MessageWhatWrong))
+            try
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = genre.MessageWhatWrong
-                };
+                var genre = await GetByIdAsync(Id);
+
+                genre.IsFavorite = true;
+
+                await UpdateAsync(genre);
+
+                await _db.SaveChangesAsync();
+
+                return await GetByIdAsync(genre.Id);
             }
-
-            genre.IsFavorite = true;
-
-            await _db.SaveChangesAsync();
-
-            return genre;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-        public async override Task<GenreModel> RemoveFavorite(string Id)
+        public async override Task<GenreEntity> RemoveFavorite(string Id)
         {
-            var genre = await GetByIdAsync(Id);
-
-            if (!String.IsNullOrEmpty(genre.MessageWhatWrong))
+            try
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = genre.MessageWhatWrong
-                };
+                var genre = await GetByIdAsync(Id);
+
+                genre.IsFavorite = false;
+
+                await UpdateAsync(genre);
+
+                await _db.SaveChangesAsync();
+
+                return await GetByIdAsync(genre.Id);
             }
-
-            genre.IsFavorite = false;
-
-            await _db.SaveChangesAsync();
-
-            return genre;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-        public async override Task<IList<GenreModel>> FiltrationByName(string name)
+        public async override Task<IList<GenreEntity>> FiltrationByName(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
-                return new List<GenreModel>();
+                return new List<GenreEntity>();
             }
 
             var result = await _db.Genres.Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
 
             if (!result.Any())
             {
-                return new List<GenreModel>();
+                return new List<GenreEntity>();
             }
 
             return result;

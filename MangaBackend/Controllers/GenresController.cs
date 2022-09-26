@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Services.DTO;
 using Services.Response;
 using Services.Services.Base;
@@ -105,48 +106,54 @@ namespace MangaBackend.Controllers
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetGenreById([FromRoute] string Id)
         {
-            var result = await _genreService.GetByIdAsync(Id);
-
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            try
             {
+                var result = await _genreService.GetByIdAsync(Id);
+                var wrapperResult = _wrapper.WrapTheResponseModel(result);
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+
                 return NotFound(wrapperResult);
             }
-
-            return Ok(wrapperResult);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
         {
-            var result = await _genreService.AddAsync(mangaDTO);
-
-            var wrapResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapResult.StatusCode != CodeStatus.Successful)
+            try
             {
-                return BadRequest(wrapResult);
+                var result = await _genreService.AddAsync(mangaDTO);
+                var wrapperResult = _wrapper.WrapTheResponseModel(result);
+                return Ok(wrapperResult);
             }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-            return Ok(wrapResult);
+                return NotFound(wrapperResult);
+            }
         }
 
         [HttpPost("set/favorite/{Id}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
         {
-            var result = await _genreService.AddToFavorite(Id);
-
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            try
             {
-                return BadRequest(wrapperResult);
+                var result = await _genreService.AddToFavorite(Id);
+                var wrapperResult = _wrapper.WrapTheResponseModel(result);
+                return Ok(wrapperResult);
             }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-            return Ok(wrapperResult);
+                return NotFound(wrapperResult);
+            }
         }
 
         [HttpPost("filtrarion/{name}")]
@@ -169,33 +176,36 @@ namespace MangaBackend.Controllers
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
         {
-            var result = await _genreService.RemoveFavorite(Id);
-
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            try
             {
-                return BadRequest(wrapperResult);
+                var result = await _genreService.RemoveFavorite(Id);
+                var wrapperResult = _wrapper.WrapTheResponseModel(result);
+                return Ok(wrapperResult);
             }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-            return Ok(wrapperResult);
+                return NotFound(wrapperResult);
+            }
         }
 
         [HttpPut]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
         {
-            var result = await _genreService.UpdateAsync(mangaDTO);
-
-            var wrapResult = _wrapper.WrapTheResponseModel(result);
-
-            if (wrapResult.StatusCode != CodeStatus.Successful)
+            try
             {
-                return BadRequest(wrapResult);
+                var result = await _genreService.UpdateAsync(mangaDTO);
+                var wrapperResult = _wrapper.WrapTheResponseModel(result);
+                return Ok(wrapperResult);
             }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-            return Ok(wrapResult);
+                return NotFound(wrapperResult);
+            }
         }
-        
     }
 }

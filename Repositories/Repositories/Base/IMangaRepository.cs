@@ -2,8 +2,8 @@
 
 namespace Repositories.Repositories.Base
 {
-    public interface IMangaRepository : IRepository<MangaModel>
+    public interface IMangaRepository : IRepository<MangaEntity>
     {
-        Task<List<MangaModel>> FiltrationByDate(int year);
+        Task<List<MangaEntity>> FiltrationByDate(int year);
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Data.Models;
 using Repositories.Repositories.Base;
 using Services.DTO;
+using Services.ExtensionMapper;
 using Services.Services.Base;
 using Services.Storage.Base;
 
 namespace Services.Services
 {
-    public class MangaService : BaseService<MangaModel, MangaDTO>, IMangaService
+    public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     {
         private readonly ILocalStorage _localStorage;
         private readonly IGenreRepository _genreRepository;
@@ -21,73 +22,52 @@ namespace Services.Services
             _localStorage = localStorage;
         }
 
-        private MangaModel ConverterModelDTOToModel(MangaDTO item, List<GenreModel> genres)
-        {
-            var model = new MangaModel()
-            {
-                Id = item.Id,
-                Name = item.Name,
-                PathToTitlePicture = item.PathToTitlePicture,
-                Description = item.Description,
-                MessageWhatWrong = "",
-                PathToFoldersWithGlava = item.PathToFoldersWithGlava,
-                AgeRating = item.AgeRating,
-                Author = item.Author,
-                IsFavorite = item.IsFavorite,
-                NumbetOfChapters = item.NumbetOfChapters,
-                ReleaseYear = item.ReleaseYear,
-                Genres = genres
-            };
-
-            return model;
-        }
-        public override async Task<MangaModel> AddAsync(MangaDTO item)
+        public override async Task<MangaEntity> AddAsync(MangaDTO item)
         {
             var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
             if (!genres.Any())
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = "The database doesn't contain the genres"
-                };
+                throw new Exception("The database doesn't contain the genres");
             }
 
-            var model = ConverterModelDTOToModel(item, genres);
+            var model = item.toEntity(genres);
 
-            return await _repository.CreateAsync(model);
+            try
+            {
+                return await _repository.CreateAsync(model);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-        public async Task<MangaModel> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
+        public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
         {
             var manga = await _mangaRepository.GetByIdAsync(mangaDTO.MangaId);
 
             if (manga == null)
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = "The manga isn't contained in the database!"
-                };
+                throw new Exception("The manga isn't contained in the database!");
             }
 
             var allGenres = await _genreRepository.GetAllAsync();
 
             manga.Genres.AddRange(allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id)));
 
-            var res = await _mangaRepository.UpdateAsync(manga);
-
-            if (!String.IsNullOrEmpty(res.MessageWhatWrong))
+            try
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = res.MessageWhatWrong
-                };
+                var res = await _mangaRepository.UpdateAsync(manga);
+                return res;
             }
-
-            return res;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }  
         }
-        public async override Task<IList<MangaModel>> AddRange(IList<MangaDTO> list)
+        public async override Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
         {
-            var listModels = new List<MangaModel>();
+            var listModels = new List<MangaEntity>();
 
             foreach (var item in list)
             {
@@ -95,17 +75,25 @@ namespace Services.Services
 
                 if (!genres.Any())
                 {
-                    return new List<MangaModel>();
+                    return new List<MangaEntity>();
                 }
 
-                var manga = ConverterModelDTOToModel(item, genres);
+                var manga = item.toEntity(genres);
 
                 listModels.Add(manga);
             }
 
-            return await _mangaRepository.AddRange(listModels);
+            try
+            {
+                return await _mangaRepository.AddRange(listModels);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
-        public async override Task<IList<MangaModel>> GetAllAsync()
+        public async override Task<IList<MangaEntity>> GetAllAsync()
         {
             var result = await _mangaRepository.GetAllAsync();
 
@@ -115,7 +103,7 @@ namespace Services.Services
                 {
                     result = "The Database doesn't have any manga"
                 };
-                return new List<MangaModel>();
+                return new List<MangaEntity>();
             }
 
             foreach (var item in result)
@@ -129,54 +117,54 @@ namespace Services.Services
 
             return result;
         }
-        public async override Task<MangaModel> GetByIdAsync(string id)
+        public async override Task<MangaEntity> GetByIdAsync(string id)
         {
-            var result = await _mangaRepository.GetByIdAsync(id);
-
-            result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
-
-            foreach (var res in result.PathToFoldersWithGlava)
+            try
             {
-                res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
-            }
+                var result = await _mangaRepository.GetByIdAsync(id);
 
-            return result;
+                result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
+
+                foreach (var res in result.PathToFoldersWithGlava)
+                {
+                    res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
-        public async override Task<MangaModel> UpdateAsync(MangaDTO item)
+        public async override Task<MangaEntity> UpdateAsync(MangaDTO item)
         {
             if (String.IsNullOrEmpty(item.Id))
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = "Id was null or empty"
-                };
+                throw new Exception("Id was null or empty");
             }
 
             var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
             if (!genres.Any())
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = "The database doesn't contain any genres"
-                };
+                throw new Exception("The database doesn't contain any genres");
             }
 
-            var manga = await _repository.GetByIdAsync(item.Id);
-
-            if (!String.IsNullOrEmpty(manga.MessageWhatWrong))
+            try
             {
-                return new MangaModel()
-                {
-                    MessageWhatWrong = manga.MessageWhatWrong
-                };
-            };
+                var manga = await _repository.GetByIdAsync(item.Id);
+                manga = item.toEntity(genres);
 
-            manga = ConverterModelDTOToModel(item, genres);
-
-            return await _repository.UpdateAsync(manga);
+                return await _repository.UpdateAsync(manga);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-        public async Task<List<MangaModel>> FiltrationByDate(int year)
+        public async Task<List<MangaEntity>> FiltrationByDate(int year)
         {
             return await _mangaRepository.FiltrationByDate(year);
         }

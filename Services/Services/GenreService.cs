@@ -1,78 +1,77 @@
 ﻿using Data.Models;
 using Repositories.Repositories.Base;
 using Services.DTO;
+using Services.ExtensionMapper;
 using Services.Services.Base;
 
 namespace Services.Services
 {
-    public class GenreService : BaseService<GenreModel, GenreDTO>, IGenreService
+    public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
     {
         public GenreService(IGenreRepository repository) : base(repository) { }
-        public override async Task<GenreModel> AddAsync(GenreDTO item)
+        public override async Task<GenreEntity> AddAsync(GenreDTO item)
         {
-            var model = new GenreModel()
-            {
-                Name = item.Name,
-                MessageWhatWrong = ""
-            };
+            var model = item.toEntity();
 
-            return await _repository.CreateAsync(model);
+            try
+            {
+                return await _repository.CreateAsync(model);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
-        private GenreModel ConverterModelDTOToModel(GenreDTO item)
+        public override async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
         {
-            var model = new GenreModel()
-            {
-                Name = item.Name,
-                MessageWhatWrong = ""
-            };
-
-            return model;
-        }
-        public override async Task<IList<GenreModel>> AddRange(IList<GenreDTO> list)
-        {
-            var listModels = new List<GenreModel>();
+            var listModels = new List<GenreEntity>();
 
             foreach (var item in list)
             {
-                var genre = ConverterModelDTOToModel(item);
+                var genre = item.toEntity();
 
                 listModels.Add(genre);
             }
 
             return await _repository.AddRange(listModels);
         }
-        public override async Task<IList<GenreModel>> GetAllAsync()
+        public override async Task<IList<GenreEntity>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
-        public override async Task<GenreModel> GetByIdAsync(string id)
+        public override async Task<GenreEntity> GetByIdAsync(string id)
         {
-            return await _repository.GetByIdAsync(id);
+            try
+            {
+                return await _repository.GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
-        public async override Task<GenreModel> UpdateAsync(GenreDTO item)
+        public async override Task<GenreEntity> UpdateAsync(GenreDTO item)
         {
             if(String.IsNullOrEmpty(item.Id))
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = "Id was null or empty"
-                };
+                throw new Exception("Id was null or empty");
             }
 
-            var genre = await _repository.GetByIdAsync(item.Id);
-
-            if(!String.IsNullOrEmpty(genre.MessageWhatWrong))
+            try
             {
-                return new GenreModel()
-                {
-                    MessageWhatWrong = genre.MessageWhatWrong
-                };
-            };
+                var genre = await _repository.GetByIdAsync(item.Id);
 
-            genre = ConverterModelDTOToModel(item);
+                genre = item.toEntity();
 
-            return await _repository.UpdateAsync(genre);
+                return await _repository.UpdateAsync(genre);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

@@ -5,28 +5,28 @@ using Services.Wrappers.Base;
 
 namespace Services.Wrappers
 {
-    public class WrapperResponseGenreService : IWrapperResponseService<ResponseModel, GenreModel>, IWrapperGenreService
+    public class WrapperResponseGenreService : IWrapperResponseService<ResponseModel, GenreEntity>, IWrapperGenreService
     {
-        public ResponseModel WrapTheResponseModel(GenreModel response)
+        public ResponseModel WrapTheResponseModel(GenreEntity response, string mess = "")
         {
-            var wrappedResponse = new ResponseModel();
-
-            if (!String.IsNullOrEmpty(response.MessageWhatWrong))
+            if(response == null)
             {
-                wrappedResponse.data = null;
-                wrappedResponse.StatusCode = CodeStatus.Empty;
-                wrappedResponse.ErrorMessage = response.MessageWhatWrong;
-
-                return wrappedResponse;
+                return new ResponseModel()
+                {
+                    data = new GenreEntity(),
+                    StatusCode = CodeStatus.Empty,
+                    ErrorMessage = mess
+                };
             }
 
-            wrappedResponse.data = response;
-            wrappedResponse.StatusCode = CodeStatus.Successful;
-            wrappedResponse.ErrorMessage = "";
-
-            return wrappedResponse;
+            return new ResponseModel()
+            {
+                data = response,
+                StatusCode = CodeStatus.Successful,
+                ErrorMessage = ""
+            };
         }
-        public ResponseModel WrapTheResponseListOfModels(IEnumerable<GenreModel> response)
+        public ResponseModel WrapTheResponseListOfModels(IEnumerable<GenreEntity> response)
         {
             var wrappedResponse = new ResponseModel();
 

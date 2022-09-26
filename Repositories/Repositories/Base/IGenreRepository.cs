@@ -2,7 +2,7 @@
 
 namespace Repositories.Repositories.Base
 {
-    public interface IGenreRepository : IRepository<GenreModel> 
+    public interface IGenreRepository : IRepository<GenreEntity> 
     {
     }
 }

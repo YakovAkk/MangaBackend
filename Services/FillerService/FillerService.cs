@@ -153,7 +153,7 @@ namespace Services.FillerService
             };
         }
 
-        private MangaDTO CreateAttackOfTheTitansManga(IList<GenreModel> genres)
+        private MangaDTO CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -205,7 +205,7 @@ namespace Services.FillerService
                 ReleaseYear = 2009
             };
         }
-        private MangaDTO CreateNarutoManga(IList<GenreModel> genres)
+        private MangaDTO CreateNarutoManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -257,7 +257,7 @@ namespace Services.FillerService
                 ReleaseYear = 1999
             };
         }
-        private MangaDTO CreateSevenDeadlySinsManga(IList<GenreModel> genres)
+        private MangaDTO CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -319,7 +319,7 @@ namespace Services.FillerService
                 ReleaseYear = 2012
             };
         }
-        private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreModel> genres)
+        private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {

@@ -7,7 +7,7 @@ namespace Services.Wrappers.Base
         where TR : IResponseModel
         where TI : IModel
     {
-        TR WrapTheResponseModel(TI response);
+        TR WrapTheResponseModel(TI response, string mess = "");
         TR WrapTheResponseListOfModels(IEnumerable<TI> response);
     }
 }
