@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.ExtensionMapper;

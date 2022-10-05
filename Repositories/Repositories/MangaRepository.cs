@@ -1,5 +1,5 @@
 ﻿using Data.Database;
-using Data.Models;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories.Base;
 

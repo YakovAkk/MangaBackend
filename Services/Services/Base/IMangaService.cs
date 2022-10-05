@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Services.DTO;
 
 namespace Services.Services.Base

@@ -1,4 +1,4 @@
-﻿using Data.Models.Base;
+﻿using Data.Entities.Base;
 using Repositories.Repositories.Base;
 using Services.DTO.Base;
 

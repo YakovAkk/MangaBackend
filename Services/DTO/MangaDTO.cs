@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Services.DTO.Base;
 
 namespace Services.DTO
@@ -15,13 +15,13 @@ namespace Services.DTO
         public string Description { get; set; }
         public bool IsFavorite { get; set; }
     
-        public List<GlavaMangaModel> PathToFoldersWithGlava { get; set; }
+        public List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
         public List<string> genres_id { get; set; }
 
         public MangaDTO()
         {
             IsFavorite = false;
-            PathToFoldersWithGlava = new List<GlavaMangaModel>();
+            PathToFoldersWithGlava = new List<GlavaMangaEntity>();
             genres_id = new List<string>();
         }
 

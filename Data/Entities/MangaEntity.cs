@@ -1,8 +1,8 @@
-﻿using Data.Models.Base;
+﻿using Data.Entities.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Data.Models
+namespace Data.Entities
 {
     public class MangaEntity : IModel
     {
@@ -18,10 +18,10 @@ namespace Data.Models
         public string Author { get; set; }
         public bool IsFavorite { get; set; }
         public virtual List<GenreEntity> Genres { get; set; }
-        public virtual List<GlavaMangaModel> PathToFoldersWithGlava { get; set; }
+        public virtual List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
         public MangaEntity()
         {
-            PathToFoldersWithGlava = new List<GlavaMangaModel>();
+            PathToFoldersWithGlava = new List<GlavaMangaEntity>();
             IsFavorite = false;
         }
     }
