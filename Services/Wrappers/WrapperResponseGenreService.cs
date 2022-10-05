@@ -32,7 +32,7 @@ namespace Services.Wrappers
 
             if (!response.Any())
             {
-                wrappedResponse.data = null;
+                wrappedResponse.data = new List<GenreEntity>();
                 wrappedResponse.StatusCode = CodeStatus.Empty;
                 wrappedResponse.ErrorMessage = "The Database doesn't have any manga";
 
