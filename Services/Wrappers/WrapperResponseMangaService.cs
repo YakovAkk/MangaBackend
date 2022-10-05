@@ -1,38 +1,38 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Services.Response;
 using Services.StatusCode;
 using Services.Wrappers.Base;
 
 namespace Services.Wrappers
 {
-    public class WrapperResponseMangaService : IWrapperResponseService<ResponseModel, MangaModel>, IWrapperMangaService
+    public class WrapperResponseMangaService : IWrapperResponseService<ResponseModel, MangaEntity>, IWrapperMangaService
     {
-        public ResponseModel WrapTheResponseModel(MangaModel response)
+        public ResponseModel WrapTheResponseModel(MangaEntity response, string mess = "")
         {
-            var wrappedResponse = new ResponseModel();
-
-            if (!String.IsNullOrEmpty(response.MessageWhatWrong))
+            if (response == null)
             {
-                wrappedResponse.data = null;
-                wrappedResponse.StatusCode = CodeStatus.Empty;
-                wrappedResponse.ErrorMessage = response.MessageWhatWrong;
-
-                return wrappedResponse;
+                return new ResponseModel()
+                {
+                    data = new MangaEntity(),
+                    StatusCode = CodeStatus.Empty,
+                    ErrorMessage = mess
+                };
             }
 
-            wrappedResponse.data = response;
-            wrappedResponse.StatusCode = CodeStatus.Successful;
-            wrappedResponse.ErrorMessage = "";
-
-            return wrappedResponse;
+            return new ResponseModel()
+            {
+                data = response,
+                StatusCode = CodeStatus.Successful,
+                ErrorMessage = ""
+            };
         }
-        public ResponseModel WrapTheResponseListOfModels(IEnumerable<MangaModel> response)
+        public ResponseModel WrapTheResponseListOfModels(IEnumerable<MangaEntity> response)
         {
             var wrappedResponse = new ResponseModel();
 
             if (!response.Any())
             {
-                wrappedResponse.data = null;
+                wrappedResponse.data = new List<MangaEntity>();
                 wrappedResponse.StatusCode = CodeStatus.Empty;
                 wrappedResponse.ErrorMessage = "The Database doesn't have any manga";
 

@@ -1,23 +1,22 @@
-﻿using Data.Models.Base;
+﻿using Data.Entities.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Data.Models
+namespace Data.Entities
 {
-    public class GenreModel : IModel
+    public class GenreEntity : IModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string? Id { get; set; }
         public string Name { get; set; }
         public bool IsFavorite { get; set; }
-        public string MessageWhatWrong { get; set; }
-        public virtual List<MangaModel> Mangas { get; set; }
+        public virtual List<MangaEntity> Mangas { get; set; }
 
-        public GenreModel()
+        public GenreEntity()
         {
             IsFavorite = false;
-            Mangas = new List<MangaModel>();
+            Mangas = new List<MangaEntity>();
         }
     }
 }

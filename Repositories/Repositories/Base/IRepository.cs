@@ -1,4 +1,4 @@
-﻿using Data.Models.Base;
+﻿using Data.Entities.Base;
 
 namespace Repositories.Repositories.Base
 {

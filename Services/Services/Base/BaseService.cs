@@ -1,4 +1,4 @@
-﻿using Data.Models.Base;
+﻿using Data.Entities.Base;
 using Repositories.Repositories.Base;
 using Services.DTO.Base;
 
@@ -22,27 +22,70 @@ namespace Services.Services.Base
         public abstract Task<TR> UpdateAsync(TI item);
         public async virtual Task<TR> DeleteAsync(string id)
         {
-            return await _repository.DeleteAsync(id);
+            try
+            {
+                return await _repository.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async virtual Task<IList<TR>> GetCertainPage(int sizeOfPage, int page)
         {
-            return await _repository.GetCertainPage(sizeOfPage, page);
+            try
+            {
+                return await _repository.GetCertainPage(sizeOfPage, page);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
         public async virtual Task<IList<TR>> GetAllFavoriteAsync()
         {
-            return await _repository.GetAllFavoriteAsync();
+            try
+            {
+                return await _repository.GetAllFavoriteAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async virtual Task<TR> AddToFavorite(string Id)
         {
-            return await _repository.AddToFavorite(Id);
+            try
+            {
+                return await _repository.AddToFavorite(Id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async virtual Task<TR> RemoveFavorite(string Id)
         {
-            return await _repository.RemoveFavorite(Id);
+            try
+            {
+                return await _repository.RemoveFavorite(Id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async virtual Task<IList<TR>> FiltrationByName(string name)
         {
-            return await _repository.FiltrationByName(name);
+            try
+            {
+                return await _repository.FiltrationByName(name);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

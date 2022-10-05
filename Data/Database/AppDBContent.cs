@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -6,9 +6,9 @@ namespace Data.Database
 {
     public class AppDBContent : DbContext
     {
-        public DbSet<GlavaMangaModel> GlavaManga { get; set; }
-        public DbSet<MangaModel> Mangas { get; set; }
-        public DbSet<GenreModel> Genres { get; set; }
+        public DbSet<GlavaMangaEntity> GlavaManga { get; set; }
+        public DbSet<MangaEntity> Mangas { get; set; }
+        public DbSet<GenreEntity> Genres { get; set; }
 
         public AppDBContent(DbContextOptions<AppDBContent> options) : base(options)
         {

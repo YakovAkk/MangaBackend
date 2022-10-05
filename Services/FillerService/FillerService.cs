@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Services.DTO;
 using Services.FillerService.Base;
 using Services.Services.Base;
@@ -153,7 +153,7 @@ namespace Services.FillerService
             };
         }
 
-        private MangaDTO CreateAttackOfTheTitansManga(IList<GenreModel> genres)
+        private MangaDTO CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -176,15 +176,15 @@ namespace Services.FillerService
                 genres_id.Add(genre.Id);
             }
 
-            var PathToFoldersWithGlava = new List<GlavaMangaModel>()
+            var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
             {
-                new GlavaMangaModel()
+                new GlavaMangaEntity()
                 {
                     NumberOfGlava = 1,
                     LinkToFirstPicture = "manga/attackofthetitans/glava1/1.jpg",
                     AmountOfPictures = 54
                 },
-                new GlavaMangaModel()
+                new GlavaMangaEntity()
                 {
                     NumberOfGlava = 2,
                     LinkToFirstPicture = "manga/attackofthetitans/glava2/1.jpg",
@@ -205,7 +205,7 @@ namespace Services.FillerService
                 ReleaseYear = 2009
             };
         }
-        private MangaDTO CreateNarutoManga(IList<GenreModel> genres)
+        private MangaDTO CreateNarutoManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -234,9 +234,9 @@ namespace Services.FillerService
                 genres_id.Add(genre.Id);
             }
 
-            var PathToFoldersWithGlava = new List<GlavaMangaModel>()
+            var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
             {
-                new GlavaMangaModel()
+                new GlavaMangaEntity()
                 {
                     NumberOfGlava = 0,
                     LinkToFirstPicture = "manga/naruto/glava0/1.jpg",
@@ -257,7 +257,7 @@ namespace Services.FillerService
                 ReleaseYear = 1999
             };
         }
-        private MangaDTO CreateSevenDeadlySinsManga(IList<GenreModel> genres)
+        private MangaDTO CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -296,9 +296,9 @@ namespace Services.FillerService
                 genres_id.Add(genre.Id);
             }
 
-            var PathToFoldersWithGlava = new List<GlavaMangaModel>()
+            var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
             {
-                new GlavaMangaModel()
+                new GlavaMangaEntity()
                 {
                     NumberOfGlava = 0,
                     LinkToFirstPicture = "manga/sevendeadlysins/glava0/1.jpg",
@@ -319,7 +319,7 @@ namespace Services.FillerService
                 ReleaseYear = 2012
             };
         }
-        private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreModel> genres)
+        private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
         {
             var genresForTheManga = new List<string>()
             {
@@ -353,9 +353,9 @@ namespace Services.FillerService
                 genres_id.Add(genre.Id);
             }
 
-            var PathToFoldersWithGlava = new List<GlavaMangaModel>()
+            var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
             {
-                new GlavaMangaModel()
+                new GlavaMangaEntity()
                 {
                     NumberOfGlava = 1,
                     LinkToFirstPicture = "manga/tokyoghoul/glava1/1.jpg",

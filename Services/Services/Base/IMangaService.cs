@@ -1,11 +1,11 @@
-﻿using Data.Models;
+﻿using Data.Entities;
 using Services.DTO;
 
 namespace Services.Services.Base
 {
-    public interface IMangaService : IService<MangaModel, MangaDTO>
+    public interface IMangaService : IService<MangaEntity, MangaDTO>
     {
-        Task<MangaModel> AddGenresToManga(AddGenreToMangaDTO mangaDTO);
-        Task<List<MangaModel>> FiltrationByDate(int year);
+        Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO);
+        Task<List<MangaEntity>> FiltrationByDate(int year);
     }
 }
