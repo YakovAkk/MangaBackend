@@ -121,23 +121,23 @@ namespace MangaBackend.Controllers
             return Ok(wrapperResult);
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
-        {
-            try
-            {
-                var result = await _mangaService.AddAsync(mangaDTO);
-                var wrapperResult = _wrapper.WrapTheResponseModel(result);
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+        //[HttpPost]
+        //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
+        //{
+        //    try
+        //    {
+        //        var result = await _mangaService.AddAsync(mangaDTO);
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
+        //        return Ok(wrapperResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-                return NotFound(wrapperResult);
-            }
-        }
+        //        return NotFound(wrapperResult);
+        //    }
+        //}
 
         [HttpPost("set/favorite/{Id}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
@@ -173,7 +173,6 @@ namespace MangaBackend.Controllers
             return Ok(wrapperResult);
         }
 
-
         [HttpPost("filtrarionbydate/{year}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> FiltrarionMangaByDate ([FromRoute] string year)
@@ -205,41 +204,41 @@ namespace MangaBackend.Controllers
             return Ok(wrapperResult);
         }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateMangaById([FromBody] MangaDTO mangaDTO)
-        {
-            try
-            {
-                var result = await _mangaService.UpdateAsync(mangaDTO);
-                var wrapperResult = _wrapper.WrapTheResponseModel(result);
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+        //[HttpPut]
+        //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> UpdateMangaById([FromBody] MangaDTO mangaDTO)
+        //{
+        //    try
+        //    {
+        //        var result = await _mangaService.UpdateAsync(mangaDTO);
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
+        //        return Ok(wrapperResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-                return NotFound(wrapperResult);
-            }
-        }
+        //        return NotFound(wrapperResult);
+        //    }
+        //}
 
-        [HttpPut("addGenreToManga")]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
-        {
-            try
-            {
-                var result = await _mangaService.AddGenresToManga(mangaDTO);
-                var wrapperResult = _wrapper.WrapTheResponseModel(result);
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+        //[HttpPut("addGenreToManga")]
+        //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> AddGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
+        //{
+        //    try
+        //    {
+        //        var result = await _mangaService.AddGenresToManga(mangaDTO);
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
+        //        return Ok(wrapperResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-                return NotFound(wrapperResult);
-            }
-        }
+        //        return NotFound(wrapperResult);
+        //    }
+        //}
 
         [HttpDelete("set/favorite/{Id}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]

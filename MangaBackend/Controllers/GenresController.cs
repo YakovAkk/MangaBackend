@@ -120,23 +120,23 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
-        {
-            try
-            {
-                var result = await _genreService.AddAsync(mangaDTO);
-                var wrapperResult = _wrapper.WrapTheResponseModel(result);
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+        //[HttpPost]
+        //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> CreateGenre([FromBody] GenreDTO mangaDTO)
+        //{
+        //    try
+        //    {
+        //        var result = await _genreService.AddAsync(mangaDTO);
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
+        //        return Ok(wrapperResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-                return NotFound(wrapperResult);
-            }
-        }
+        //        return NotFound(wrapperResult);
+        //    }
+        //}
 
         [HttpPost("set/favorite/{Id}")]
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
@@ -190,22 +190,22 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
-        {
-            try
-            {
-                var result = await _genreService.UpdateAsync(mangaDTO);
-                var wrapperResult = _wrapper.WrapTheResponseModel(result);
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+        //[HttpPut]
+        //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
+        //{
+        //    try
+        //    {
+        //        var result = await _genreService.UpdateAsync(mangaDTO);
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
+        //        return Ok(wrapperResult);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
 
-                return NotFound(wrapperResult);
-            }
-        }
+        //        return NotFound(wrapperResult);
+        //    }
+        //}
     }
 }
