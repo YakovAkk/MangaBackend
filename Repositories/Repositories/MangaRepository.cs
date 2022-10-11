@@ -24,11 +24,6 @@ namespace Repositories.Repositories
         }
         public async override Task<MangaEntity> DeleteAsync(string id)
         {
-            if (!String.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id was null or empty");
-            }
-
             var manga = await _db.Mangas.Include(m => m.Genres)
                 .AsNoTracking().Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
 
@@ -45,11 +40,6 @@ namespace Repositories.Repositories
         }
         public async override Task<MangaEntity> CreateAsync(MangaEntity item)
         {
-            if (item == null)
-            {
-                throw new Exception("The item was null");
-            }
-
             var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
             if (manga != null)
@@ -78,11 +68,6 @@ namespace Repositories.Repositories
         }
         public async override Task<MangaEntity> GetByIdAsync(string id)
         {
-            if (String.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id was null or empty");
-            }
-
             var manga = await _db.Mangas.Include(m => m.Genres)
                 .Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
 
@@ -122,11 +107,6 @@ namespace Repositories.Repositories
         {
             var result = new List<MangaEntity>();
 
-            if(items == null && !items.Any())
-            {
-                return result;
-            }
-
             foreach (var item in items)
             {
                 try
@@ -145,7 +125,6 @@ namespace Repositories.Repositories
         }
         public async override Task<IList<MangaEntity>> GetCertainPage(int sizeOfPage, int page)
         {
-
             var list = await _db.Mangas.Include(m => m.Genres).AsNoTracking()
                 .Include(m => m.PathToFoldersWithGlava).Skip((page -1) * sizeOfPage).Take(sizeOfPage).ToListAsync();
 
@@ -207,11 +186,6 @@ namespace Repositories.Repositories
         }
         public async override Task<IList<MangaEntity>> FiltrationByName(string name)
         {
-            if (String.IsNullOrEmpty(name))
-            {
-                return new List<MangaEntity>();
-            }
-
             var result = await _db.Mangas.Include(i => i.Genres).Include(i=> i.PathToFoldersWithGlava).Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
 
             if (!result.Any())

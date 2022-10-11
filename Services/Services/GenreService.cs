@@ -11,6 +11,11 @@ namespace Services.Services
         public GenreService(IGenreRepository repository) : base(repository) { }
         public override async Task<GenreEntity> AddAsync(GenreDTO item)
         {
+            if (item == null)
+            {
+                throw new Exception("The item was null");
+            }
+
             var model = item.toEntity();
 
             try
@@ -23,9 +28,13 @@ namespace Services.Services
             }
             
         }
-
         public override async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
         {
+            if (list == null)
+            {
+                throw new Exception("list was null");
+            }
+
             var listModels = new List<GenreEntity>();
 
             foreach (var item in list)
@@ -43,6 +52,11 @@ namespace Services.Services
         }
         public override async Task<GenreEntity> GetByIdAsync(string id)
         {
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new Exception("Id was null or empty");
+            }
+
             try
             {
                 return await _repository.GetByIdAsync(id);
@@ -55,7 +69,12 @@ namespace Services.Services
         }
         public async override Task<GenreEntity> UpdateAsync(GenreDTO item)
         {
-            if(String.IsNullOrEmpty(item.Id))
+            if (item == null)
+            {
+                throw new Exception("Item was null");
+            }
+
+            if (String.IsNullOrEmpty(item.Id))
             {
                 throw new Exception("Id was null or empty");
             }

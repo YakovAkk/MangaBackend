@@ -161,16 +161,19 @@ namespace MangaBackend.Controllers
         [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
         {
-            var result = await _mangaService.FiltrationByName(name);
-
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            try
             {
-                return BadRequest(wrapperResult);
-            }
+                var result = await _mangaService.FiltrationByName(name);
 
-            return Ok(wrapperResult);
+                var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+
+                return NotFound(wrapperResult);
+            }
         }
 
         [HttpPost("filtrarionbydate/{year}")]

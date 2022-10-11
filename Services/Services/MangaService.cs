@@ -24,6 +24,11 @@ namespace Services.Services
 
         public override async Task<MangaEntity> AddAsync(MangaDTO item)
         {
+            if (item == null)
+            {
+                throw new Exception("The item was null");
+            }
+
             var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
             if (!genres.Any())
@@ -44,6 +49,11 @@ namespace Services.Services
         }
         public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
         {
+            if (mangaDTO == null)
+            {
+                throw new Exception("The item was null");
+            }
+
             var manga = await _mangaRepository.GetByIdAsync(mangaDTO.MangaId);
 
             if (manga == null)
@@ -74,6 +84,11 @@ namespace Services.Services
         }
         public async override Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
         {
+            if(list == null)
+            {
+                throw new Exception("The list was null");
+            }
+
             var listModels = new List<MangaEntity>();
 
             foreach (var item in list)
@@ -126,6 +141,10 @@ namespace Services.Services
         }
         public async override Task<MangaEntity> GetByIdAsync(string id)
         {
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new Exception("Id was null or empty");
+            }
             try
             {
                 var result = await _mangaRepository.GetByIdAsync(id);
@@ -147,6 +166,11 @@ namespace Services.Services
         }
         public async override Task<MangaEntity> UpdateAsync(MangaDTO item)
         {
+            if(item == null)
+            {
+                throw new Exception("The item was null");
+            }
+
             if (String.IsNullOrEmpty(item.Id))
             {
                 throw new Exception("Id was null or empty");

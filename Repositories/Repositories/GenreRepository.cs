@@ -26,10 +26,6 @@ namespace Repositories.Repositories
         }
         public async override Task<GenreEntity> GetByIdAsync(string id)
         {
-            if (String.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id was null or empty");
-            }
 
             var genre = await _db.Genres.Include(m => m.Mangas).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
 
@@ -42,10 +38,6 @@ namespace Repositories.Repositories
         }
         public async override Task<GenreEntity> CreateAsync(GenreEntity item)
         {
-            if (item == null)
-            {
-                throw new Exception("The item was null");
-            }
 
             var genre = await _db.Genres.FirstOrDefaultAsync(i => i.Name == item.Name);
 
@@ -74,11 +66,6 @@ namespace Repositories.Repositories
         }
         public async override Task<GenreEntity> DeleteAsync(string id)
         {
-            if (!String.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id was null or empty");
-            }
-
             var genre = await _db.Genres.Include(g => g.Mangas).FirstOrDefaultAsync(i => i.Id == id);
 
             if (genre == null)
@@ -98,11 +85,6 @@ namespace Repositories.Repositories
         }
         public async override Task<GenreEntity> UpdateAsync(GenreEntity item)
         {
-            if (item == null)
-            {
-                throw new Exception("Item was null");
-            }
-
             var result = _db.Genres.Update(item);
 
             if(result == null)
@@ -124,11 +106,6 @@ namespace Repositories.Repositories
         public async override Task<IList<GenreEntity>> AddRange(IList<GenreEntity> items)
         {
             var result = new List<GenreEntity>();
-
-            if (items == null && !items.Any())
-            {
-                return result;
-            }
 
             foreach (var item in items)
             {
@@ -207,16 +184,11 @@ namespace Repositories.Repositories
         }
         public async override Task<IList<GenreEntity>> FiltrationByName(string name)
         {
-            if (String.IsNullOrEmpty(name))
-            {
-                return new List<GenreEntity>();
-            }
-
             var result = await _db.Genres.Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
 
             if (!result.Any())
             {
-                return new List<GenreEntity>();
+                throw new Exception("No results");
             }
 
             return result;

@@ -24,6 +24,11 @@ namespace Services.Services.Base
         {
             try
             {
+                if (!String.IsNullOrEmpty(id))
+                {
+                    throw new Exception("Id was null or empty");
+                }
+
                 return await _repository.DeleteAsync(id);
             }
             catch (Exception ex)
@@ -80,6 +85,10 @@ namespace Services.Services.Base
         {
             try
             {
+                if (String.IsNullOrEmpty(name))
+                {
+                    throw new Exception("Name was null or empty!");
+                } 
                 return await _repository.FiltrationByName(name);
             }
             catch (Exception ex)

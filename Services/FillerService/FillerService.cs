@@ -76,22 +76,26 @@ namespace Services.FillerService
                 new GenreDTO("Yaoi")
             };
 
-            var resultGenre = await _genreService.AddRange(listOfGenres);
-
-            if (!resultGenre.Any())
+            try
+            {
+                var resultGenre = await _genreService.AddRange(listOfGenres);
+                if (!resultGenre.Any())
+                {
+                    return new ResponseFillDTO()
+                    {
+                        IsSuccess = false,
+                        MessageWhatWrong = "The Ganres is already conteited in the database"
+                    };
+                }
+            }
+            catch (Exception ex)
             {
                 return new ResponseFillDTO()
                 {
-                    IsSuccess = false,
-                    MessageWhatWrong = "The Ganres is already conteited in the database"
+                    IsSuccess = true,
+                    MessageWhatWrong = ""
                 };
             }
-
-            return new ResponseFillDTO()
-            {
-                IsSuccess = true,
-                MessageWhatWrong = ""
-            };
         }
         public async Task<ResponseFillDTO> AddMangas()
         {
@@ -112,22 +116,27 @@ namespace Services.FillerService
             mangas.Add(CreateSevenDeadlySinsManga(genres));
             mangas.Add(CreateTokyoGhoulSinsManga(genres));
 
-            var resultManga = await _mangaService.AddRange(mangas);
+            try
+            {
+                var resultManga = await _mangaService.AddRange(mangas);
 
-            if (!resultManga.Any())
+                if (!resultManga.Any())
+                {
+                    return new ResponseFillDTO()
+                    {
+                        IsSuccess = false,
+                        MessageWhatWrong = "The Mangas is already conteited in the database"
+                    };
+                }
+            }
+            catch (Exception ex)
             {
                 return new ResponseFillDTO()
                 {
-                    IsSuccess = false,
-                    MessageWhatWrong = "The Mangas is already conteited in the database"
+                    IsSuccess = true,
+                    MessageWhatWrong = ""
                 };
-            }
-
-            return new ResponseFillDTO()
-            {
-                IsSuccess = true,
-                MessageWhatWrong = ""
-            };
+            }  
         }
 
         public async Task<ResponseFillDTO> DeleteAll()
