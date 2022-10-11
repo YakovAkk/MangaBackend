@@ -79,6 +79,7 @@ namespace Services.FillerService
             try
             {
                 var resultGenre = await _genreService.AddRange(listOfGenres);
+
                 if (!resultGenre.Any())
                 {
                     return new ResponseFillDTO()
@@ -87,13 +88,19 @@ namespace Services.FillerService
                         MessageWhatWrong = "The Ganres is already conteited in the database"
                     };
                 }
+
+                return new ResponseFillDTO()
+                {
+                    IsSuccess = true,
+                    MessageWhatWrong = ""
+                };
             }
             catch (Exception ex)
             {
                 return new ResponseFillDTO()
                 {
-                    IsSuccess = true,
-                    MessageWhatWrong = ""
+                    IsSuccess = false,
+                    MessageWhatWrong = ex.Message
                 };
             }
         }
@@ -128,13 +135,19 @@ namespace Services.FillerService
                         MessageWhatWrong = "The Mangas is already conteited in the database"
                     };
                 }
+
+                return new ResponseFillDTO()
+                {
+                    IsSuccess = true,
+                    MessageWhatWrong = ""
+                };
             }
             catch (Exception ex)
             {
                 return new ResponseFillDTO()
                 {
                     IsSuccess = true,
-                    MessageWhatWrong = ""
+                    MessageWhatWrong = ex.Message
                 };
             }  
         }
