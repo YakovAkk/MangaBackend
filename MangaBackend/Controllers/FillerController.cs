@@ -50,17 +50,17 @@ namespace MangaBackend.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> ClearDatabase()
-        {
-            var result = await _fillerService.DeleteAll();
+        //[HttpDelete]
+        //public async Task<IActionResult> ClearDatabase()
+        //{
+        //    var result = await _fillerService.DeleteAll();
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+        //    if (!result.IsSuccess)
+        //    {
+        //        return BadRequest(result);
+        //    }
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
     }
 }
