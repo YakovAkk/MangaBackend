@@ -211,7 +211,19 @@ namespace Services.FillerService
                     NumberOfGlava = 2,
                     LinkToFirstPicture = "manga/attackofthetitans/glava2/1.jpg",
                     AmountOfPictures = 43
-                }
+                },
+                new GlavaMangaEntity()
+                {
+                    NumberOfGlava = 3,
+                    LinkToFirstPicture = "manga/attackofthetitans/glava3/1.jpg",
+                    AmountOfPictures = 46
+                },
+                new GlavaMangaEntity()
+                {
+                    NumberOfGlava = 4,
+                    LinkToFirstPicture = "manga/attackofthetitans/glava4/1.jpg",
+                    AmountOfPictures = 49
+                },
             };
 
             return new MangaDTO()
