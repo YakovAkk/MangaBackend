@@ -13,6 +13,10 @@ using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
 using Services.Wrappers;
+using Services.NotificationService.Service.Base;
+using Services.NotificationService.Service;
+using CorePush.Google;
+using CorePush.Apple;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -32,12 +36,13 @@ try
     builder.Services.AddTransient<IWrapperGenreService, WrapperResponseGenreService>();
     builder.Services.AddTransient<IWrapperMangaService, WrapperResponseMangaService>();
 
-
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
-
     builder.Services.AddTransient<IFillerService, FillerService>();
-    
+
+    builder.Services.AddTransient<INotificationService, NotificationService>();
+    builder.Services.AddHttpClient<FcmSender>();
+    builder.Services.AddHttpClient<ApnSender>();
 
     var validator = new Validator(builder.Configuration);
 
