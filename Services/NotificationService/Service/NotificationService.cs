@@ -1,4 +1,5 @@
 ﻿using CorePush.Google;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Services.NotificationService.NotifyModels;
 using Services.NotificationService.Service.Base;
@@ -10,9 +11,15 @@ namespace Services.NotificationService.Service;
 public class NotificationService : INotificationService
 {
     private readonly FcmNotificationSetting _fcmNotificationSetting;
-    public NotificationService(IOptions<FcmNotificationSetting> settings)
+    public NotificationService(IConfiguration configuration)
     {
-        _fcmNotificationSetting = settings.Value;
+        var SenderId = configuration.GetSection("FcmNotification")["SenderId"];
+        var ServerKey = configuration.GetSection("FcmNotification")["ServerKey"];
+        _fcmNotificationSetting = new FcmNotificationSetting()
+        {
+            SenderId = SenderId,
+            ServerKey = ServerKey
+        };
     }
 
     public async Task<ResponseModel> SendNotification(NotificationModel notificationModel)
