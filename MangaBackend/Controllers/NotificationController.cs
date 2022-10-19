@@ -8,6 +8,10 @@ namespace MangaBackend.Controllers;
 [ApiController]
 public class NotificationController : ControllerBase
 {
+    public record notificationTempDTO
+    {
+        public string deviceToken { get; set; }
+    }
     private readonly INotificationService _notificationService;
     public NotificationController(INotificationService notificationService)
     {
@@ -16,8 +20,15 @@ public class NotificationController : ControllerBase
 
     [Route("send")]
     [HttpPost]
-    public async Task<IActionResult> SendNotification(NotificationModel notificationModel)
+    public async Task<IActionResult> SendNotification([FromBody] notificationTempDTO notificationTempDTO )
     {
+        var notificationModel = new NotificationModel()
+        {
+            DeviceId = notificationTempDTO.deviceToken,
+            IsAndroiodDevice = true,
+            Title = "Test Notification from Manga api",
+            Body = "Hi Sergey, sent me message in telegramm if you get the notification"
+        };
         var result = await _notificationService.SendNotification(notificationModel);
         return Ok(result);
     }
