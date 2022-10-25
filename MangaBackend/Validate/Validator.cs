@@ -22,7 +22,12 @@ namespace MangaBackend.Validate
             var typeOfConnection = _configuration.GetSection("Others")["TypeOfConnection"];
             var relativePath = _configuration.GetSection("Others")["RelativePath"];
 
-            if(connercionStringMsSql == null)
+            var SenderId = _configuration.GetSection("FcmNotification")["SenderId"];
+            var ServerKey = _configuration.GetSection("FcmNotification")["ServerKey"];
+
+            
+
+            if (connercionStringMsSql == null)
             {
                 _logger.Error($"Section ConnercionStringMsSql should be existed at the json file");
             }
@@ -41,9 +46,17 @@ namespace MangaBackend.Validate
             {
                 _logger.Error($"Section RelativePath should be existed at the json file");
             }
+            if (SenderId == null)
+            {
+                _logger.Error($"Section SenderId should be existed at the json file");
+            }
+            if (ServerKey == null)
+            {
+                _logger.Error($"Section ServerKey should be existed at the json file");
+            }
 
-            if(connercionStringMsSql == null && connercionStringMySql == null 
-                && typeOfConnection == null && relativePath == null)
+            if (connercionStringMsSql == null || connercionStringMySql == null
+                || typeOfConnection == null || relativePath == null || SenderId == null || ServerKey == null)
             {
                 return false;
             }
