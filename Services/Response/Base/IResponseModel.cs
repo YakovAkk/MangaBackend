@@ -1,7 +1,6 @@
-﻿namespace Services.Response.Base
-{
-    public interface IResponseModel
-    {
+﻿namespace Services.Response.Base;
 
-    }
+public interface IResponseModel
+{
+
 }

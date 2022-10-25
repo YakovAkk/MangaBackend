@@ -2,16 +2,15 @@
 using Services.Storage.Base;
 
 
-namespace Services.Storage
+namespace Services.Storage;
+
+public class LocalStorage : ILocalStorage
 {
-    public class LocalStorage : ILocalStorage
+    private readonly IConfiguration _configuration;
+    public string RelativePath { get; init; }
+    public LocalStorage(IConfiguration configuration )
     {
-        private readonly IConfiguration _configuration;
-        public string RelativePath { get; init; }
-        public LocalStorage(IConfiguration configuration )
-        {
-            _configuration = configuration;
-            RelativePath = _configuration.GetSection("Others")["RelativePath"];
-        }
+        _configuration = configuration;
+        RelativePath = _configuration.GetSection("Others")["RelativePath"];
     }
 }

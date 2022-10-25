@@ -1,9 +1,8 @@
 ﻿using Services.NotificationService.NotifyModels;
 
-namespace Services.NotificationService.Service.Base
+namespace Services.NotificationService.Service.Base;
+
+public interface INotificationService
 {
-    public interface INotificationService
-    {
-        Task<ResponseModel> SendNotification(NotificationModel notificationModel);
-    }
+    Task<ResponseModel> SendNotification(NotificationModel notificationModel);
 }

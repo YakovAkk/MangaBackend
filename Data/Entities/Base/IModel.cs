@@ -1,7 +1,7 @@
-﻿namespace Data.Entities.Base
+﻿namespace Data.Entities.Base;
+
+public interface IModel
 {
-    public interface IModel
-    {
-        string Id { get; set; }
-    }
+    string Id { get; set; }
 }
+

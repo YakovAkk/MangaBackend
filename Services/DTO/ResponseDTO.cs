@@ -1,8 +1,7 @@
-﻿namespace Services.DTO
+﻿namespace Services.DTO;
+
+public class ResponseFillDTO
 {
-    public class ResponseFillDTO
-    {
-        public bool IsSuccess { get; set; }
-        public string MessageWhatWrong { get; set; }
-    }
+    public bool IsSuccess { get; set; }
+    public string MessageWhatWrong { get; set; }
 }

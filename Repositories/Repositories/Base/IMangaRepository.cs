@@ -1,9 +1,8 @@
 ﻿using Data.Entities;
 
-namespace Repositories.Repositories.Base
+namespace Repositories.Repositories.Base;
+
+public interface IMangaRepository : IRepository<MangaEntity>
 {
-    public interface IMangaRepository : IRepository<MangaEntity>
-    {
-        Task<List<MangaEntity>> FiltrationByDate(int year);
-    }
+    Task<List<MangaEntity>> FiltrationByDate(int year);
 }

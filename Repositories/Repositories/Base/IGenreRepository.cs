@@ -1,8 +1,7 @@
 ﻿using Data.Entities;
 
-namespace Repositories.Repositories.Base
+namespace Repositories.Repositories.Base;
+
+public interface IGenreRepository : IRepository<GenreEntity>
 {
-    public interface IGenreRepository : IRepository<GenreEntity> 
-    {
-    }
 }

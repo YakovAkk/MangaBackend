@@ -4,93 +4,92 @@ using Services.DTO;
 using Services.ExtensionMapper;
 using Services.Services.Base;
 
-namespace Services.Services
+namespace Services.Services;
+
+public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 {
-    public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
+    public GenreService(IGenreRepository repository) : base(repository) { }
+    public override async Task<GenreEntity> AddAsync(GenreDTO item)
     {
-        public GenreService(IGenreRepository repository) : base(repository) { }
-        public override async Task<GenreEntity> AddAsync(GenreDTO item)
+        if (item == null)
         {
-            if (item == null)
-            {
-                throw new Exception("The item was null");
-            }
-
-            var model = item.toEntity();
-
-            try
-            {
-                return await _repository.CreateAsync(model);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            
+            throw new Exception("The item was null");
         }
-        public override async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
+
+        var model = item.toEntity();
+
+        try
         {
-            if (list == null)
-            {
-                throw new Exception("list was null");
-            }
-
-            var listModels = new List<GenreEntity>();
-
-            foreach (var item in list)
-            {
-                var genre = item.toEntity();
-
-                listModels.Add(genre);
-            }
-
-            return await _repository.AddRange(listModels);
+            return await _repository.CreateAsync(model);
         }
-        public override async Task<IList<GenreEntity>> GetAllAsync()
+        catch (Exception ex)
         {
-            return await _repository.GetAllAsync();
+            throw new Exception(ex.Message);
         }
-        public override async Task<GenreEntity> GetByIdAsync(string id)
+        
+    }
+    public override async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
+    {
+        if (list == null)
         {
-            if (String.IsNullOrEmpty(id))
-            {
-                throw new Exception("Id was null or empty");
-            }
-
-            try
-            {
-                return await _repository.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            
+            throw new Exception("list was null");
         }
-        public async override Task<GenreEntity> UpdateAsync(GenreDTO item)
+
+        var listModels = new List<GenreEntity>();
+
+        foreach (var item in list)
         {
-            if (item == null)
-            {
-                throw new Exception("Item was null");
-            }
+            var genre = item.toEntity();
 
-            if (String.IsNullOrEmpty(item.Id))
-            {
-                throw new Exception("Id was null or empty");
-            }
+            listModels.Add(genre);
+        }
 
-            try
-            {
-                var genre = await _repository.GetByIdAsync(item.Id);
+        return await _repository.AddRange(listModels);
+    }
+    public override async Task<IList<GenreEntity>> GetAllAsync()
+    {
+        return await _repository.GetAllAsync();
+    }
+    public override async Task<GenreEntity> GetByIdAsync(string id)
+    {
+        if (String.IsNullOrEmpty(id))
+        {
+            throw new Exception("Id was null or empty");
+        }
 
-                genre = item.toEntity();
+        try
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        
+    }
+    public async override Task<GenreEntity> UpdateAsync(GenreDTO item)
+    {
+        if (item == null)
+        {
+            throw new Exception("Item was null");
+        }
 
-                return await _repository.UpdateAsync(genre);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+        if (String.IsNullOrEmpty(item.Id))
+        {
+            throw new Exception("Id was null or empty");
+        }
+
+        try
+        {
+            var genre = await _repository.GetByIdAsync(item.Id);
+
+            genre = item.toEntity();
+
+            return await _repository.UpdateAsync(genre);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

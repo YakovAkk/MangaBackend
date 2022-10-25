@@ -1,7 +1,6 @@
-﻿namespace Services.DTO.Base
+﻿namespace Services.DTO.Base;
+
+public interface IModelDTO
 {
-    public interface IModelDTO
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

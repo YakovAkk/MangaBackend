@@ -2,9 +2,8 @@
 using Services.Response;
 
 
-namespace Services.Wrappers.Base
+namespace Services.Wrappers.Base;
+
+public interface IWrapperMangaService : IWrapperResponseService<ResponseModel, MangaEntity>
 {
-    public interface IWrapperMangaService : IWrapperResponseService<ResponseModel, MangaEntity>
-    {
-    }
 }

@@ -20,7 +20,7 @@ public class NotificationController : ControllerBase
 
     [Route("send")]
     [HttpPost]
-    public async Task<IActionResult> SendNotification([FromBody] notificationTempDTO notificationTempDTO )
+    public async Task<IActionResult> SendNotification([FromBody] notificationTempDTO notificationTempDTO)
     {
         var notificationModel = new NotificationModel()
         {
@@ -33,5 +33,5 @@ public class NotificationController : ControllerBase
         return Ok(result);
     }
 }
-    
+
 
