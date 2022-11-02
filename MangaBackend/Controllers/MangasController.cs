@@ -1,6 +1,6 @@
-﻿using MangaBackend.LogsTools;
-using MangaBackend.LogsTools.Base;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.LogsTools;
+using Repositories.LogsTools.Base;
 using Services.Response;
 using Services.Services.Base;
 using Services.StatusCode;

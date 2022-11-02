@@ -17,8 +17,8 @@ using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
 using CorePush.Apple;
-using MangaBackend.LogsTools.Base;
-using MangaBackend.LogsTools;
+using Repositories.LogsTools.Base;
+using Repositories.LogsTools;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");

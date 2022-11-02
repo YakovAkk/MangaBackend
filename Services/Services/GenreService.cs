@@ -1,4 +1,7 @@
 ﻿using Data.Entities;
+using Microsoft.Extensions.Logging;
+using Repositories.LogsTools;
+using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.ExtensionMapper;
@@ -8,11 +11,21 @@ namespace Services.Services;
 
 public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 {
-    public GenreService(IGenreRepository repository) : base(repository) { }
+    private readonly ILogger<GenreService> _logger;
+    private readonly ITool _logTool;
+    public GenreService(IGenreRepository repository, ILogger<GenreService> logger, ITool tool ) : base(repository) 
+    {
+        _logger = logger;
+        _logTool = tool;
+    }
     public override async Task<GenreEntity> AddAsync(GenreDTO item)
     {
+        _logTool.NameOfMethod = nameof(AddAsync);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"{item}");
+
         if (item == null)
         {
+
             throw new Exception("The item was null");
         }
 

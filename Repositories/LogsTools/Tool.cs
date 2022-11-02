@@ -1,6 +1,7 @@
-﻿using MangaBackend.LogsTools.Base;
+﻿using Microsoft.Extensions.Logging;
+using Repositories.LogsTools.Base;
 
-namespace MangaBackend.LogsTools
+namespace Repositories.LogsTools
 {
     public class Tool : ITool
     {
@@ -49,7 +50,6 @@ namespace MangaBackend.LogsTools
                 default:
                     break;
             }
-            
         }
     }
 }
