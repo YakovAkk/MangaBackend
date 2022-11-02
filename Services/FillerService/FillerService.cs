@@ -9,7 +9,6 @@ public class FillerService : IFillerService
 {
     private readonly IMangaService _mangaService;
     private readonly IGenreService _genreService;
-
     public FillerService(IMangaService mangaService, IGenreService genreService)
     {
         _mangaService = mangaService;

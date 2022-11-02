@@ -17,6 +17,8 @@ using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
 using CorePush.Apple;
+using MangaBackend.LogsTools.Base;
+using MangaBackend.LogsTools;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -41,6 +43,9 @@ try
     builder.Services.AddTransient<IFillerService, FillerService>();
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
+
+    builder.Services.AddTransient<ITool, Tool>();
+
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MangaBackend.LogsTools;
+using MangaBackend.LogsTools.Base;
+using Microsoft.AspNetCore.Mvc;
 using Services.Response;
 using Services.Services.Base;
 using Services.StatusCode;
@@ -12,24 +14,31 @@ public class MangasController : ControllerBase
 {
     private readonly IWrapperMangaService _wrapper;
     private readonly ILogger<MangasController> _logger;
-
+    private readonly ITool _logTool;
     private readonly IMangaService _mangaService;
 
-    public MangasController(IMangaService mangaService, ILogger<MangasController> logger, IWrapperMangaService wrapper)
+    public MangasController(IMangaService mangaService, ILogger<MangasController> logger,
+        IWrapperMangaService wrapper, ITool tool)
     {
         _mangaService = mangaService;
         _logger = logger;
         _wrapper = wrapper;
+        _logTool = tool;
     }
 
     [HttpGet("favorite")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetfavoriteMangas()
     {
+        _logTool.NameOfMethod = nameof(GetfavoriteMangas);
+
+        _logTool.WriteToLog(_logger, LogPosition.Begin);
 
         var result = await _mangaService.GetAllFavoriteAsync();
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+        _logTool.WriteToLog(_logger, LogPosition.End, result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -37,22 +46,26 @@ public class MangasController : ControllerBase
         }
 
         return Ok(wrapperResult);
-
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
+        _logTool.NameOfMethod = nameof(GetAll);
+
+        _logTool.WriteToLog(_logger, LogPosition.Begin);
+
         var result = await _mangaService.GetAllAsync();
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
+        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+
         if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {
+        {    
             return NotFound(wrapperResult);
         }
-
         return Ok(wrapperResult);
     }
 
@@ -60,16 +73,22 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> getMangaById([FromRoute] string Id)
     {
+        _logTool.NameOfMethod = nameof(getMangaById);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+
         try
         {
             var result = await _mangaService.GetByIdAsync(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -78,6 +97,8 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
     {
+        _logTool.NameOfMethod = nameof(GetCertainNumber);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"pagesize = {pagesize}, page = {page} ");
         var pageSize = 0;
 
         var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
@@ -90,6 +111,9 @@ public class MangasController : ControllerBase
                 ErrorMessage = "Incorrect number of pagesize",
                 StatusCode = CodeStatus.ErrorWithData
             };
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)message.StatusCode} {message}");
+
             return BadRequest(message);
         }
 
@@ -105,12 +129,17 @@ public class MangasController : ControllerBase
                 ErrorMessage = "Incorrect number of page",
                 StatusCode = CodeStatus.ErrorWithData
             };
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)message.StatusCode} {message}");
             return BadRequest(message);
         }
 
         var result = await _mangaService.GetCertainPage(pageSize, numberOfPage);
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+        _logTool.WriteToLog(_logger, LogPosition.End, 
+            result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -142,16 +171,21 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
     {
+        _logTool.NameOfMethod = nameof(AddMangaToFavorite);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
         try
         {
             var result = await _mangaService.AddToFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -160,17 +194,21 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
     {
+        _logTool.NameOfMethod = nameof(FiltrarionMangaByName);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Name = {name}");
         try
         {
             var result = await _mangaService.FiltrationByName(name);
-
             var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            _logTool.WriteToLog(_logger, LogPosition.End,
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -179,6 +217,8 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
     {
+        _logTool.NameOfMethod = nameof(FiltrarionMangaByDate);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Year = {year}");
         var yearnum = 0;
 
         var IsCanParsePageSize = Int32.TryParse(year, out yearnum);
@@ -191,6 +231,8 @@ public class MangasController : ControllerBase
                 ErrorMessage = "Incorrect year",
                 StatusCode = CodeStatus.ErrorWithData
             };
+            _logTool.WriteToLog(_logger, LogPosition.End,
+                result: $"Status Code = {(int)message.StatusCode} {message}");
             return BadRequest(message);
         }
 
@@ -198,11 +240,13 @@ public class MangasController : ControllerBase
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
+        _logTool.WriteToLog(_logger, LogPosition.End,
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
             return BadRequest(wrapperResult);
         }
-
         return Ok(wrapperResult);
     }
 
@@ -246,16 +290,21 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
     {
+        _logTool.NameOfMethod = nameof(DeletGenreById);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
         try
         {
             var result = await _mangaService.RemoveFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
+            _logTool.WriteToLog(_logger, LogPosition.End, 
+                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
