@@ -3,5 +3,6 @@
 public enum LogPosition
 {
     Begin,
-    End
+    End,
+    Error
 }

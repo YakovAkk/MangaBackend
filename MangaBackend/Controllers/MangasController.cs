@@ -38,7 +38,7 @@ public class MangasController : ControllerBase
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -60,7 +60,7 @@ public class MangasController : ControllerBase
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        _logTool.WriteToLog(_logger, LogPosition.End,  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {    
@@ -71,24 +71,24 @@ public class MangasController : ControllerBase
 
     [HttpGet("{Id}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> getMangaById([FromRoute] string Id)
+    public async Task<IActionResult> GetMangaById([FromRoute] string Id)
     {
-        _logTool.NameOfMethod = nameof(getMangaById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.NameOfMethod = nameof(GetMangaById);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
 
         try
         {
             var result = await _mangaService.GetByIdAsync(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -98,7 +98,7 @@ public class MangasController : ControllerBase
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
     {
         _logTool.NameOfMethod = nameof(GetCertainNumber);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"pagesize = {pagesize}, page = {page} ");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"pagesize = {pagesize}, page = {page} ");
         var pageSize = 0;
 
         var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
@@ -112,7 +112,7 @@ public class MangasController : ControllerBase
                 StatusCode = CodeStatus.ErrorWithData
             };
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)message.StatusCode} {message}");
+                 $"Status Code = {(int)message.StatusCode} {message}");
 
             return BadRequest(message);
         }
@@ -130,7 +130,7 @@ public class MangasController : ControllerBase
                 StatusCode = CodeStatus.ErrorWithData
             };
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)message.StatusCode} {message}");
+                 $"Status Code = {(int)message.StatusCode} {message}");
             return BadRequest(message);
         }
 
@@ -139,7 +139,7 @@ public class MangasController : ControllerBase
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
         _logTool.WriteToLog(_logger, LogPosition.End, 
-            result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+             $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -172,20 +172,20 @@ public class MangasController : ControllerBase
     public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
     {
         _logTool.NameOfMethod = nameof(AddMangaToFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
             var result = await _mangaService.AddToFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -195,20 +195,20 @@ public class MangasController : ControllerBase
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
     {
         _logTool.NameOfMethod = nameof(FiltrarionMangaByName);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Name = {name}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Name = {name}");
         try
         {
             var result = await _mangaService.FiltrationByName(name);
             var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
             _logTool.WriteToLog(_logger, LogPosition.End,
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -218,7 +218,7 @@ public class MangasController : ControllerBase
     public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
     {
         _logTool.NameOfMethod = nameof(FiltrarionMangaByDate);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Year = {year}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Year = {year}");
         var yearnum = 0;
 
         var IsCanParsePageSize = Int32.TryParse(year, out yearnum);
@@ -232,7 +232,7 @@ public class MangasController : ControllerBase
                 StatusCode = CodeStatus.ErrorWithData
             };
             _logTool.WriteToLog(_logger, LogPosition.End,
-                result: $"Status Code = {(int)message.StatusCode} {message}");
+                $"Status Code = {(int)message.StatusCode} {message}");
             return BadRequest(message);
         }
 
@@ -241,7 +241,7 @@ public class MangasController : ControllerBase
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
         _logTool.WriteToLog(_logger, LogPosition.End,
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -291,20 +291,20 @@ public class MangasController : ControllerBase
     public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
     {
         _logTool.NameOfMethod = nameof(DeletGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
             var result = await _mangaService.RemoveFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+               $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
-                result: $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }

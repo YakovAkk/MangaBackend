@@ -27,25 +27,22 @@ namespace Repositories.LogsTools
             _logger = logger;
         }
 
-        public void WriteToLog(ILogger logger, LogPosition logPosition, string result = "", string parameters="")
+        public void WriteToLog(ILogger logger, LogPosition logPosition, string message = "")
         {
             if(logger == null)
             {
                 _logger.LogError("Logger is null");
                 throw new Exception(nameof(logger));
             }
-            if(logPosition == null)
-            {
-                _logger.LogError("LogPosition is null");
-                throw new Exception("LogPosition is null");
-            }
+
             switch (logPosition)
             {
                 case LogPosition.Begin:
-                    logger.LogDebug($"{NameOfMethod} was begun with parameters: {parameters}");
-                    break;
                 case LogPosition.End:
-                    logger.LogDebug($"{NameOfMethod} was ended with result: {result}");
+                    logger.LogDebug($"{NameOfMethod} {logPosition.ToString()} with {message}");
+                    break;
+                case LogPosition.Error:
+                    logger.LogError($"{NameOfMethod} ended with {logPosition.ToString()}: {message}");
                     break;
                 default:
                     break;

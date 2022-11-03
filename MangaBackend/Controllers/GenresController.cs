@@ -38,14 +38,11 @@ public class GenresController : ControllerBase
         var result = await _genreService.GetAllFavoriteAsync();
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-
+        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
         if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        {  
             return NotFound(wrapperResult);
         }
-
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
         return Ok(wrapperResult);
     }
 
@@ -54,7 +51,7 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
     {
         _logTool.NameOfMethod = nameof(GetCertainNumber);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"pagesize = {pagesize}, page = {page} ");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"pagesize = {pagesize}, page = {page} ");
         var pageSize = 0;
 
         var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
@@ -68,7 +65,7 @@ public class GenresController : ControllerBase
                 StatusCode = CodeStatus.ErrorWithData
             };
 
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{message.ErrorMessage}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)message.StatusCode} {message.ErrorMessage}");
 
             return BadRequest(message);
         }
@@ -86,15 +83,14 @@ public class GenresController : ControllerBase
                 StatusCode = CodeStatus.ErrorWithData
             };
 
-            _logTool.WriteToLog(_logger, LogPosition.End,
-            result: $"{message.ErrorMessage}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)message.StatusCode} {message.ErrorMessage}");
             return BadRequest(message);
         }
 
         var result = await _genreService.GetCertainPage(pageSize, numberOfPage);
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode}{wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -116,11 +112,10 @@ public class GenresController : ControllerBase
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
 
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
-            
             return NotFound(wrapperResult);
         }
 
@@ -132,18 +127,18 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> GetGenreById([FromRoute] string Id)
     {
         _logTool.NameOfMethod = nameof(GetGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
             var result = await _genreService.GetByIdAsync(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -171,18 +166,18 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
     {
         _logTool.NameOfMethod = nameof(AddGenreToFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
             var result = await _genreService.AddToFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
@@ -192,18 +187,18 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
         _logTool.NameOfMethod = nameof(FiltrarionGenreByName);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"name = {name}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"name = {name}");
 
         var result = await _genreService.FiltrationByName(name);
 
         var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        { 
             return BadRequest(wrapperResult);
         }
-        _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+        
         return Ok(wrapperResult);
     }
 
@@ -212,18 +207,18 @@ public class GenresController : ControllerBase
     public async Task<IActionResult> DeleteFavoriteGenreById([FromRoute] string Id)
     {
         _logTool.NameOfMethod = nameof(DeleteFavoriteGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, parameters: $"Id = {Id}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
             var result = await _genreService.RemoveFavorite(Id);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, result: $"{wrapperResult}");
+            _logTool.WriteToLog(_logger, LogPosition.End,  $" Status Code = {(int)wrapperResult.StatusCode}{wrapperResult}");
             return NotFound(wrapperResult);
         }
     }

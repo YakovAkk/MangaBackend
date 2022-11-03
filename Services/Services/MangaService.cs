@@ -1,4 +1,7 @@
 ﻿using Data.Entities;
+using Microsoft.Extensions.Logging;
+using Repositories.LogsTools;
+using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.ExtensionMapper;
@@ -12,28 +15,38 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     private readonly ILocalStorage _localStorage;
     private readonly IGenreRepository _genreRepository;
     private readonly IMangaRepository _mangaRepository;
+    private readonly ILogger<GenreService> _logger;
+    private readonly ITool _logTool;
     public MangaService(
         IMangaRepository repository,
         IGenreRepository genreRepository, 
-        ILocalStorage localStorage) : base(repository)
+        ILocalStorage localStorage, ILogger<GenreService> logger, ITool tool) : base(repository)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
         _localStorage = localStorage;
+        _logger = logger;
+        _logTool = tool;
     }
 
     public override async Task<MangaEntity> AddAsync(MangaDTO item)
     {
+        _logTool.NameOfMethod = nameof(AddAsync);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{item}");
         if (item == null)
         {
-            throw new Exception("The item was null");
+            var errorMessage = "The item was null";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
         if (!genres.Any())
         {
-            throw new Exception("The database doesn't contain the genres");
+            var errorMessage = "The database doesn't contain the genres";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var model = item.toEntity(genres);
@@ -44,21 +57,29 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         catch (Exception ex)
         {
+            
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }
     }
     public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
     {
+        _logTool.NameOfMethod = nameof(AddGenresToManga);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{mangaDTO}");
         if (mangaDTO == null)
         {
-            throw new Exception("The item was null");
+            var errorMessage = "The item was null";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var manga = await _mangaRepository.GetByIdAsync(mangaDTO.MangaId);
 
         if (manga == null)
         {
-            throw new Exception("The manga isn't contained in the database!");
+            var errorMessage = "The manga isn't contained in the database!";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var allGenres = await _genreRepository.GetAllAsync();
@@ -67,7 +88,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         if (!genres.Any())
         {
-            throw new Exception("The genres are incorrect");
+            var errorMessage = "The genres are incorrect";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         manga.Genres.AddRange(genres);
@@ -79,14 +102,20 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         catch (Exception ex)
         {
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }  
     }
     public async override Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
     {
-        if(list == null)
+        _logTool.NameOfMethod = nameof(AddRange);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{list}");
+
+        if (list == null)
         {
-            throw new Exception("The list was null");
+            var errorMessage = "The list was null";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var listModels = new List<MangaEntity>();
@@ -97,6 +126,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
             if (!genres.Any())
             {
+                _logTool.WriteToLog(_logger, LogPosition.End, $"with empty list");
                 return new List<MangaEntity>();
             }
 
@@ -111,6 +141,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         catch (Exception ex)
         {
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }
         
@@ -121,10 +152,8 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         if (!result.Any())
         {
-            var message = new
-            {
-                result = "The Database doesn't have any manga"
-            };
+            _logTool.WriteToLog(_logger, LogPosition.End, $"The Database doesn't have any manga");
+
             return new List<MangaEntity>();
         }
 
@@ -137,13 +166,17 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             }
         }
 
+        _logTool.WriteToLog(_logger, LogPosition.End, $"{result}");
+
         return result;
     }
     public async override Task<MangaEntity> GetByIdAsync(string id)
     {
         if (String.IsNullOrEmpty(id))
         {
-            throw new Exception("Id was null or empty");
+            var errorMessage = "Id was null or empty";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
         try
         {
@@ -160,6 +193,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         catch (Exception ex)
         {
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }
         
@@ -168,19 +202,25 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     {
         if(item == null)
         {
-            throw new Exception("The item was null");
+            var errorMessage = "The item was null";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         if (String.IsNullOrEmpty(item.Id))
         {
-            throw new Exception("Id was null or empty");
+             var errorMessage = "Id was null or empty";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
 
         if (!genres.Any())
         {
-            throw new Exception("The database doesn't contain any genres");
+            var errorMessage = "The database doesn't contain any genres";
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
+            throw new Exception(errorMessage);
         }
 
         try
@@ -192,6 +232,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         catch (Exception ex)
         {
+            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }
     }
