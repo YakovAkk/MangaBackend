@@ -148,6 +148,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     }
     public async override Task<IList<MangaEntity>> GetAllAsync()
     {
+        _logTool.NameOfMethod = nameof(GetAllAsync);
+        _logTool.WriteToLog(_logger, LogPosition.Begin);
+
         var result = await _mangaRepository.GetAllAsync();
 
         if (!result.Any())
@@ -170,9 +173,12 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         return result;
     }
-    public async override Task<MangaEntity> GetByIdAsync(string id)
+    public async override Task<MangaEntity> GetByIdAsync(string Id)
     {
-        if (String.IsNullOrEmpty(id))
+        _logTool.NameOfMethod = nameof(GetByIdAsync);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
+
+        if (String.IsNullOrEmpty(Id))
         {
             var errorMessage = "Id was null or empty";
             _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
@@ -180,7 +186,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         try
         {
-            var result = await _mangaRepository.GetByIdAsync(id);
+            var result = await _mangaRepository.GetByIdAsync(Id);
 
             result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
 
@@ -188,6 +194,8 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             {
                 res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
             }
+
+            _logTool.WriteToLog(_logger, LogPosition.End, $"result = {result}");
 
             return result;
         }
@@ -200,7 +208,10 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     }
     public async override Task<MangaEntity> UpdateAsync(MangaDTO item)
     {
-        if(item == null)
+        _logTool.NameOfMethod = nameof(UpdateAsync);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"item = {item}");
+
+        if (item == null)
         {
             var errorMessage = "The item was null";
             _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
@@ -238,6 +249,18 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     }
     public async Task<List<MangaEntity>> FiltrationByDate(int year)
     {
-        return await _mangaRepository.FiltrationByDate(year);
+        _logTool.NameOfMethod = nameof(FiltrationByDate);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"year = {year}");
+
+        try
+        {
+            return await _mangaRepository.FiltrationByDate(year);
+        }
+        catch (Exception ex)
+        {
+            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
+
+            throw new Exception(ex.Message);
+        }
     }
 }

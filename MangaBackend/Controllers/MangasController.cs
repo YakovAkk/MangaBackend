@@ -236,18 +236,25 @@ public class MangasController : ControllerBase
             return BadRequest(message);
         }
 
-        var result = await _mangaService.FiltrationByDate(yearnum);
-
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-
-        _logTool.WriteToLog(_logger, LogPosition.End,
-                $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        try
         {
-            return BadRequest(wrapperResult);
+            var result = await _mangaService.FiltrationByDate(yearnum);
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
+
+            return Ok(wrapperResult);
         }
-        return Ok(wrapperResult);
+        catch (Exception ex)
+        {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            return NotFound(wrapperResult);
+        }
     }
 
     //[HttpPut]

@@ -189,17 +189,25 @@ public class GenresController : ControllerBase
         _logTool.NameOfMethod = nameof(FiltrarionGenreByName);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"name = {name}");
 
-        var result = await _genreService.FiltrationByName(name);
+        try
+        {
+            var result = await _genreService.FiltrationByName(name);
+            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            {
+                return BadRequest(wrapperResult);
+            }
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
-        { 
-            return BadRequest(wrapperResult);
+            return Ok(wrapperResult);
         }
-        
-        return Ok(wrapperResult);
+        catch (Exception ex)
+        {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            return NotFound(wrapperResult);
+        }
     }
 
     [HttpDelete("set/favorite/{Id}")]

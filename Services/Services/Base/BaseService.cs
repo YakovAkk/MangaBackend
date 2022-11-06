@@ -4,8 +4,8 @@ using Services.DTO.Base;
 
 namespace Services.Services.Base;
 
-public abstract class BaseService<TR, TI> : IService<TR, TI> 
-    where TR : IModel 
+public abstract class BaseService<TR, TI> : IService<TR, TI>
+    where TR : IModel
     where TI : IModelDTO
 {
     protected IRepository<TR> _repository;
@@ -46,7 +46,7 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
         {
             throw new Exception(ex.Message);
         }
-        
+
     }
     public async virtual Task<IList<TR>> GetAllFavoriteAsync()
     {
@@ -83,17 +83,11 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
     }
     public async virtual Task<IList<TR>> FiltrationByName(string name)
     {
-        try
+        if (String.IsNullOrEmpty(name))
         {
-            if (String.IsNullOrEmpty(name))
-            {
-                throw new Exception("Name was null or empty!");
-            } 
-            return await _repository.FiltrationByName(name);
+            throw new Exception("Name was null or empty!");
         }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+
+        return await _repository.FiltrationByName(name);
     }
 }
