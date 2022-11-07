@@ -13,7 +13,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 {
     private readonly ILogger<GenreService> _logger;
     private readonly ITool _logTool;
-    public GenreService(IGenreRepository repository, ILogger<GenreService> logger, ITool tool ) : base(repository) 
+    public GenreService(IGenreRepository repository, ILogger<GenreService> logger, ITool tool ) : base(repository, logger,tool) 
     {
         _logger = logger;
         _logTool = tool;
@@ -21,7 +21,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
     public override async Task<GenreEntity> AddAsync(GenreDTO item)
     {
         _logTool.NameOfMethod = nameof(AddAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{item}");
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"item = {item}");
 
         if (item == null)
         {

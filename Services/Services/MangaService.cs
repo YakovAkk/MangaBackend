@@ -20,7 +20,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     public MangaService(
         IMangaRepository repository,
         IGenreRepository genreRepository, 
-        ILocalStorage localStorage, ILogger<GenreService> logger, ITool tool) : base(repository)
+        ILocalStorage localStorage, ILogger<GenreService> logger, ITool tool) : base(repository,logger,tool)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
