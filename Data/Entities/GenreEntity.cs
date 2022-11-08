@@ -18,4 +18,9 @@ public class GenreEntity : IModel
         IsFavorite = false;
         Mangas = new List<MangaEntity>();
     }
+
+    public override string ToString()
+    {
+        return $"Id = {Id} Name = {Name} IsFavorite = {IsFavorite} Mangas = {Mangas}";
+    }
 }

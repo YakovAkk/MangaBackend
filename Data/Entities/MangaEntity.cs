@@ -24,5 +24,13 @@ public class MangaEntity : IModel
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
         IsFavorite = false;
     }
+
+    public override string ToString()
+    {
+        return $"Id = {Id} Name = {Name} IsFavorite = {IsFavorite} PathToTitlePicture = {PathToTitlePicture} " +
+            $"Description = {Description} ReleaseYear = {ReleaseYear} AgeRating = {AgeRating}" +
+            $"NumbetOfChapters = {NumbetOfChapters} Author = {Author} IsFavorite = {IsFavorite}" +
+            $"Genres = {Genres} PathToFoldersWithGlava = {PathToFoldersWithGlava}";
+    }
 }
 

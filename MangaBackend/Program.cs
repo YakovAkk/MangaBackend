@@ -17,6 +17,10 @@ using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
 using CorePush.Apple;
+using Repositories.LogsTools.Base;
+using Repositories.LogsTools;
+using MangaBackend.Middleware.Extension;
+using MangaBackend.Middleware.MiddlewareClasses;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -41,6 +45,9 @@ try
     builder.Services.AddTransient<IFillerService, FillerService>();
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
+
+    builder.Services.AddTransient<ITool, Tool>();
+
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
@@ -99,6 +106,8 @@ try
 
     var app = builder.Build();
 
+
+
     // Configure the HTTP request pipeline.
 
     app.UseSwagger();
@@ -115,12 +124,14 @@ try
 
     });
 
+    app.UseTiming();
+
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
     app.MapControllers();
-
+   
     app.Run();
 }
 catch (Exception exception)

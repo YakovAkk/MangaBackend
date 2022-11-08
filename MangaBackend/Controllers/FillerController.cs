@@ -9,15 +9,18 @@ namespace MangaBackend.Controllers;
 public class FillerController : ControllerBase
 {
     private readonly IFillerService _fillerService;
-
-    public FillerController(IFillerService fillerService)
+    private readonly ILogger<FillerController> _logger;
+    public FillerController(IFillerService fillerService, ILogger<FillerController> logger)
     {
         _fillerService = fillerService;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> FillTheDatabase()
     {
+        _logger.LogDebug("FillTheDatabase was begun to fill database");
+
         var resultGenres = await _fillerService.AddGenres();
 
         var result = new ResponseFillDTO
@@ -30,6 +33,7 @@ public class FillerController : ControllerBase
         {
             result.IsSuccess = false;
             result.MessageWhatWrong += $"Genres wasn't added because {resultGenres.MessageWhatWrong}";
+            _logger.LogDebug($"Genres wasn't added because {resultGenres.MessageWhatWrong} ");
         }
 
         var resultMangas = await _fillerService.AddMangas();
@@ -37,13 +41,16 @@ public class FillerController : ControllerBase
         if (!resultMangas.IsSuccess)
         {
             result.IsSuccess = false;
-            result.MessageWhatWrong += $"      Mangas wasn't added because {resultMangas.MessageWhatWrong}";
+            result.MessageWhatWrong += $" Mangas wasn't added because {resultMangas.MessageWhatWrong}";
+            _logger.LogDebug($"Mangas wasn't added because {resultMangas.MessageWhatWrong}");
         }
 
         if (!result.IsSuccess)
         {
             return BadRequest(result);
         }
+
+        _logger.LogDebug($"FillTheDatabase was ended to fill database");
 
         return Ok(result);
     }
