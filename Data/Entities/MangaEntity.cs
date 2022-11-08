@@ -30,7 +30,7 @@ public class MangaEntity : IModel
         return $"Id = {Id} Name = {Name} IsFavorite = {IsFavorite} PathToTitlePicture = {PathToTitlePicture} " +
             $"Description = {Description} ReleaseYear = {ReleaseYear} AgeRating = {AgeRating}" +
             $"NumbetOfChapters = {NumbetOfChapters} Author = {Author} IsFavorite = {IsFavorite}" +
-            $"Genres = {Genres} PathToFoldersWithGlava = {PathToFoldersWithGlavas}";
+            $"Genres = {Genres} PathToFoldersWithGlava = {PathToFoldersWithGlava}";
     }
 }
 

@@ -19,6 +19,8 @@ using CorePush.Google;
 using CorePush.Apple;
 using Repositories.LogsTools.Base;
 using Repositories.LogsTools;
+using MangaBackend.Middleware.Extension;
+using MangaBackend.Middleware.MiddlewareClasses;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -104,6 +106,8 @@ try
 
     var app = builder.Build();
 
+
+
     // Configure the HTTP request pipeline.
 
     app.UseSwagger();
@@ -120,12 +124,21 @@ try
 
     });
 
+    //app.Use(async (ctx, next) =>
+    //{
+    //    var start = DateTime.Now;
+    //    await next.Invoke(ctx);
+    //    app.Logger.LogInformation($"resuest {ctx.Request.Path}: {(DateTime.Now - start).TotalMilliseconds}");
+    //});
+
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
     app.MapControllers();
 
+    //app.UseResponseTime();
+   
     app.Run();
 }
 catch (Exception exception)
