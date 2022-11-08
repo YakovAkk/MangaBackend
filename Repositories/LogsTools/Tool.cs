@@ -6,22 +6,8 @@ namespace Repositories.LogsTools
     public class Tool : ITool
     {
         private readonly ILogger<Tool> _logger;
-        public string NameOfMethod
-        {
-            get
-            {
-                return NameOfMethod;
-            }
+        public string NameOfMethod { get; set; }
 
-            set
-            {
-                if (value == null)
-                {
-                    _logger.LogError("Name is null");
-                    throw new ArgumentNullException("Name can't be null");
-                }
-                NameOfMethod = value;
-            } }
         public Tool(ILogger<Tool> logger)
         {
             _logger = logger;
@@ -39,7 +25,7 @@ namespace Repositories.LogsTools
             {
                 case LogPosition.Begin:
                 case LogPosition.End:
-                    logger.LogDebug($"{NameOfMethod} {logPosition.ToString()} with {message}");
+                    logger.LogDebug($"{NameOfMethod} {logPosition} with {message}");
                     break;
                 case LogPosition.Error:
                     logger.LogError($"{NameOfMethod} ended with {logPosition.ToString()}: {message}");

@@ -4,9 +4,10 @@ namespace MangaBackend.Middleware.Extension
 {
     public static class MiddlewareExtensions
     {
-        public static IApplicationBuilder UseResponseTime(this IApplicationBuilder app)
+        public static IApplicationBuilder UseTiming(this IApplicationBuilder app)
         {
-            return app.UseMiddleware<ResponseTimeMiddleware>();
+            return app.UseMiddleware<TimingMiddleware>();
         }
+
     }
 }

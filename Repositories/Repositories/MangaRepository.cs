@@ -276,7 +276,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
         _logTool.NameOfMethod = nameof(FiltrationByName);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"name = {name}");
 
-        var result = await _db.Mangas.Include(i => i.Genres)
+        var result = await _db.Mangas
             .Include(i=> i.PathToFoldersWithGlava)
             .Where(i => i.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
