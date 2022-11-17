@@ -66,7 +66,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     {
         _logTool.NameOfMethod = nameof(AddGenresToManga);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"{mangaDTO}");
-        if (mangaDTO == null)
+        if (mangaDTO == null || mangaDTO?.MangaId == null)
         {
             var errorMessage = "The item was null";
             _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");

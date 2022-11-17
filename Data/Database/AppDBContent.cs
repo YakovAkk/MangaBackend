@@ -5,6 +5,7 @@ namespace Data.Database;
 
 public class AppDBContent : DbContext
 {
+    public DbSet<UserEntity> Users { get; set; }
     public DbSet<GlavaMangaEntity> GlavaManga { get; set; }
     public DbSet<MangaEntity> Mangas { get; set; }
     public DbSet<GenreEntity> Genres { get; set; }

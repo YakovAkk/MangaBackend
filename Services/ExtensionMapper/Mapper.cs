@@ -13,7 +13,6 @@ public static class Mapper
             Name = dto.Name
         };
     }
-
     public static MangaEntity toEntity(this MangaDTO dto, List<GenreEntity> genres)
     {
         return new MangaEntity()
@@ -31,4 +30,13 @@ public static class Mapper
             Genres = genres
         };
     }
+    public static UserEntity toEntity(this UserDTORegistration dto)
+    {
+        return new UserEntity()
+        {
+            DeviceToken = dto.DeviceToken,
+            Name = dto.Name,
+        };
+    }
+
 }
