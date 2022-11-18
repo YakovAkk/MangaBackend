@@ -26,6 +26,7 @@ public class UserRepository : IUserRespository
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"UserEntity = {user}");
 
         var userAdded = await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync();
 
         if(userAdded == null)
         {
@@ -106,11 +107,11 @@ public class UserRepository : IUserRespository
 
         return userResult;
     }
-    public async Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, GenreEntity genre)
+    public async Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, List<GenreEntity> genres)
     {
         var userAddToList = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
 
-        userAddToList.FavoriteGenres.Add(genre);
+        userAddToList.FavoriteGenres.AddRange(genres);
 
         await _db.SaveChangesAsync();
 
@@ -125,11 +126,11 @@ public class UserRepository : IUserRespository
 
         return userAddToList;
     }
-    public async Task<UserEntity> AddMangaToFavoriteAsync(UserEntity user, MangaEntity manga)
+    public async Task<UserEntity> AddMangaToFavoriteAsync(UserEntity user, List<MangaEntity> mangas)
     {
         var userAddToList = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
 
-        userAddToList.FavoriteMangas.Add(manga);
+        userAddToList.FavoriteMangas.AddRange(mangas);
 
         await _db.SaveChangesAsync();
 

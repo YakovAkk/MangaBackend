@@ -26,28 +26,6 @@ public class MangasController : ControllerBase
         _logTool = tool;
     }
 
-    [HttpGet("favorite")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetfavoriteMangas()
-    {
-        _logTool.NameOfMethod = nameof(GetfavoriteMangas);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        var result = await _mangaService.GetAllFavoriteAsync();
-
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-
-        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {
-            return NotFound(wrapperResult);
-        }
-
-        return Ok(wrapperResult);
-    }
-
     [HttpGet]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
@@ -167,29 +145,6 @@ public class MangasController : ControllerBase
     //    }
     //}
 
-    [HttpPost("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
-    {
-        _logTool.NameOfMethod = nameof(AddMangaToFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-        try
-        {
-            var result = await _mangaService.AddToFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, 
-                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, 
-                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return NotFound(wrapperResult);
-        }
-    }
-
     [HttpPost("filtrarionbyname/{name}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
@@ -293,26 +248,4 @@ public class MangasController : ControllerBase
     //    }
     //}
 
-    [HttpDelete("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
-    {
-        _logTool.NameOfMethod = nameof(DeletGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-        try
-        {
-            var result = await _mangaService.RemoveFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, 
-               $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, 
-                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return NotFound(wrapperResult);
-        }
-    }
 }

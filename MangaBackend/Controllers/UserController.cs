@@ -28,7 +28,7 @@ public class UserController : ControllerBase
         _logTool = logTool;
     }
 
-    [HttpPost]
+    [HttpPost("registration")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Registration([FromBody] UserDTORegistration user)
     {
@@ -52,7 +52,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] UserDTOLogin user)
     {
@@ -86,13 +86,13 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("addgenretofavorite")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFaforite([FromBody] string user_Id, string genre_Id)
+    public async Task<IActionResult> AddGenreToFaforite([FromBody] AddTOFavoriteDTO addTOFavoriteDTO)
     {
         try
         {
-            var result = await _userService.AddGenreToFavoriteAsync(user_Id, genre_Id);
+            var result = await _userService.AddGenreToFavoriteAsync(addTOFavoriteDTO);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
             return Ok(wrapperResult);
         }
@@ -103,13 +103,13 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("addmangatofavorite")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFaforite([FromBody] string user_Id, string manga_Id)
+    public async Task<IActionResult> AddMangaToFaforite([FromBody] AddTOFavoriteDTO addTOFavoriteDTO)
     {
         try
         {
-            var result = await _userService.AddMangaToFavoriteAsync(user_Id, manga_Id);
+            var result = await _userService.AddMangaToFavoriteAsync(addTOFavoriteDTO);
             var wrapperResult = _wrapper.WrapTheResponseModel(result);
             return Ok(wrapperResult);
         }
@@ -119,4 +119,6 @@ public class UserController : ControllerBase
             return NotFound(wrapperResult);
         }
     }
+
+
 }

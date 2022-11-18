@@ -8,9 +8,6 @@ public interface IService<TReturn, TInput>
     where TInput : IModelDTO
 {
     Task<IList<TReturn>> FiltrationByName(string name);
-    Task<TReturn> RemoveFavorite(string Id);
-    Task<TReturn> AddToFavorite(string Id);
-    Task<IList<TReturn>> GetAllFavoriteAsync();
     Task<IList<TReturn>> GetCertainPage(int sizeOfPage, int page);
     Task<IList<TReturn>> AddRange(IList<TInput> list);
     Task<TReturn> AddAsync(TInput item);

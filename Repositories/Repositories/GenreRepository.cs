@@ -188,69 +188,6 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
 
         return list;
     }
-    public async override Task<IList<GenreEntity>> GetAllFavoriteAsync()
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        var list = await _db.Genres.Where(i => i.IsFavorite).ToListAsync();
-
-        if (list == null)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.End, $"The list is empty");
-            return new List<GenreEntity>();
-        }
-
-        _logTool.WriteToLog(_logger, LogPosition.End, $"list = {list}");
-
-        return list;
-    }
-    public async override Task<GenreEntity> AddToFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(AddToFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-
-        try
-        {
-            var genre = await GetByIdAsync(Id);
-
-            genre.IsFavorite = true;
-
-            await UpdateAsync(genre);
-
-            await _db.SaveChangesAsync();
-
-            return await GetByIdAsync(genre.Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
-    public async override Task<GenreEntity> RemoveFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(RemoveFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-
-        try
-        {
-            var genre = await GetByIdAsync(Id);
-
-            genre.IsFavorite = false;
-
-            await UpdateAsync(genre);
-
-            await _db.SaveChangesAsync();
-
-            return await GetByIdAsync(genre.Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
     public async override Task<IList<GenreEntity>> FiltrationByName(string name)
     {
         _logTool.NameOfMethod = nameof(FiltrationByName);

@@ -20,7 +20,6 @@ using CorePush.Apple;
 using Repositories.LogsTools.Base;
 using Repositories.LogsTools;
 using MangaBackend.Middleware.Extension;
-using MangaBackend.Middleware.MiddlewareClasses;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -37,8 +36,12 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
+    builder.Services.AddTransient<IUserRespository, UserRepository>();
+    builder.Services.AddTransient<IUserService, UserService>();
+
     builder.Services.AddTransient<IWrapperGenreService, WrapperResponseGenreService>();
     builder.Services.AddTransient<IWrapperMangaService, WrapperResponseMangaService>();
+    builder.Services.AddTransient<IWrapperUserService, WrapperUserService>();
 
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 

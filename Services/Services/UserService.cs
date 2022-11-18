@@ -79,29 +79,49 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
-    public async Task<UserEntity> AddGenreToFavoriteAsync(string user_Id, string genre_Id)
+    public async Task<UserEntity> AddGenreToFavoriteAsync(AddTOFavoriteDTO addTOFavoriteDTO)
     {
-        if(user_Id == null)
+        if(addTOFavoriteDTO == null)
+        {
+            var errorMessage = "addTOFavoriteDTO is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if(addTOFavoriteDTO.user_Id == null)
         {
             var errorMessage = "user_Id is null";
 
             throw new ArgumentNullException(errorMessage);
         }
 
-        if (genre_Id == null)
+        if (addTOFavoriteDTO.items_Id == null)
         {
-            var errorMessage = "genre_Id is null";
+            var errorMessage = "genres_Id is null";
 
             throw new ArgumentNullException(errorMessage);
         }
 
         try
         {
-            var user = await _userRespository.GetByIdAsync(user_Id);
-            var genre = await _genreRepository.GetByIdAsync(genre_Id);
+            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
 
-            var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
+            List<GenreEntity> genres = new List<GenreEntity>();
 
+            foreach (var item in addTOFavoriteDTO.items_Id)
+            {
+                try
+                {
+                    var genre = await _genreRepository.GetByIdAsync(item);
+                    genres.Add(genre);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genres);
             return userResult;
         }
         catch (Exception ex)
@@ -110,28 +130,49 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
-    public async Task<UserEntity> AddMangaToFavoriteAsync(string user_Id, string manga_Id)
+    public async Task<UserEntity> AddMangaToFavoriteAsync(AddTOFavoriteDTO addTOFavoriteDTO)
     {
-        if (user_Id == null)
+        if (addTOFavoriteDTO == null)
+        {
+            var errorMessage = "addTOFavoriteDTO is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (addTOFavoriteDTO.user_Id == null)
         {
             var errorMessage = "user_Id is null";
 
             throw new ArgumentNullException(errorMessage);
         }
 
-        if (manga_Id == null)
+        if (addTOFavoriteDTO.items_Id == null)
         {
-            var errorMessage = "genre_Id is null";
+            var errorMessage = "mangas_Id is null";
 
             throw new ArgumentNullException(errorMessage);
         }
 
         try
         {
-            var user = await _userRespository.GetByIdAsync(user_Id);
-            var manga = await _mangaRepository.GetByIdAsync(manga_Id);
+            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
 
-            var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
+            List<MangaEntity> mangas = new List<MangaEntity>();
+
+            foreach (var item in addTOFavoriteDTO.items_Id)
+            {
+                try
+                {
+                    var manga = await _mangaRepository.GetByIdAsync(item);
+                    mangas.Add(manga);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            var userResult = await _userRespository.AddMangaToFavoriteAsync(user, mangas);
 
             return userResult;
         }

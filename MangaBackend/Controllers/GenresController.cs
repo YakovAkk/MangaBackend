@@ -27,25 +27,6 @@ public class GenresController : ControllerBase
         _logTool = tool;
     }
 
-
-
-    [HttpGet("favorite")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetfavoriteGentes()
-    {
-        _logTool.NameOfMethod = nameof(GetfavoriteGentes);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-        var result = await _genreService.GetAllFavoriteAsync();
-
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {  
-            return NotFound(wrapperResult);
-        }
-        return Ok(wrapperResult);
-    }
-
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
@@ -161,27 +142,6 @@ public class GenresController : ControllerBase
     //    }
     //}
 
-    [HttpPost("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFavorite([FromRoute] string Id)
-    {
-        _logTool.NameOfMethod = nameof(AddGenreToFavorite);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-        try
-        {
-            var result = await _genreService.AddToFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return NotFound(wrapperResult);
-        }
-    }
-
     [HttpPost("filtrarion/{name}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
@@ -206,27 +166,6 @@ public class GenresController : ControllerBase
         {
             var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return NotFound(wrapperResult);
-        }
-    }
-
-    [HttpDelete("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeleteFavoriteGenreById([FromRoute] string Id)
-    {
-        _logTool.NameOfMethod = nameof(DeleteFavoriteGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
-        try
-        {
-            var result = await _genreService.RemoveFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End,  $" Status Code = {(int)wrapperResult.StatusCode}{wrapperResult}");
             return NotFound(wrapperResult);
         }
     }

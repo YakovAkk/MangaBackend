@@ -65,54 +65,9 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
         }
 
     }
-    public async virtual Task<IList<TR>> GetAllFavoriteAsync()
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        try
-        {
-            return await _repository.GetAllFavoriteAsync();
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
-    public async virtual Task<TR> AddToFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        try
-        {
-            return await _repository.AddToFavorite(Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
-    public async virtual Task<TR> RemoveFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin); 
-
-        try
-        {
-            return await _repository.RemoveFavorite(Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
     public async virtual Task<IList<TR>> FiltrationByName(string name)
     {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
+        _logTool.NameOfMethod = nameof(FiltrationByName);
         _logTool.WriteToLog(_logger, LogPosition.Begin);
 
         if (String.IsNullOrEmpty(name))
