@@ -6,7 +6,6 @@ using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.ExtensionMapper;
 using Services.Services.Base;
-using Services.Storage.Base;
 
 namespace Services.Services;
 
@@ -79,7 +78,7 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
-    public async Task<UserEntity> AddGenreToFavoriteAsync(AddTOFavoriteDTO addTOFavoriteDTO)
+    public async Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         if(addTOFavoriteDTO == null)
         {
@@ -95,7 +94,7 @@ public class UserService : IUserService
             throw new ArgumentNullException(errorMessage);
         }
 
-        if (addTOFavoriteDTO.items_Id == null)
+        if (addTOFavoriteDTO.item_Id == null)
         {
             var errorMessage = "genres_Id is null";
 
@@ -106,22 +105,9 @@ public class UserService : IUserService
         {
             var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
 
-            List<GenreEntity> genres = new List<GenreEntity>();
+            var genre = await _genreRepository.GetByIdAsync(addTOFavoriteDTO.item_Id);
 
-            foreach (var item in addTOFavoriteDTO.items_Id)
-            {
-                try
-                {
-                    var genre = await _genreRepository.GetByIdAsync(item);
-                    genres.Add(genre);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-
-            var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genres);
+            var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
             return userResult;
         }
         catch (Exception ex)
@@ -130,7 +116,7 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
-    public async Task<UserEntity> AddMangaToFavoriteAsync(AddTOFavoriteDTO addTOFavoriteDTO)
+    public async Task<UserEntity> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         if (addTOFavoriteDTO == null)
         {
@@ -146,7 +132,7 @@ public class UserService : IUserService
             throw new ArgumentNullException(errorMessage);
         }
 
-        if (addTOFavoriteDTO.items_Id == null)
+        if (addTOFavoriteDTO.item_Id == null)
         {
             var errorMessage = "mangas_Id is null";
 
@@ -157,22 +143,9 @@ public class UserService : IUserService
         {
             var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
 
-            List<MangaEntity> mangas = new List<MangaEntity>();
+            var manga = await _mangaRepository.GetByIdAsync(addTOFavoriteDTO.item_Id);
 
-            foreach (var item in addTOFavoriteDTO.items_Id)
-            {
-                try
-                {
-                    var manga = await _mangaRepository.GetByIdAsync(item);
-                    mangas.Add(manga);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-
-            var userResult = await _userRespository.AddMangaToFavoriteAsync(user, mangas);
+            var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
 
             return userResult;
         }
@@ -211,5 +184,87 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }  
 
+    }
+    public async Task<IList<UserEntity>> GetAllAsync()
+    {
+        return await _userRespository.GetAllAsync();
+    }
+    public async Task<UserEntity> RemoveGenreFromFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
+    {
+        if (addTOFavoriteDTO == null)
+        {
+            var errorMessage = "FavoriteDTO is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (addTOFavoriteDTO.user_Id == null)
+        {
+            var errorMessage = "user_Id is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (addTOFavoriteDTO.item_Id == null)
+        {
+            var errorMessage = "manga_Id is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        try
+        {
+            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
+
+            var genre = await _genreRepository.GetByIdAsync(addTOFavoriteDTO.item_Id);
+
+            var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
+
+            return userResult;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception(ex.Message);
+        }
+    }
+    public async Task<UserEntity> RemoveMangaFromFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
+    {
+        if (addTOFavoriteDTO == null)
+        {
+            var errorMessage = "FavoriteDTO is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (addTOFavoriteDTO.user_Id == null)
+        {
+            var errorMessage = "user_Id is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (addTOFavoriteDTO.item_Id == null)
+        {
+            var errorMessage = "manga_Id is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        try
+        {
+            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.user_Id);
+
+            var manga = await _mangaRepository.GetByIdAsync(addTOFavoriteDTO.item_Id);
+
+            var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
+
+            return userResult;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception(ex.Message);
+        }
     }
 }

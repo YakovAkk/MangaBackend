@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
-using System.Security.Policy;
 
 namespace Repositories.Repositories;
 public class UserRepository : IUserRespository
@@ -18,6 +17,17 @@ public class UserRepository : IUserRespository
         _logger = logger;
         _logTool = logTool;
         _db = db;
+    }
+    public async Task<IList<UserEntity>> GetAllAsync()
+    {
+        var list = await _db.Users.Include(u => u.FavoriteGenres).Include(u => u.FavoriteMangas).ToListAsync();
+
+        if (list == null)
+        {
+            return new List<UserEntity>();
+        }
+
+        return list;
     }
     public async Task<UserEntity> CreateAsync(UserEntity user)
     {
@@ -107,11 +117,9 @@ public class UserRepository : IUserRespository
 
         return userResult;
     }
-    public async Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, List<GenreEntity> genres)
+    public async Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, GenreEntity genres)
     {
-        var userAddToList = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
-
-        userAddToList.FavoriteGenres.AddRange(genres);
+        user.FavoriteGenres.Add(genres);
 
         await _db.SaveChangesAsync();
 
@@ -124,13 +132,11 @@ public class UserRepository : IUserRespository
             throw new ArgumentNullException(errorMessage);
         }
 
-        return userAddToList;
+        return userResult;
     }
-    public async Task<UserEntity> AddMangaToFavoriteAsync(UserEntity user, List<MangaEntity> mangas)
+    public async Task<UserEntity> AddMangaToFavoriteAsync(UserEntity user, MangaEntity mangas)
     {
-        var userAddToList = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
-
-        userAddToList.FavoriteMangas.AddRange(mangas);
+        user.FavoriteMangas.Add(mangas);
 
         await _db.SaveChangesAsync();
 
@@ -143,6 +149,40 @@ public class UserRepository : IUserRespository
             throw new ArgumentNullException(errorMessage);
         }
 
-        return userAddToList;
+        return userResult;
+    }
+    public async Task<UserEntity> RemoveGenreFromFavoriteAsync(UserEntity user, GenreEntity manga)
+    {
+        user.FavoriteGenres.Remove(manga);
+
+        await _db.SaveChangesAsync();
+
+        var userResult = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (userResult == null)
+        {
+            var errorMessage = "User hasn't been updated";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        return userResult;
+    }
+    public async Task<UserEntity> RemoveMangaFromFavoriteAsync(UserEntity user, MangaEntity manga)
+    {
+        user.FavoriteMangas.Remove(manga);
+
+        await _db.SaveChangesAsync();
+
+        var userResult = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (userResult == null)
+        {
+            var errorMessage = "User hasn't been updated";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        return userResult;
     }
 }

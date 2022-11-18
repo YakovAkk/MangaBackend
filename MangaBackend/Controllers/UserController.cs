@@ -6,6 +6,7 @@ using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Services.DTO;
 using Services.Response;
+using Services.Services;
 using Services.Services.Base;
 using Services.StatusCode;
 using Services.Wrappers.Base;
@@ -26,6 +27,29 @@ public class UserController : ControllerBase
         _logger = logger;
         _userService = userService;
         _logTool = logTool;
+    }
+
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll()
+    {
+        _logTool.NameOfMethod = nameof(GetAll);
+
+        _logTool.WriteToLog(_logger, LogPosition.Begin);
+        var result = await _userService.GetAllAsync();
+
+        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+
+        _logTool.WriteToLog(_logger, LogPosition.End,
+            $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+
+        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        {
+            return NotFound(wrapperResult);
+        }
+
+        return Ok(wrapperResult);
     }
 
     [HttpPost("registration")]
@@ -86,9 +110,9 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("addgenretofavorite")]
+    [HttpPost("genretofavorite")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFaforite([FromBody] AddTOFavoriteDTO addTOFavoriteDTO)
+    public async Task<IActionResult> AddGenreToFaforite([FromBody] FavoriteDTO addTOFavoriteDTO)
     {
         try
         {
@@ -103,9 +127,9 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("addmangatofavorite")]
+    [HttpPost("mangatofavorite")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFaforite([FromBody] AddTOFavoriteDTO addTOFavoriteDTO)
+    public async Task<IActionResult> AddMangaToFaforite([FromBody] FavoriteDTO addTOFavoriteDTO)
     {
         try
         {
@@ -120,5 +144,37 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpDelete("genretofavorite")]
+    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> RemoveGenreFromFaforite([FromBody] FavoriteDTO addTOFavoriteDTO)
+    {
+        try
+        {
+            var result = await _userService.RemoveGenreFromFavoriteAsync(addTOFavoriteDTO);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            return NotFound(wrapperResult);
+        }
+    }
 
+    [HttpDelete("mangatofavorite")]
+    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> RemoveMangaFromFaforite([FromBody] FavoriteDTO addTOFavoriteDTO)
+    {
+        try
+        {
+            var result = await _userService.RemoveMangaFromFavoriteAsync(addTOFavoriteDTO);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            return NotFound(wrapperResult);
+        }
+    }
 }
