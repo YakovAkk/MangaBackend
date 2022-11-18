@@ -3,7 +3,7 @@ using Data.Entities.Base;
 
 namespace Repositories.Repositories.Base;
 
-public abstract class BaseRepository<T> : IRepository<T> where T : IModel
+public abstract class BaseRepository<T> : IRepository<T> where T : IEntity
 {
     protected AppDBContent _db { get; set; }
     public BaseRepository(AppDBContent db)

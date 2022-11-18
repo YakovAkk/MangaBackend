@@ -4,7 +4,7 @@ using Services.DTO.Base;
 namespace Services.Services.Base;
 
 public interface IService<TReturn, TInput> 
-    where TReturn : IModel 
+    where TReturn : IEntity 
     where TInput : IModelDTO
 {
     Task<IList<TReturn>> FiltrationByName(string name);

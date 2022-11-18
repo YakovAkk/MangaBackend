@@ -2,7 +2,7 @@
 
 namespace Repositories.Repositories.Base;
 
-public interface IRepository<T> where T : IModel
+public interface IRepository<T> where T : IEntity
 {
     Task<IList<T>> GetCertainPage(int sizeOfPage, int page);
     Task<IList<T>> AddRange(IList<T> items);

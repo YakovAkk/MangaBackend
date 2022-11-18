@@ -8,7 +8,7 @@ using Services.DTO.Base;
 namespace Services.Services.Base;
 
 public abstract class BaseService<TR, TI> : IService<TR, TI>
-    where TR : IModel
+    where TR : IEntity
     where TI : IModelDTO
 {
     protected IRepository<TR> _repository;

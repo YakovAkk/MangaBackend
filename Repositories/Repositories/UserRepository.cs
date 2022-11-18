@@ -185,4 +185,30 @@ public class UserRepository : IUserRespository
 
         return userResult;
     }
+
+    public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user)
+    {
+        var userRes = await _db.Users.Include(u=>u.FavoriteMangas)
+            .FirstOrDefaultAsync(u=> u.Id == user.Id);
+
+        if(userRes.FavoriteMangas == null)
+        {
+            return new List<MangaEntity>();
+        }
+
+        return userRes.FavoriteMangas;
+    }
+
+    public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user)
+    {
+        var userRes = await _db.Users.Include(u => u.FavoriteGenres)
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (userRes.FavoriteGenres == null)
+        {
+            return new List<GenreEntity>();
+        }
+
+        return userRes.FavoriteGenres;
+    }
 }

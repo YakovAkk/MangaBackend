@@ -12,4 +12,6 @@ public interface IUserRespository
     Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, GenreEntity genre);
     Task<UserEntity> RemoveGenreFromFavoriteAsync(UserEntity user, GenreEntity manga);
     Task<UserEntity> RemoveMangaFromFavoriteAsync(UserEntity user, MangaEntity manga);
+    Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user);
+    Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user);
 }

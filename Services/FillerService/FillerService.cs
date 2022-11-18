@@ -203,25 +203,25 @@ public class FillerService : IFillerService
             {
                 NumberOfGlava = 1,
                 LinkToFirstPicture = "manga/attackofthetitans/glava1/1.jpg",
-                AmountOfPictures = 54
+                NumberOfPictures = 54
             },
             new GlavaMangaEntity()
             {
                 NumberOfGlava = 2,
                 LinkToFirstPicture = "manga/attackofthetitans/glava2/1.jpg",
-                AmountOfPictures = 43
+                NumberOfPictures = 43
             },
             new GlavaMangaEntity()
             {
                 NumberOfGlava = 3,
                 LinkToFirstPicture = "manga/attackofthetitans/glava3/1.jpg",
-                AmountOfPictures = 46
+                NumberOfPictures = 46
             },
             new GlavaMangaEntity()
             {
                 NumberOfGlava = 4,
                 LinkToFirstPicture = "manga/attackofthetitans/glava4/1.jpg",
-                AmountOfPictures = 49
+                NumberOfPictures = 49
             },
         };
 
@@ -273,7 +273,7 @@ public class FillerService : IFillerService
             {
                 NumberOfGlava = 0,
                 LinkToFirstPicture = "manga/naruto/glava0/1.jpg",
-                AmountOfPictures = 45
+                NumberOfPictures = 45
             }
         };
 
@@ -335,7 +335,7 @@ public class FillerService : IFillerService
             {
                 NumberOfGlava = 0,
                 LinkToFirstPicture = "manga/sevendeadlysins/glava0/1.jpg",
-                AmountOfPictures = 52
+                NumberOfPictures = 52
             }
         };
 
@@ -392,7 +392,7 @@ public class FillerService : IFillerService
             {
                 NumberOfGlava = 1,
                 LinkToFirstPicture = "manga/tokyoghoul/glava1/1.jpg",
-                AmountOfPictures = 46
+                NumberOfPictures = 46
             }
         };
 

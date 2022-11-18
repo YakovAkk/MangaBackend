@@ -24,7 +24,6 @@ public static class Mapper
             PathToFoldersWithGlava = dto.PathToFoldersWithGlava,
             AgeRating = dto.AgeRating,
             Author = dto.Author,
-            IsFavorite = dto.IsFavorite,
             NumbetOfChapters = dto.NumbetOfChapters,
             ReleaseYear = dto.ReleaseYear,
             Genres = genres
@@ -38,5 +37,4 @@ public static class Mapper
             Name = dto.Name,
         };
     }
-
 }

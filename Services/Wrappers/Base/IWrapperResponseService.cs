@@ -5,7 +5,7 @@ namespace Services.Wrappers.Base;
 
 public interface IWrapperResponseService<TR, TI>
     where TR : IResponseModel
-    where TI : IModel
+    where TI : IEntity
 {
     TR WrapTheResponseModel(TI response, string mess = "");
     TR WrapTheResponseListOfModels(IEnumerable<TI> response);

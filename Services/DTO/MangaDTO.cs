@@ -13,14 +13,11 @@ public class MangaDTO : IModelDTO
     public int NumbetOfChapters { get; set; }
     public string Author { get; set; }
     public string Description { get; set; }
-    public bool IsFavorite { get; set; }
-
     public List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
     public List<string> genres_id { get; set; }
 
     public MangaDTO()
     {
-        IsFavorite = false;
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
         genres_id = new List<string>();
     }
