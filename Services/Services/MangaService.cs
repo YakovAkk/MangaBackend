@@ -16,11 +16,11 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     private readonly IGenreRepository _genreRepository;
     private readonly IMangaRepository _mangaRepository;
     private readonly ILogger<GenreService> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
     public MangaService(
         IMangaRepository repository,
         IGenreRepository genreRepository, 
-        ILocalStorage localStorage, ILogger<GenreService> logger, ITool tool) : base(repository,logger,tool)
+        ILocalStorage localStorage, ILogger<GenreService> logger, ILogsTool tool) : base(repository,logger,tool)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
