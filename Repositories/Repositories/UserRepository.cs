@@ -41,9 +41,7 @@ public class UserRepository : IUserRespository
         if(userAdded == null)
         {
             var errorMessage = "User hasn't been added";
-
             _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
-
             throw new Exception(errorMessage);  
         }
 
@@ -66,7 +64,6 @@ public class UserRepository : IUserRespository
         if(userResult == null) 
         {
             var errorMessage = "User isn't exist";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -78,7 +75,6 @@ public class UserRepository : IUserRespository
         if(user == null)
         {
             var errorMessage = "User isn't exist";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -91,7 +87,6 @@ public class UserRepository : IUserRespository
         if(existingUser == null)
         {
             var errorMessage = "User is null";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -100,7 +95,6 @@ public class UserRepository : IUserRespository
         if(updatedUser == null)
         {
             var errorMessage = "User hasn't been updated";
-
             throw new Exception(errorMessage);
         }
 
@@ -111,7 +105,6 @@ public class UserRepository : IUserRespository
         if(userResult == null )
         {
             var errorMessage = "User hasn't been updated";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -128,7 +121,6 @@ public class UserRepository : IUserRespository
         if(userResult == null)
         {
             var errorMessage = "User hasn't been updated";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -145,7 +137,6 @@ public class UserRepository : IUserRespository
         if (userResult == null)
         {
             var errorMessage = "User hasn't been updated";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -162,7 +153,6 @@ public class UserRepository : IUserRespository
         if (userResult == null)
         {
             var errorMessage = "User hasn't been updated";
-
             throw new ArgumentNullException(errorMessage);
         }
 
@@ -179,7 +169,6 @@ public class UserRepository : IUserRespository
         if (userResult == null)
         {
             var errorMessage = "User hasn't been updated";
-
             throw new ArgumentNullException(errorMessage);
         }
 

@@ -6,7 +6,6 @@ using Repositories.Repositories.Base;
 using Services.DTO;
 using Services.ExtensionMapper;
 using Services.Services.Base;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace Services.Services;
 
