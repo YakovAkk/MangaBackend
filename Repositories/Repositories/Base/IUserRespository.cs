@@ -8,6 +8,7 @@ public interface IUserRespository
     Task<UserEntity> UpdateAsync(UserEntity user);
     Task<UserEntity> GetByIdAsync(string id);
     Task<UserEntity> GetByNameAsync(string name);
+    Task<UserEntity> GetByEmailAsync(string email);
     Task<UserEntity> AddMangaToFavoriteAsync(UserEntity user, MangaEntity manga);
     Task<UserEntity> AddGenreToFavoriteAsync(UserEntity user, GenreEntity genre);
     Task<UserEntity> RemoveGenreFromFavoriteAsync(UserEntity user, GenreEntity manga);

@@ -26,7 +26,8 @@ public class UserService : IUserService
         _logTool = logTool;
     }
 
-    public async Task<UserEntity> CreateAsync(UserDTORegistration userDTO)
+    #region UserAuthorization
+    public async Task<UserEntity> CreateAsync(UserRegistrationDTO userDTO)
     {
         _logTool.NameOfMethod = nameof(CreateAsync);
 
@@ -39,6 +40,15 @@ public class UserService : IUserService
             _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
 
             throw new ArgumentNullException(errorMessage);
+        }
+
+        if(userDTO.Password != userDTO.ConfirmPassword)
+        {
+            var errorMessage = "Both of passwords must be equal!";
+
+            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
+
+            throw new Exception(errorMessage);
         }
 
         var userModel = userDTO.toEntity();
@@ -78,16 +88,52 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
+    public async Task<UserEntity> LoginAsync(UserLoginDTO userDTOLogin)
+    {
+        if(userDTOLogin == null)
+        {
+            var errorMessage = "User is null";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        if (string.IsNullOrEmpty(userDTOLogin.NameOrEmail))
+        {
+            var errorMessage = "Name Or Email field is null or empty";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        try
+        {
+            var userExist = await GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
+
+            return userExist;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }  
+
+    }
+    public async Task<IList<UserEntity>> GetAllAsync()
+    {
+        return await _userRespository.GetAllAsync();
+    }
+    #endregion
+
+    #region UsersFavorite
+    
     public async Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
-        if(addTOFavoriteDTO == null)
+        if (addTOFavoriteDTO == null)
         {
             var errorMessage = "addTOFavoriteDTO is null";
 
             throw new ArgumentNullException(errorMessage);
         }
 
-        if(addTOFavoriteDTO.User_Id == null)
+        if (addTOFavoriteDTO.User_Id == null)
         {
             var errorMessage = "user_Id is null";
 
@@ -153,40 +199,6 @@ public class UserService : IUserService
         {
             throw new Exception(ex.Message);
         }
-    }
-    public async Task<UserEntity> LoginAsync(UserDTOLogin userDTOLogin)
-    {
-        if(userDTOLogin == null)
-        {
-            var errorMessage = "User is null";
-
-            throw new ArgumentNullException(errorMessage);
-        }
-
-        try
-        {
-            var userName = userDTOLogin.Name;
-
-            if(userName == null)
-            {
-                var errorMessage = "userName is null";
-
-                throw new ArgumentNullException(errorMessage);
-            }
-
-            var userExist = await _userRespository.GetByNameAsync(userDTOLogin.Name);
-
-            return userExist;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }  
-
-    }
-    public async Task<IList<UserEntity>> GetAllAsync()
-    {
-        return await _userRespository.GetAllAsync();
     }
     public async Task<UserEntity> RemoveGenreFromFavoriteAsync(string userid, string genreid)
     {
@@ -297,4 +309,43 @@ public class UserService : IUserService
             throw new Exception(ex.Message);
         }
     }
+    #endregion
+
+    #region Private
+    private async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
+    {
+        UserEntity userExistByName = null;
+        UserEntity userExistByEmail = null;
+
+        try
+        {
+            userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
+
+            
+        }
+        catch (Exception)
+        {
+            
+        }
+        try
+        {
+            userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
+        }
+        catch (Exception)
+        {
+
+           
+        }
+
+        if(userExistByName == null && userExistByEmail == null)
+        {
+            var errorMessage = "User doesn't exist";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        return userExistByName ?? userExistByEmail;
+    }
+
+    #endregion
 }

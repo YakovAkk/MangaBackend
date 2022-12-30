@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
+using System.Xml.Linq;
 
 namespace Repositories.Repositories;
 public class UserRepository : IUserRespository
@@ -55,6 +56,7 @@ public class UserRepository : IUserRespository
         }
 
         _logTool.WriteToLog(_logger, LogPosition.End, $"userResult = {userResult}");
+
         return userResult;
     }
     public async Task<UserEntity> GetByIdAsync(string id)
@@ -71,8 +73,21 @@ public class UserRepository : IUserRespository
     }
     public async Task<UserEntity> GetByNameAsync(string name)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u=> u.Name == name);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == name);
+
         if(user == null)
+        {
+            var errorMessage = "User isn't exist";
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        return user;
+    }
+    public async Task<UserEntity> GetByEmailAsync(string email)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
         {
             var errorMessage = "User isn't exist";
             throw new ArgumentNullException(errorMessage);
@@ -174,7 +189,6 @@ public class UserRepository : IUserRespository
 
         return userResult;
     }
-
     public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user)
     {
         var userRes = await _db.Users.Include(u=>u.FavoriteMangas)
@@ -187,7 +201,6 @@ public class UserRepository : IUserRespository
 
         return userRes.FavoriteMangas;
     }
-
     public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user)
     {
         var userRes = await _db.Users.Include(u => u.FavoriteGenres)

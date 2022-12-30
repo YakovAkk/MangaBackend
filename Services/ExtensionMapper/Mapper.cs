@@ -29,12 +29,14 @@ public static class Mapper
             Genres = genres
         };
     }
-    public static UserEntity toEntity(this UserDTORegistration dto)
+    public static UserEntity toEntity(this UserRegistrationDTO dto)
     {
         return new UserEntity()
         {
             DeviceToken = dto.DeviceToken,
-            Name = dto.Name,
+            Name = dto.UserName,
+            Password= dto.Password,
+            Email= dto.Email,
         };
     }
 }

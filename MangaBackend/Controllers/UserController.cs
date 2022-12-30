@@ -57,7 +57,7 @@ public class UserController : ControllerBase
 
     [HttpPost("registration")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Registration([FromBody] UserDTORegistration user)
+    public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
     {
         _logTool.NameOfMethod = nameof(Registration);
 
@@ -81,7 +81,7 @@ public class UserController : ControllerBase
 
     [HttpPost("login")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login([FromBody] UserDTOLogin user)
+    public async Task<IActionResult> Login([FromBody] UserLoginDTO user)
     {
         try
         {
