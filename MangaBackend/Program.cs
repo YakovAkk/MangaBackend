@@ -46,7 +46,7 @@ try
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
 
-    builder.Services.AddTransient<ITool, Tool>();
+    builder.Services.AddTransient<ILogsTool, LogsTool>();
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();

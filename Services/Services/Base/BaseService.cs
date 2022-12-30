@@ -13,9 +13,9 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
 {
     protected IRepository<TR> _repository;
     private readonly ILogger<GenreService> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
 
-    protected BaseService(IRepository<TR> repository, ILogger<GenreService> logger, ITool logTool)
+    protected BaseService(IRepository<TR> repository, ILogger<GenreService> logger, ILogsTool logTool)
     {
         _repository = repository;
         _logger = logger;

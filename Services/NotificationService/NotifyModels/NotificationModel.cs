@@ -12,4 +12,9 @@ public class NotificationModel
     public string Title { get; set; }
     [JsonProperty("body")]
     public string Body { get; set; }
+
+    public override string ToString()
+    {
+        return $"DeviceId = {DeviceId} IsAndroiodDevice = {IsAndroiodDevice} Title = {Title} Body = {Body}";
+    }
 }

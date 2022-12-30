@@ -1,6 +1,8 @@
 ﻿using CorePush.Google;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using Repositories.LogsTools;
+using Repositories.LogsTools.Base;
 using Services.NotificationService.NotifyModels;
 using Services.NotificationService.Service.Base;
 using Services.NotificationService.Setting;
@@ -11,7 +13,9 @@ namespace Services.NotificationService.Service;
 public class NotificationService : INotificationService
 {
     private readonly FcmNotificationSetting _fcmNotificationSetting;
-    public NotificationService(IConfiguration configuration)
+    private readonly ILogger<NotificationService> _logger;
+    private readonly ILogsTool _logTool;
+    public NotificationService(IConfiguration configuration, ILogger<NotificationService> logger, ILogsTool tool )
     {
         var SenderId = configuration.GetSection("FcmNotification")["SenderId"];
         var ServerKey = configuration.GetSection("FcmNotification")["ServerKey"];
@@ -20,10 +24,15 @@ public class NotificationService : INotificationService
             SenderId = SenderId,
             ServerKey = ServerKey
         };
+        _logger = logger;
+        _logTool = tool;
+
     }
 
     public async Task<ResponseModel> SendNotification(NotificationModel notificationModel)
     {
+        _logTool.NameOfMethod = nameof(SendNotification);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{notificationModel}");
         ResponseModel response = new ResponseModel();
         try
         {
@@ -59,12 +68,17 @@ public class NotificationService : INotificationService
                 {
                     response.IsSuccess = true;
                     response.Message = "Notification sent successfully";
+                    _logTool.WriteToLog(_logger, LogPosition.End, $"{response}");
                     return response;
                 }
                 else
                 {
                     response.IsSuccess = false;
-                    response.Message = fcmSendResponse.Results[0].Error;
+                    foreach (var result in fcmSendResponse.Results)
+                    {
+                        response.Message += result.Error;
+                    }
+                    _logTool.WriteToLog(_logger, LogPosition.End, $"{response}");
                     return response;
                 }
             }

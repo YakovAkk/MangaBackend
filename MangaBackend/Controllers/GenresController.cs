@@ -16,10 +16,10 @@ public class GenresController : ControllerBase
     private readonly IWrapperGenreService _wrapper;
     private readonly ILogger<GenresController> _logger;
     private readonly IGenreService _genreService;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
 
     public GenresController(IGenreService genreService, ILogger<GenresController> logger, 
-        IWrapperGenreService wrapper,ITool tool)
+        IWrapperGenreService wrapper,ILogsTool tool)
     {
         _genreService = genreService;
         _logger = logger;

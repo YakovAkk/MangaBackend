@@ -14,11 +14,11 @@ public class MangasController : ControllerBase
 {
     private readonly IWrapperMangaService _wrapper;
     private readonly ILogger<MangasController> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
     private readonly IMangaService _mangaService;
 
     public MangasController(IMangaService mangaService, ILogger<MangasController> logger,
-        IWrapperMangaService wrapper, ITool tool)
+        IWrapperMangaService wrapper, ILogsTool tool)
     {
         _mangaService = mangaService;
         _logger = logger;
