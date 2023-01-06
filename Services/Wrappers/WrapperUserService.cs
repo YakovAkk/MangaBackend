@@ -15,7 +15,7 @@ public class WrapperUserService : IWrapperResponseService<ResponseModel, UserEnt
         {
             wrappedResponse.data = new List<MangaEntity>();
             wrappedResponse.StatusCode = CodeStatus.Empty;
-            wrappedResponse.ErrorMessage = "The Database doesn't have any manga";
+            wrappedResponse.ErrorMessage = "The Database doesn't have any user";
 
             return wrappedResponse;
         }

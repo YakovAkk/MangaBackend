@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
-using System.Xml.Linq;
 
 namespace Repositories.Repositories;
 public class UserRepository : IUserRespository

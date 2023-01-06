@@ -1,12 +1,9 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Management.Smo;
-using MySqlX.XDevAPI.Common;
 using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Services.DTO;
 using Services.Response;
-using Services.Services;
 using Services.Services.Base;
 using Services.StatusCode;
 using Services.Wrappers.Base;
@@ -14,7 +11,7 @@ using Services.Wrappers.Base;
 namespace MangaBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IWrapperUserService _userWrapper;
     private readonly IWrapperGenreService _genreWrapper;
@@ -23,7 +20,7 @@ public class UserController : ControllerBase
     private readonly IUserService _userService;
     private readonly ITool _logTool;
 
-    public UserController(IWrapperUserService userWrapper, IWrapperGenreService genreWrapper, IWrapperMangaService mangaWrapper, ILogger<GenresController> logger, IUserService userService, ITool logTool)
+    public UsersController(IWrapperUserService userWrapper, IWrapperGenreService genreWrapper, IWrapperMangaService mangaWrapper, ILogger<GenresController> logger, IUserService userService, ITool logTool)
     {
         _userWrapper = userWrapper;
         _genreWrapper = genreWrapper;
@@ -75,7 +72,7 @@ public class UserController : ControllerBase
         {
             var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode}  result = {wrapperResult}");
-            return NotFound(wrapperResult);
+            return BadRequest(wrapperResult);
         }
     }
 

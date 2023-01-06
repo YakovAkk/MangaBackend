@@ -34,7 +34,7 @@ public class WrapperResponseGenreService : IWrapperResponseService<ResponseModel
         {
             wrappedResponse.data = new List<GenreEntity>();
             wrappedResponse.StatusCode = CodeStatus.Empty;
-            wrappedResponse.ErrorMessage = "The Database doesn't have any manga";
+            wrappedResponse.ErrorMessage = "The Database doesn't have any genre";
 
             return wrappedResponse;
         }
