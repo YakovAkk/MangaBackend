@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI.Common;
 using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
-using Services.Response;
 using Services.Services.Base;
-using Services.StatusCode;
-using Services.Wrappers.Base;
+using WrapperService.Response;
+using WrapperService.StatusCode;
+using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
 
@@ -12,17 +13,14 @@ namespace MangaBackend.Controllers;
 [ApiController]
 public class MangasController : ControllerBase
 {
-    private readonly IWrapperMangaService _wrapper;
     private readonly ILogger<MangasController> _logger;
     private readonly ILogsTool _logTool;
     private readonly IMangaService _mangaService;
 
-    public MangasController(IMangaService mangaService, ILogger<MangasController> logger,
-        IWrapperMangaService wrapper, ILogsTool tool)
+    public MangasController(IMangaService mangaService, ILogger<MangasController> logger, ILogsTool tool)
     {
         _mangaService = mangaService;
         _logger = logger;
-        _wrapper = wrapper;
         _logTool = tool;
     }
 
@@ -36,7 +34,7 @@ public class MangasController : ControllerBase
 
         var result = await _mangaService.GetAllFavoriteAsync();
 
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
 
         _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
@@ -58,7 +56,7 @@ public class MangasController : ControllerBase
 
         var result = await _mangaService.GetAllAsync();
 
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
 
         _logTool.WriteToLog(_logger, LogPosition.End,  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
@@ -79,14 +77,14 @@ public class MangasController : ControllerBase
         try
         {
             var result = await _mangaService.GetByIdAsync(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
             _logTool.WriteToLog(_logger, LogPosition.End, 
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
@@ -136,7 +134,7 @@ public class MangasController : ControllerBase
 
         var result = await _mangaService.GetCertainPage(pageSize, numberOfPage);
 
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
 
         _logTool.WriteToLog(_logger, LogPosition.End, 
              $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
@@ -149,24 +147,6 @@ public class MangasController : ControllerBase
         return Ok(wrapperResult);
     }
 
-    //[HttpPost]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.AddAsync(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
-
     [HttpPost("set/favorite/{Id}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
@@ -176,14 +156,14 @@ public class MangasController : ControllerBase
         try
         {
             var result = await _mangaService.AddToFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
             _logTool.WriteToLog(_logger, LogPosition.End, 
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
@@ -199,14 +179,14 @@ public class MangasController : ControllerBase
         try
         {
             var result = await _mangaService.FiltrationByName(name);
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
             _logTool.WriteToLog(_logger, LogPosition.End,
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
                 $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
@@ -239,7 +219,7 @@ public class MangasController : ControllerBase
         try
         {
             var result = await _mangaService.FiltrationByDate(yearnum);
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
             _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
             if (wrapperResult.StatusCode != CodeStatus.Successful)
@@ -251,47 +231,11 @@ public class MangasController : ControllerBase
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
         }
     }
-
-    //[HttpPut]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> UpdateMangaById([FromBody] MangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.UpdateAsync(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
-
-    //[HttpPut("addGenreToManga")]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> AddGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.AddGenresToManga(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
 
     [HttpDelete("set/favorite/{Id}")]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
@@ -302,14 +246,14 @@ public class MangasController : ControllerBase
         try
         {
             var result = await _mangaService.RemoveFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
             _logTool.WriteToLog(_logger, LogPosition.End, 
                $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.WrapResponseEmpty(null, ex.Message);
             _logTool.WriteToLog(_logger, LogPosition.End, 
                  $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
             return NotFound(wrapperResult);
