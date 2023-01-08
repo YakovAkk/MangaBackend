@@ -4,7 +4,7 @@ namespace WrapperService.Response;
 
 public class ResponseModel
 {
-    public object data { get; set; }
+    public object Data { get; set; }
     public string ErrorMessage { get; set; }
     public CodeStatus StatusCode { get; set; }
 

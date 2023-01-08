@@ -105,7 +105,7 @@ public class MangasController : ControllerBase
         {
             var message = new ResponseModel()
             {
-                data = null,
+                Data = null,
                 ErrorMessage = "Incorrect number of pagesize",
                 StatusCode = CodeStatus.ErrorWithData
             };
@@ -123,7 +123,7 @@ public class MangasController : ControllerBase
         {
             var message = new ResponseModel()
             {
-                data = null,
+                Data = null,
                 ErrorMessage = "Incorrect number of page",
                 StatusCode = CodeStatus.ErrorWithData
             };
@@ -207,7 +207,7 @@ public class MangasController : ControllerBase
         {
             var message = new ResponseModel()
             {
-                data = null,
+                Data = null,
                 ErrorMessage = "Incorrect year",
                 StatusCode = CodeStatus.ErrorWithData
             };

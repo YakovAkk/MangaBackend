@@ -34,7 +34,9 @@ public class GenresController : ControllerBase
         var result = await _genreService.GetAllFavoriteAsync();
 
         var wrapperResult = WrapperResponseService.WrapResponseEmpty(result, "No data");
+
         _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {  
             return NotFound(wrapperResult);
@@ -71,7 +73,7 @@ public class GenresController : ControllerBase
         {
             var message = new ResponseModel()
             {
-                data = null,
+                Data = null,
                 ErrorMessage = "Incorrect number of page",
                 StatusCode = CodeStatus.ErrorWithData
             };
