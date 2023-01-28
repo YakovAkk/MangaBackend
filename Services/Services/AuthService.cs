@@ -1,8 +1,14 @@
 ﻿using Data.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Repositories.Base;
-using Services.DTO;
 using Services.ExtensionMapper;
+using Services.Model.DTO;
+using Services.Model.ViewModel;
 using Services.Services.Base;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Services.Services
 {
@@ -10,13 +16,15 @@ namespace Services.Services
     {
         private readonly IUserService _userService;
         private readonly IUserRespository _userRespository;
-        public AuthService(IUserService userService, IUserRespository userRespository)
+        public readonly IConfiguration _configuration;
+        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration)
         {
             _userService = userService;
             _userRespository = userRespository;
+            _configuration = configuration;
         }
 
-        public async Task<UserEntity> LoginAsync(UserLoginDTO userDTOLogin)
+        public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
             if (userDTOLogin == null)
             {
@@ -36,7 +44,15 @@ namespace Services.Services
             {
                 var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
-                return userExist;
+                if(userDTOLogin.Password != userExist.Password) 
+                {
+                    throw new Exception("Password is incorrect!");
+                }
+
+                var token = new TokensViewModel();
+                token.AccessToken = CreateTocken(userExist);
+
+                return token;
             }
             catch (Exception ex)
             {
@@ -72,5 +88,29 @@ namespace Services.Services
             }
 
         }
+
+        #region Private
+        private string CreateTocken(UserEntity user)
+        {
+            var claims = new List<Claim>() 
+            { 
+                new Claim(ClaimTypes.Name, user.Name)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("TokenSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+        #endregion
     }
 }

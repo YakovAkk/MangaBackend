@@ -1,7 +1,7 @@
 ﻿using Data.Entities;
 using Microsoft.Extensions.Logging;
 using Repositories.Repositories.Base;
-using Services.DTO;
+using Services.Model.DTO;
 using Services.Services.Base;
 
 namespace Services.Services;

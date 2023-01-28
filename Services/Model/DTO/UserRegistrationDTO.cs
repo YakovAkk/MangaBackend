@@ -1,4 +1,4 @@
-﻿namespace Services.DTO;
+﻿namespace Services.Model.DTO;
 
 public class UserRegistrationDTO
 {

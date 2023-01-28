@@ -1,6 +1,6 @@
 ﻿using Data.Entities;
-using Services.DTO;
 using Services.FillerService.Base;
+using Services.Model.DTO;
 using Services.Services.Base;
 
 namespace Services.FillerService;

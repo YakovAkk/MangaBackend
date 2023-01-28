@@ -1,5 +1,5 @@
 ﻿using Data.Entities.Base;
-using Services.DTO.Base;
+using Services.Model.DTO.Base;
 
 namespace Services.Services.Base;
 

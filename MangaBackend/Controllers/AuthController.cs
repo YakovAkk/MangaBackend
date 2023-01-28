@@ -1,6 +1,6 @@
 ﻿using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
-using Services.DTO;
+using Services.Model.DTO;
 using Services.Services.Base;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
@@ -19,19 +19,26 @@ namespace MangaBackend.Controllers
             _authService = authService;
         }
 
-        //[HttpPost("login")]
-        //[ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-        //public Task<IActionResult> Login()
-        //{
-        //    try
-        //    {
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
+        {
+            try
+            {
+                var response = await _authService.LoginAsync(userLoginDTO);
+                var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+                {
+                    Data = new object[] {response}
+                });
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap(null);
+                return BadRequest(wrapperResult);
+            }
+        }
 
         [HttpPost("registration")]
         [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]

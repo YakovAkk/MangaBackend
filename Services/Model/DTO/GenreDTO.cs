@@ -1,11 +1,11 @@
-﻿using Services.DTO.Base;
+﻿using Services.Model.DTO.Base;
 
-namespace Services.DTO;
+namespace Services.Model.DTO;
 
 public class GenreDTO : IModelDTO
 {
     public string? Id { get; set; }
-    public string Name { get ; set ; }
+    public string Name { get; set; }
 
     public override string ToString()
     {

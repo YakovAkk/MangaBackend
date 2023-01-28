@@ -1,7 +1,7 @@
 ﻿using Data.Entities;
-using Services.DTO.Base;
+using Services.Model.DTO.Base;
 
-namespace Services.DTO;
+namespace Services.Model.DTO;
 
 public class MangaDTO : IModelDTO
 {

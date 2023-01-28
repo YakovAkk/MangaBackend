@@ -1,11 +1,12 @@
 ﻿using Data.Entities;
-using Services.DTO;
+using Services.Model.DTO;
+using Services.Model.ViewModel;
 
 namespace Services.Services.Base
 {
     public interface IAuthService
     {
-        Task<UserEntity> LoginAsync(UserLoginDTO userDTOLogin);
+        Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin);
         Task<UserEntity> RegisterAsync(UserRegistrationDTO userDTO);
     }
 }

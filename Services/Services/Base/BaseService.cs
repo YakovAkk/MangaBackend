@@ -1,6 +1,6 @@
 ﻿using Data.Entities.Base;
 using Repositories.Repositories.Base;
-using Services.DTO.Base;
+using Services.Model.DTO.Base;
 using ValidateService.Validate;
 
 namespace Services.Services.Base;

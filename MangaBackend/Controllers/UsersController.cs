@@ -1,7 +1,7 @@
 ﻿using Data.Entities;
 using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
-using Services.DTO;
+using Services.Model.DTO;
 using Services.Services.Base;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;

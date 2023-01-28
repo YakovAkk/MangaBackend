@@ -1,4 +1,4 @@
-﻿using Services.DTO;
+﻿using Services.Model.DTO;
 
 namespace Services.FillerService.Base;
 

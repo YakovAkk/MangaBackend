@@ -1,4 +1,4 @@
-﻿namespace Services.DTO.Base;
+﻿namespace Services.Model.DTO.Base;
 
 public interface IModelDTO
 {
