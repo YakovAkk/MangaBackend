@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Helping.Extension;
+using Microsoft.AspNetCore.Mvc;
+using Services.DTO;
 using Services.Services.Base;
+using WrapperService.Model.InputModel;
+using WrapperService.Model.ResponseModel;
+using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers
 {
@@ -7,11 +12,11 @@ namespace MangaBackend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public AuthController(IUserService userService )
+        public AuthController(IAuthService authService )
         {
-            _userService = userService;
+            _authService = authService;
         }
 
         //[HttpPost("login")]
@@ -28,27 +33,26 @@ namespace MangaBackend.Controllers
         //    }
         //}
 
-        //[HttpPost("registration")]
-        //[ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
-        //{
+        [HttpPost("registration")]
+        [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
+        {
+            try
+            {
+                var result = await _authService.RegisterAsync(user);
+                var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+                {
+                    Data = result.ToList(),
+                });
 
-        //    try
-        //    {
-        //        var result = await _userService.CreateAsync(user);
-        //        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-        //        {
-        //            Data = result.ToList(),
-        //        });
-
-        //        return Ok(wrapperResult);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var wrapperResult = WrapperResponseService.Wrap(null);
-        //        return BadRequest(wrapperResult);
-        //    }
-        //}
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap(null);
+                return BadRequest(wrapperResult);
+            }
+        }
 
         //[HttpPost("refresh-token")]
         //[ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]

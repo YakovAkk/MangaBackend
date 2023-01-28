@@ -1,7 +1,6 @@
 ﻿using Data.Entities;
 using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
 using Services.DTO;
 using Services.Services.Base;
 using WrapperService.Model.InputModel;
@@ -37,46 +36,6 @@ public class UsersController : ControllerBase
         }
 
         return Ok(wrapperResult);
-    }
-
-    [HttpPost("registration")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
-    {
-        try
-        {
-            var result = await _userService.CreateAsync(user);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result.ToList(),
-            });
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap(null);
-            return BadRequest(wrapperResult);
-        }
-    }
-
-    [HttpPost("login")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login([FromBody] UserLoginDTO user)
-    {
-        try
-        {
-            var result = await _userService.LoginAsync(user);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result.ToList(),
-            });
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap(null);
-            return NotFound(wrapperResult);
-        }
     }
 
     [HttpPut]

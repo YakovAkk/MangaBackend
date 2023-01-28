@@ -35,6 +35,8 @@ try
     builder.Services.AddTransient<IUserRespository, UserRepository>();
     builder.Services.AddTransient<IUserService, UserService>();
 
+    builder.Services.AddTransient<IAuthService, AuthService>();
+
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
     builder.Services.AddTransient<IFillerService, FillerService>();

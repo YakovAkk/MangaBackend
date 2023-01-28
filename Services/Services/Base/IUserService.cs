@@ -5,10 +5,9 @@ namespace Services.Services.Base;
 
 public interface IUserService
 {
+    Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail);
     Task<IList<UserEntity>> GetAllAsync();
-    Task<UserEntity> CreateAsync(UserRegistrationDTO user);
     Task<UserEntity> UpdateAsync(UserEntity user);
-    Task<UserEntity> LoginAsync(UserLoginDTO userDTOLogin);
     Task<UserEntity> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO);
     Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO);
     Task<UserEntity> RemoveGenreFromFavoriteAsync(string userid, string genreid);
