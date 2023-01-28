@@ -54,18 +54,5 @@ public class FillerController : ControllerBase
 
         return Ok(result);
     }
-
-    //[HttpDelete]
-    //public async Task<IActionResult> ClearDatabase()
-    //{
-    //    var result = await _fillerService.DeleteAll();
-
-    //    if (!result.IsSuccess)
-    //    {
-    //        return BadRequest(result);
-    //    }
-
-    //    return Ok(result);
-    //}
 }
 

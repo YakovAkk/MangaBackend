@@ -97,6 +97,5 @@ public class GenresController : ControllerBase
             var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
-
     }
 }
