@@ -1,7 +1,4 @@
 ﻿using Data.Entities.Base;
-using Microsoft.Extensions.Logging;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 using Services.DTO.Base;
 using ValidateService.Validate;

@@ -1,8 +1,5 @@
 ﻿using CorePush.Google;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Services.NotificationService.NotifyModels;
 using Services.NotificationService.Service.Base;
 using Services.NotificationService.Setting;

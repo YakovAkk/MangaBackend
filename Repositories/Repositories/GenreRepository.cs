@@ -1,9 +1,6 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories;

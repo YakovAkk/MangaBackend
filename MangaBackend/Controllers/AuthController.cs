@@ -1,14 +1,5 @@
-﻿using Data.Helping.Extension;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Management.Smo;
-using MySqlX.XDevAPI.Common;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
-using Services.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Services.Base;
-using WrapperService.Model.InputModel;
-using WrapperService.Model.ResponseModel;
-using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers
 {
