@@ -14,8 +14,6 @@ using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
 using CorePush.Apple;
-using Repositories.LogsTools.Base;
-using Repositories.LogsTools;
 using MangaBackend.Middleware.Extension;
 using ValidateService.Validate;
 
@@ -42,8 +40,6 @@ try
     builder.Services.AddTransient<IFillerService, FillerService>();
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
-
-    builder.Services.AddTransient<ILogsTool, LogsTool>();
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();

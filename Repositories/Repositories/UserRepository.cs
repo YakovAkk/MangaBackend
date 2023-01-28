@@ -1,21 +1,14 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories;
 public class UserRepository : IUserRespository
 {
-    private readonly ILogger<GenreRepository> _logger;
-    private readonly ILogsTool _logTool;
     private readonly AppDBContent _db;
-    public UserRepository(ILogger<GenreRepository> logger, ILogsTool logTool, AppDBContent db)
+    public UserRepository(AppDBContent db)
     {
-        _logger = logger;
-        _logTool = logTool;
         _db = db;
     }
     public async Task<IList<UserEntity>> GetAllAsync()
@@ -31,31 +24,23 @@ public class UserRepository : IUserRespository
     }
     public async Task<UserEntity> CreateAsync(UserEntity user)
     {
-        _logTool.NameOfMethod = nameof(CreateAsync);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"UserEntity = {user}");
-
         var userAdded = await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
 
         if(userAdded == null)
         {
             var errorMessage = "User hasn't been added";
-            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
+         
             throw new Exception(errorMessage);  
         }
-
         var userResult = await _db.Users.FirstOrDefaultAsync(u => u.Name == user.Name);
 
         if(userResult == null)
         {
             var errorMessage = "User hasn't been added";
-            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
+        
             throw new Exception(errorMessage);
         }
-
-        _logTool.WriteToLog(_logger, LogPosition.End, $"userResult = {userResult}");
-
         return userResult;
     }
     public async Task<UserEntity> GetByIdAsync(string id)

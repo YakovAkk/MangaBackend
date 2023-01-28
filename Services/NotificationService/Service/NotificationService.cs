@@ -13,9 +13,8 @@ namespace Services.NotificationService.Service;
 public class NotificationService : INotificationService
 {
     private readonly FcmNotificationSetting _fcmNotificationSetting;
-    private readonly ILogger<NotificationService> _logger;
-    private readonly ILogsTool _logTool;
-    public NotificationService(IConfiguration configuration, ILogger<NotificationService> logger, ILogsTool tool )
+
+    public NotificationService(IConfiguration configuration)
     {
         var SenderId = configuration.GetSection("FcmNotification")["SenderId"];
         var ServerKey = configuration.GetSection("FcmNotification")["ServerKey"];
@@ -24,15 +23,10 @@ public class NotificationService : INotificationService
             SenderId = SenderId,
             ServerKey = ServerKey
         };
-        _logger = logger;
-        _logTool = tool;
-
     }
 
     public async Task<ResponseModel> SendNotification(NotificationModel notificationModel)
     {
-        _logTool.NameOfMethod = nameof(SendNotification);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"{notificationModel}");
         ResponseModel response = new ResponseModel();
         try
         {
@@ -68,7 +62,6 @@ public class NotificationService : INotificationService
                 {
                     response.IsSuccess = true;
                     response.Message = "Notification sent successfully";
-                    _logTool.WriteToLog(_logger, LogPosition.End, $"{response}");
                     return response;
                 }
                 else
@@ -78,7 +71,6 @@ public class NotificationService : INotificationService
                     {
                         response.Message += result.Error;
                     }
-                    _logTool.WriteToLog(_logger, LogPosition.End, $"{response}");
                     return response;
                 }
             }
