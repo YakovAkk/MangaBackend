@@ -4,6 +4,7 @@ using Repositories.LogsTools;
 using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
 using Services.DTO.Base;
+using ValidateService.Validate;
 
 namespace Services.Services.Base;
 
@@ -13,9 +14,9 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
 {
     protected IRepository<TR> _repository;
     private readonly ILogger<GenreService> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
 
-    protected BaseService(IRepository<TR> repository, ILogger<GenreService> logger, ITool logTool)
+    protected BaseService(IRepository<TR> repository, ILogger<GenreService> logger, ILogsTool logTool)
     {
         _repository = repository;
         _logger = logger;
@@ -49,14 +50,21 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
             throw new Exception(ex.Message);
         }
     }
-    public async virtual Task<IList<TR>> GetCertainPage(int sizeOfPage, int page)
+    public async virtual Task<IList<TR>> GetCertainPage(string sizeOfPage, string page)
     {
+        int pageSize, numberOfPage;
+
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
+        {
+            throw new Exception("Parameters aren't valid");
+        }
+
         _logTool.NameOfMethod = nameof(GetCertainPage);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"sizeOfPage = {sizeOfPage} page = {page}");
 
         try
         {
-            return await _repository.GetCertainPage(sizeOfPage, page);
+            return await _repository.GetCertainPage(pageSize, numberOfPage);
         }
         catch (Exception ex)
         {

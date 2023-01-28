@@ -12,8 +12,8 @@ namespace Services.Services;
 public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 {
     private readonly ILogger<GenreService> _logger;
-    private readonly ITool _logTool;
-    public GenreService(IGenreRepository repository, ILogger<GenreService> logger, ITool tool ) : base(repository, logger,tool) 
+    private readonly ILogsTool _logTool;
+    public GenreService(IGenreRepository repository, ILogger<GenreService> logger, ILogsTool tool ) : base(repository, logger,tool) 
     {
         _logger = logger;
         _logTool = tool;

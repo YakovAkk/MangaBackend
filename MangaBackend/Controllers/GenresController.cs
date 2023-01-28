@@ -1,11 +1,10 @@
-﻿
+﻿using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
-using Services.Response;
 using Services.Services.Base;
-using Services.StatusCode;
-using Services.Wrappers.Base;
+using WrapperService.Model.InputModel;
+using WrapperService.Model.ResponseModel;
+using WrapperService.StatusCode;
+using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
 
@@ -13,87 +12,43 @@ namespace MangaBackend.Controllers;
 [ApiController]
 public class GenresController : ControllerBase
 {
-    private readonly IWrapperGenreService _wrapper;
-    private readonly ILogger<GenresController> _logger;
     private readonly IGenreService _genreService;
-    private readonly ITool _logTool;
 
-    public GenresController(IGenreService genreService, ILogger<GenresController> logger, 
-        IWrapperGenreService wrapper,ITool tool)
+    public GenresController(IGenreService genreService)
     {
         _genreService = genreService;
-        _logger = logger;
-        _wrapper = wrapper;
-        _logTool = tool;
     }
 
     [HttpGet("pagination/{pagesize}/{page}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
     {
-        _logTool.NameOfMethod = nameof(GetCertainNumber);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"pagesize = {pagesize}, page = {page} ");
-        var pageSize = 0;
+        var result = await _genreService.GetCertainPage(pagesize, page);
 
-        var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
-
-        if (!IsCanParsePageSize && pageSize < 0)
+        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
         {
-            var message = new ResponseModel()
-            {
-                data = null,
-                ErrorMessage = "Incorrect number of pagesize",
-                StatusCode = CodeStatus.ErrorWithData
-            };
-
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)message.StatusCode} {message.ErrorMessage}");
-
-            return BadRequest(message);
-        }
-
-        var numberOfPage = 0;
-
-        var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
-
-        if (!IsCanParseNumberOfPage && numberOfPage < 0)
-        {
-            var message = new ResponseModel()
-            {
-                data = null,
-                ErrorMessage = "Incorrect number of page",
-                StatusCode = CodeStatus.ErrorWithData
-            };
-
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)message.StatusCode} {message.ErrorMessage}");
-            return BadRequest(message);
-        }
-
-        var result = await _genreService.GetCertainPage(pageSize, numberOfPage);
-
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
-        _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode}{wrapperResult}");
+            Data = result,
+        });
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
-            
             return NotFound(wrapperResult);
         }
-       
+
         return Ok(wrapperResult);
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
-        _logTool.NameOfMethod = nameof(GetAll);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
         var result = await _genreService.GetAllAsync();
 
-        var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel() 
+        {
+           Data = result,
+        });
 
-        _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -104,22 +59,22 @@ public class GenresController : ControllerBase
     }
 
     [HttpGet("{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGenreById([FromRoute] string Id)
     {
-        _logTool.NameOfMethod = nameof(GetGenreById);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
+        
         try
         {
             var result = await _genreService.GetByIdAsync(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList(),
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
@@ -142,24 +97,14 @@ public class GenresController : ControllerBase
     //    }
     //}
 
-    [HttpPost("filtrarion/{name}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
-        _logTool.NameOfMethod = nameof(FiltrarionGenreByName);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"name = {name}");
-
+        _logTool.NameOfMethod = nameof(AddGenreToFavorite);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
         try
         {
-            var result = await _genreService.FiltrationByName(name);
-            var wrapperResult = _wrapper.WrapTheResponseListOfModels(result);
+            var result = await _genreService.AddToFavorite(Id);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
             _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
-            {
-                return BadRequest(wrapperResult);
-            }
-
             return Ok(wrapperResult);
         }
         catch (Exception ex)
@@ -170,21 +115,31 @@ public class GenresController : ControllerBase
         }
     }
 
-    //[HttpPut]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> UpdateGenreById([FromBody] GenreDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _genreService.UpdateAsync(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+    [HttpPost("filtrarion/{name}")]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
+    {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
+    [HttpDelete("set/favorite/{Id}")]
+    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteFavoriteGenreById([FromRoute] string Id)
+    {
+        _logTool.NameOfMethod = nameof(DeleteFavoriteGenreById);
+        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {Id}");
+        try
+        {
+            var result = await _genreService.RemoveFavorite(Id);
+            var wrapperResult = _wrapper.WrapTheResponseModel(result);
+            _logTool.WriteToLog(_logger, LogPosition.End, $" Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
+            _logTool.WriteToLog(_logger, LogPosition.End,  $" Status Code = {(int)wrapperResult.StatusCode}{wrapperResult}");
+            return NotFound(wrapperResult);
+        }
+    }
 }

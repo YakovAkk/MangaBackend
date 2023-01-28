@@ -12,9 +12,9 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
 {
     private readonly IMangaRepository _mangaRepository;
     private readonly ILogger<GenreRepository> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
     public GenreRepository(AppDBContent db, IMangaRepository mangaRepository,
-        ILogger<GenreRepository> logger, ITool tool) : base(db)
+        ILogger<GenreRepository> logger, ILogsTool tool) : base(db)
     {
         _mangaRepository = mangaRepository;
         _logger = logger;

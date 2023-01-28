@@ -3,12 +3,12 @@ using Repositories.LogsTools.Base;
 
 namespace Repositories.LogsTools
 {
-    public class Tool : ITool
+    public class LogsTool : ILogsTool
     {
-        private readonly ILogger<Tool> _logger;
+        private readonly ILogger<LogsTool> _logger;
         public string NameOfMethod { get; set; }
 
-        public Tool(ILogger<Tool> logger)
+        public LogsTool(ILogger<LogsTool> logger)
         {
             _logger = logger;
         }

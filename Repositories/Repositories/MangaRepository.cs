@@ -12,9 +12,9 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 {
 
     private readonly ILogger<GenreRepository> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
 
-    public MangaRepository(AppDBContent db, ILogger<GenreRepository> logger, ITool tool) : base(db)
+    public MangaRepository(AppDBContent db, ILogger<GenreRepository> logger, ILogsTool tool) : base(db)
     {
         _logger = logger;
         _logTool = tool;
@@ -232,8 +232,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
         _logTool.NameOfMethod = nameof(FiltrationByName);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"year = {year}");
 
-        var result = await _db.Mangas.Include(i => i.Genres)
-            .Include(i => i.PathToFoldersWithGlava).Where(i => i.ReleaseYear > year).ToListAsync();
+        var result = await _db.Mangas.Where(i => i.ReleaseYear > year).ToListAsync();
 
         if(result == null)
         {
