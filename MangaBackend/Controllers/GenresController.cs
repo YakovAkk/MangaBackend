@@ -1,5 +1,6 @@
 ﻿using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
+using Services.Services;
 using Services.Services.Base;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
@@ -82,27 +83,20 @@ public class GenresController : ControllerBase
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
-        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-       
-
-    }
-
-    [HttpDelete("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeleteFavoriteGenreById([FromRoute] string Id)
-    {
         try
         {
-            var result = await _genreService.RemoveFavorite(Id);
-            var wrapperResult = _wrapper.WrapTheResponseModel(result);
-            
+            var result = await _genreService.FiltrationByName(name);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-            
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
+
     }
 }

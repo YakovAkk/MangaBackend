@@ -15,39 +15,26 @@ public class UserService : IUserService
     private readonly IGenreRepository _genreRepository;
     private readonly IMangaRepository _mangaRepository;
     private readonly ILogger<UserService> _logger;
-    private readonly ITool _logTool;
-
-    public UserService(IUserRespository userRespository, IGenreRepository genreRepository, IMangaRepository mangaRepository, ILogger<UserService> logger, ITool logTool)
+    public UserService(IUserRespository userRespository, IGenreRepository genreRepository, IMangaRepository mangaRepository)
     {
         _userRespository = userRespository;
         _genreRepository = genreRepository;
         _mangaRepository = mangaRepository;
-        _logger = logger;
-        _logTool = logTool;
     }
 
     #region UserAuthorization
     public async Task<UserEntity> CreateAsync(UserRegistrationDTO userDTO)
     {
-        _logTool.NameOfMethod = nameof(CreateAsync);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"UserDTORegistration = {userDTO}");
 
         if (userDTO == null)
         {
             var errorMessage = "User is null";
-
-            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
-
             throw new ArgumentNullException(errorMessage);
         }
 
         if(userDTO.Password != userDTO.ConfirmPassword)
         {
             var errorMessage = "Both of passwords must be equal!";
-
-            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
-
             throw new Exception(errorMessage);
         }
 
@@ -56,14 +43,10 @@ public class UserService : IUserService
         try
         {
             var res = await _userRespository.CreateAsync(userModel);
-
-            _logTool.WriteToLog(_logger, LogPosition.End, $"user = {res}");
-
             return res;
         }
         catch (Exception ex)
         {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
             throw new Exception(ex.Message);
         }
 

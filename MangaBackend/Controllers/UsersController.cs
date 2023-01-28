@@ -1,8 +1,13 @@
 ﻿using Data.Entities;
+using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.LogsTools;
+using MySqlX.XDevAPI.Common;
 using Services.DTO;
 using Services.Services.Base;
+using WrapperService.Model.InputModel;
+using WrapperService.Model.ResponseModel;
+using WrapperService.StatusCode;
+using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
 [Route("api/[controller]")]
@@ -16,12 +21,15 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
         var result = await _userService.GetAllAsync();
 
-        var wrapperResult = _userWrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+        {
+            Data = result,
+        });
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -32,131 +40,155 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("registration")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
     {
         try
         {
             var result = await _userService.CreateAsync(user);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList(),
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return BadRequest(wrapperResult);
         }
     }
 
     [HttpPost("login")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] UserLoginDTO user)
     {
         try
         {
             var result = await _userService.LoginAsync(user);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList(),
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpPut]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UserEntity userEntity)
     {
         try
         {
             var result = await _userService.UpdateAsync(userEntity);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList(),
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpPost("favorite/genre")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddGenreToFavorite([FromBody] FavoriteDTO addTOFavoriteDTO)
     {
         try
         {
             var result = await _userService.AddGenreToFavoriteAsync(addTOFavoriteDTO);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel() 
+            { 
+                Data = result.ToList() 
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpPost("favorite/manga")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddMangaToFavorite([FromBody] FavoriteDTO addTOFavoriteDTO)
     {
         try
         {
             var result = await _userService.AddMangaToFavoriteAsync(addTOFavoriteDTO);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList()
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpDelete("favorite/genre/{userid}/{genreid}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> RemoveGenreFromFavorite([FromRoute] string userid, string genreid)
     {
         try
         {
             var result = await _userService.RemoveGenreFromFavoriteAsync(userid, genreid);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList()
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpDelete("favorite/manga/{userid}/{mangaid}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> RemoveMangaFromFavorite([FromRoute] string userid, string mangaid)
     {
         try
         {
             var result = await _userService.RemoveMangaFromFavoriteAsync(userid, mangaid);
-            var wrapperResult = _userWrapper.WrapTheResponseModel(result);
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList()
+            });
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
+            var wrapperResult = WrapperResponseService.Wrap(null);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpGet("favorite/genre/{userid}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllFavoriteGenre([FromRoute] string userid)
     {
         var result = await _userService.GetAllFavoriteGenreAsync(userid);
 
-        var wrapperResult = _genreWrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+        {
+            Data = result.ToList()
+        });
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -167,12 +199,15 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("favorite/manga/{userid}")]
-    [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllFavoriteManga([FromRoute] string userid)
     {
         var result = await _userService.GetAllFavoriteMangaAsync(userid);
 
-        var wrapperResult = _mangaWrapper.WrapTheResponseListOfModels(result);
+        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+        {
+            Data = result.ToList()
+        });
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
