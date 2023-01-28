@@ -1,8 +1,8 @@
 ﻿using WrapperService.StatusCode;
 
-namespace WrapperService.Response;
+namespace WrapperService.Model.ResponseModel;
 
-public class ResponseModel
+public class ResponseWrapModel
 {
     public object Data { get; set; }
     public string ErrorMessage { get; set; }

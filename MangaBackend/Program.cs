@@ -7,7 +7,6 @@ using NLog;
 using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
-using MangaBackend.Validate;
 using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
@@ -18,7 +17,7 @@ using CorePush.Apple;
 using Repositories.LogsTools.Base;
 using Repositories.LogsTools;
 using MangaBackend.Middleware.Extension;
-using MangaBackend.Middleware.MiddlewareClasses;
+using ValidateService.Validate;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -46,7 +45,7 @@ try
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
-    var validator = new Validator(builder.Configuration);
+    var validator = new ValidatorService(builder.Configuration, logger);
 
     if (await validator.ValidateAppsettingsJson())
     {

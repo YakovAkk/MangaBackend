@@ -298,8 +298,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
         _logTool.NameOfMethod = nameof(FiltrationByName);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"year = {year}");
 
-        var result = await _db.Mangas.Include(i => i.Genres)
-            .Include(i => i.PathToFoldersWithGlava).Where(i => i.ReleaseYear > year).ToListAsync();
+        var result = await _db.Mangas.Where(i => i.ReleaseYear > year).ToListAsync();
 
         if(result == null)
         {

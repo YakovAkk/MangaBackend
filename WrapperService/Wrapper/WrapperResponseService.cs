@@ -1,26 +1,28 @@
-﻿using WrapperService.Response;
+﻿using WrapperService.Model.InputModel;
+using WrapperService.Model.ResponseModel;
 using WrapperService.StatusCode;
 
 namespace WrapperService.Wrapper;
 
 public static class WrapperResponseService
 {
-    public static ResponseModel WrapResponsErrorWithData(object response, string mess = "")
+    public static ResponseWrapModel Wrap(WrapInputModel inputModel)
     {
-        return new ResponseModel()
+        if(inputModel == null || inputModel.Data == null || inputModel.Data.Count() == 0)
         {
-            Data = Enumerable.Empty<object>,
-            StatusCode = CodeStatus.ErrorWithData,
-            ErrorMessage = mess
-        };
-    }
-    public static ResponseModel WrapResponseEmpty(object response, string mess = "")
-    {
-        return new ResponseModel()
+            return new ResponseWrapModel()
+            {
+                Data = new object[0],
+                StatusCode = CodeStatus.Empty,
+                ErrorMessage = "No data"
+            };
+        }
+
+        return new ResponseWrapModel()
         {
-            Data = Enumerable.Empty<object>,
-            StatusCode = CodeStatus.Empty,
-            ErrorMessage = mess
+            Data = inputModel.Data,
+            StatusCode = CodeStatus.Successful,
+            ErrorMessage = ""
         };
     }
 }

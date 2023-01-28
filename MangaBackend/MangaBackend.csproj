@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="5.0.2" />
+    <PackageReference Include="NLog" Version="5.1.1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -28,6 +28,7 @@
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
+    <ProjectReference Include="..\ValidateService\ValidateService.csproj" />
     <ProjectReference Include="..\WrapperService\WrapperService.csproj" />
   </ItemGroup>
 
