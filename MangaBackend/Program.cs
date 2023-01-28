@@ -7,12 +7,9 @@ using NLog;
 using NLog.Web;
 using Services.Storage;
 using Services.Storage.Base;
-using MangaBackend.Validate;
-using Services.Wrappers.Base;
 using Data.Database;
 using Services.FillerService.Base;
 using Services.FillerService;
-using Services.Wrappers;
 using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
@@ -20,7 +17,7 @@ using CorePush.Apple;
 using Repositories.LogsTools.Base;
 using Repositories.LogsTools;
 using MangaBackend.Middleware.Extension;
-using MangaBackend.Middleware.MiddlewareClasses;
+using ValidateService.Validate;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -37,9 +34,6 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
-    builder.Services.AddTransient<IWrapperGenreService, WrapperResponseGenreService>();
-    builder.Services.AddTransient<IWrapperMangaService, WrapperResponseMangaService>();
-
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
     builder.Services.AddTransient<IFillerService, FillerService>();
@@ -51,7 +45,7 @@ try
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
-    var validator = new Validator(builder.Configuration);
+    var validator = new ValidatorService(builder.Configuration, logger);
 
     if (await validator.ValidateAppsettingsJson())
     {
@@ -102,11 +96,7 @@ try
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
 
-
-
     var app = builder.Build();
-
-
 
     // Configure the HTTP request pipeline.
 

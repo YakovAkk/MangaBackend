@@ -7,6 +7,8 @@ using Services.DTO;
 using Services.ExtensionMapper;
 using Services.Services.Base;
 using Services.Storage.Base;
+using System.ComponentModel.DataAnnotations;
+using ValidateService.Validate;
 
 namespace Services.Services;
 
@@ -247,14 +249,20 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             throw new Exception(ex.Message);
         }
     }
-    public async Task<List<MangaEntity>> FiltrationByDate(int year)
+    public async Task<List<MangaEntity>> FiltrationByDate(string year)
     {
+        int yearnum = 0;
+
+        if (!ValidatorService.IsValidYear(year, out yearnum))
+        {
+            throw new Exception("Parameters aren't valid");
+        }
         _logTool.NameOfMethod = nameof(FiltrationByDate);
         _logTool.WriteToLog(_logger, LogPosition.Begin, $"year = {year}");
 
         try
         {
-            return await _mangaRepository.FiltrationByDate(year);
+            return await _mangaRepository.FiltrationByDate(yearnum);
         }
         catch (Exception ex)
         {

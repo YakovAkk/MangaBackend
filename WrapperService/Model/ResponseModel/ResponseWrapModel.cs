@@ -1,11 +1,10 @@
-﻿using Services.Response.Base;
-using Services.StatusCode;
+﻿using WrapperService.StatusCode;
 
-namespace Services.Response;
+namespace WrapperService.Model.ResponseModel;
 
-public class ResponseModel : IResponseModel
+public class ResponseWrapModel
 {
-    public object data { get; set; }
+    public object Data { get; set; }
     public string ErrorMessage { get; set; }
     public CodeStatus StatusCode { get; set; }
 

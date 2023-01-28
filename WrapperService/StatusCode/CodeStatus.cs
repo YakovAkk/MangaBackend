@@ -1,4 +1,4 @@
-﻿namespace Services.StatusCode;
+﻿namespace WrapperService.StatusCode;
 
 public enum CodeStatus
 {
