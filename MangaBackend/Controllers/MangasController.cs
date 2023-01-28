@@ -78,24 +78,6 @@ public class MangasController : ControllerBase
         return Ok(wrapperResult);
     }
 
-    //[HttpPost]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> createManga([FromBody] MangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.AddAsync(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
-
     [HttpPost("filtrarionbyname/{name}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
@@ -141,41 +123,4 @@ public class MangasController : ControllerBase
             return NotFound(wrapperResult);
         }
     }
-
-    //[HttpPut]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> UpdateMangaById([FromBody] MangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.UpdateAsync(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
-
-    //[HttpPut("addGenreToManga")]
-    //[ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
-    //public async Task<IActionResult> AddGenreToManga([FromBody] AddGenreToMangaDTO mangaDTO)
-    //{
-    //    try
-    //    {
-    //        var result = await _mangaService.AddGenresToManga(mangaDTO);
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(result);
-    //        return Ok(wrapperResult);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        var wrapperResult = _wrapper.WrapTheResponseModel(null, ex.Message);
-
-    //        return NotFound(wrapperResult);
-    //    }
-    //}
-
 }

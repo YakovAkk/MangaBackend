@@ -10,9 +10,9 @@ namespace Repositories.Repositories;
 public class UserRepository : IUserRespository
 {
     private readonly ILogger<GenreRepository> _logger;
-    private readonly ITool _logTool;
+    private readonly ILogsTool _logTool;
     private readonly AppDBContent _db;
-    public UserRepository(ILogger<GenreRepository> logger, ITool logTool, AppDBContent db)
+    public UserRepository(ILogger<GenreRepository> logger, ILogsTool logTool, AppDBContent db)
     {
         _logger = logger;
         _logTool = logTool;

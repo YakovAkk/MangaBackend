@@ -1,48 +1,27 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Services.DTO;
-using Services.Response;
 using Services.Services.Base;
-using Services.StatusCode;
-using Services.Wrappers.Base;
 
 namespace MangaBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly IWrapperUserService _userWrapper;
-    private readonly IWrapperGenreService _genreWrapper;
-    private readonly IWrapperMangaService _mangaWrapper;
-    private readonly ILogger<GenresController> _logger;
     private readonly IUserService _userService;
-    private readonly ITool _logTool;
-
-    public UsersController(IWrapperUserService userWrapper, IWrapperGenreService genreWrapper, IWrapperMangaService mangaWrapper, ILogger<GenresController> logger, IUserService userService, ITool logTool)
+    public UsersController(IUserService userService)
     {
-        _userWrapper = userWrapper;
-        _genreWrapper = genreWrapper;
-        _mangaWrapper = mangaWrapper;
-        _logger = logger;
         _userService = userService;
-        _logTool = logTool;
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
-        _logTool.NameOfMethod = nameof(GetAll);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
         var result = await _userService.GetAllAsync();
 
         var wrapperResult = _userWrapper.WrapTheResponseListOfModels(result);
-
-        _logTool.WriteToLog(_logger, LogPosition.End,
-            $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
@@ -56,22 +35,15 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ResponseModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
     {
-        _logTool.NameOfMethod = nameof(Registration);
-
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"UserDTORegistration = {user}");
-
         try
         {
             var result = await _userService.CreateAsync(user);
             var wrapperResult = _userWrapper.WrapTheResponseModel(result);
-            _logTool.WriteToLog(_logger, LogPosition.End, 
-                $"Status Code = {(int)wrapperResult.StatusCode} result = {wrapperResult}");
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
             var wrapperResult = _userWrapper.WrapTheResponseModel(null, ex.Message);
-            _logTool.WriteToLog(_logger, LogPosition.End, $"Status Code = {(int)wrapperResult.StatusCode}  result = {wrapperResult}");
             return BadRequest(wrapperResult);
         }
     }
@@ -186,9 +158,6 @@ public class UsersController : ControllerBase
 
         var wrapperResult = _genreWrapper.WrapTheResponseListOfModels(result);
 
-        _logTool.WriteToLog(_logger, LogPosition.End,
-            $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
-
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {
             return NotFound(wrapperResult);
@@ -204,9 +173,6 @@ public class UsersController : ControllerBase
         var result = await _userService.GetAllFavoriteMangaAsync(userid);
 
         var wrapperResult = _mangaWrapper.WrapTheResponseListOfModels(result);
-
-        _logTool.WriteToLog(_logger, LogPosition.End,
-            $"Status Code = {(int)wrapperResult.StatusCode} {wrapperResult}");
 
         if (wrapperResult.StatusCode != CodeStatus.Successful)
         {

@@ -320,8 +320,6 @@ public class UserService : IUserService
         try
         {
             userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
-
-            
         }
         catch (Exception)
         {
