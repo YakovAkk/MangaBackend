@@ -19,6 +19,8 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    #region User
+
     [HttpGet]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
@@ -58,6 +60,10 @@ public class UsersController : ControllerBase
         }
     }
 
+    #endregion
+
+    #region Favorite
+
     [HttpPost("favorite/genre")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddGenreToFavorite([FromBody] FavoriteDTO addTOFavoriteDTO)
@@ -65,9 +71,9 @@ public class UsersController : ControllerBase
         try
         {
             var result = await _userService.AddGenreToFavoriteAsync(addTOFavoriteDTO);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel() 
-            { 
-                Data = result.ToList() 
+            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+            {
+                Data = result.ToList()
             });
             return Ok(wrapperResult);
         }
@@ -175,4 +181,6 @@ public class UsersController : ControllerBase
 
         return Ok(wrapperResult);
     }
+
+    #endregion
 }
