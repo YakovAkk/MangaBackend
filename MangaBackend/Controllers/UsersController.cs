@@ -1,5 +1,7 @@
 ﻿using Data.Entities;
 using Data.Helping.Extension;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -9,6 +11,7 @@ using WrapperService.StatusCode;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase

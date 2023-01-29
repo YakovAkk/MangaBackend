@@ -78,7 +78,7 @@ public class MangasController : ControllerBase
         return Ok(wrapperResult);
     }
 
-    [HttpPost("filtrarionbyname/{name}")]
+    [HttpGet("filtrarionbyname/{name}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
     {
@@ -98,7 +98,7 @@ public class MangasController : ControllerBase
         }
     }
 
-    [HttpPost("filtrarionbydate/{year}")]
+    [HttpGet("filtrarionbydate/{year}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.FillerService.Base;
 using Services.Model.DTO;
 
@@ -16,7 +17,7 @@ public class FillerController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> FillTheDatabase()
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");

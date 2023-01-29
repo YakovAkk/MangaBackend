@@ -79,7 +79,7 @@ public class GenresController : ControllerBase
         }
     }
 
-    [HttpPost("filtrarion/{name}")]
+    [HttpGet("filtrarion/{name}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
