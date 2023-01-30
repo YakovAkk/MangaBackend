@@ -12,8 +12,11 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<IList<MangaEntity>> GetAllAsync()
     {
-        var list = await _db.Mangas.Include(m => m.Genres).AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava).ToListAsync();
+        var list = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .ToListAsync();
 
         if (list == null)
         {
@@ -24,8 +27,11 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<MangaEntity> DeleteAsync(string id)
     {
-        var manga = await _db.Mangas.Include(m => m.Genres)
-            .AsNoTracking().Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == id);
+        var manga = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .FirstOrDefaultAsync(i => i.Id == id);
 
         if (manga == null)
         {
@@ -60,8 +66,11 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         await _db.SaveChangesAsync();
 
-        manga = await _db.Mangas.Include(m => m.Genres)
-            .AsNoTracking().Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Name == item.Name);
+        manga = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .FirstOrDefaultAsync(i => i.Name == item.Name);
 
         if (manga == null)
         {
@@ -74,8 +83,10 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     public async override Task<MangaEntity> GetByIdAsync(string Id)
     {
       
-        var manga = await _db.Mangas.Include(m => m.Genres)
-            .Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Id == Id);
+        var manga = await _db.Mangas
+            .Include(m => m.Genres)
+            .Include(m => m.PathToFoldersWithGlava)
+            .FirstOrDefaultAsync(i => i.Id == Id);
 
         if (manga == null)
         {
@@ -106,8 +117,11 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         await _db.SaveChangesAsync();
 
-        var manga = await _db.Mangas.Include(m => m.Genres).AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava).FirstOrDefaultAsync(i => i.Name == item.Name);
+        var manga = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .FirstOrDefaultAsync(i => i.Name == item.Name);
 
         if (manga == null)
         {
@@ -141,9 +155,12 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<IList<MangaEntity>> GetCertainPage(int sizeOfPage, int page)
     {
-       
-        var list = await _db.Mangas.Include(m => m.Genres).AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava).Skip((page -1) * sizeOfPage).Take(sizeOfPage).ToListAsync();
+        var list = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .Skip((page -1) * sizeOfPage)
+            .Take(sizeOfPage).ToListAsync();
 
         if (list == null)
         {

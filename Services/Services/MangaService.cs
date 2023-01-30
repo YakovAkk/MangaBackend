@@ -31,7 +31,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             throw new Exception(errorMessage);
         }
 
-        var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
+        var allGenres = await _genreRepository.GetAllAsync();
+
+        var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
 
         if (!genres.Any())
         {
@@ -102,7 +104,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         foreach (var item in list)
         {
-            var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
+            var allGenres = await _genreRepository.GetAllAsync();
+
+            var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
 
             if (!genres.Any())
             { 
@@ -186,7 +190,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
              throw new Exception(errorMessage);
         }
 
-        var genres = (await _genreRepository.GetAllAsync()).Where(g => item.genres_id.Contains(g.Id)).ToList();
+        var allGenres = await _genreRepository.GetAllAsync();
+
+        var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
 
         if (!genres.Any())
         {

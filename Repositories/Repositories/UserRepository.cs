@@ -13,7 +13,10 @@ public class UserRepository : IUserRespository
     }
     public async Task<IList<UserEntity>> GetAllAsync()
     {
-        var list = await _db.Users.Include(u => u.FavoriteGenres).Include(u => u.FavoriteMangas).ToListAsync();
+        var list = await _db.Users
+            .Include(u => u.FavoriteGenres)
+            .Include(u => u.FavoriteMangas)
+            .ToListAsync();
 
         if (list == null)
         {
@@ -175,7 +178,8 @@ public class UserRepository : IUserRespository
     }
     public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user)
     {
-        var userRes = await _db.Users.Include(u=>u.FavoriteMangas)
+        var userRes = await _db.Users
+            .Include(u=>u.FavoriteMangas)
             .FirstOrDefaultAsync(u=> u.Id == user.Id);
 
         if(userRes.FavoriteMangas == null)
@@ -187,7 +191,8 @@ public class UserRepository : IUserRespository
     }
     public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user)
     {
-        var userRes = await _db.Users.Include(u => u.FavoriteGenres)
+        var userRes = await _db.Users
+            .Include(u => u.FavoriteGenres)
             .FirstOrDefaultAsync(u => u.Id == user.Id);
 
         if (userRes.FavoriteGenres == null)
