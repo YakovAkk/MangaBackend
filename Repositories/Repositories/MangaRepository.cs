@@ -27,11 +27,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<MangaEntity> DeleteAsync(string id)
     {
-        var manga = await _db.Mangas
-            .Include(m => m.Genres)
-            .AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava)
-            .FirstOrDefaultAsync(i => i.Id == id);
+        var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Id == id);
 
         if (manga == null)
         {
@@ -66,11 +62,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         await _db.SaveChangesAsync();
 
-        manga = await _db.Mangas
-            .Include(m => m.Genres)
-            .AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava)
-            .FirstOrDefaultAsync(i => i.Name == item.Name);
+        manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
         if (manga == null)
         {
@@ -82,7 +74,6 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<MangaEntity> GetByIdAsync(string Id)
     {
-      
         var manga = await _db.Mangas
             .Include(m => m.Genres)
             .Include(m => m.PathToFoldersWithGlava)
@@ -117,11 +108,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         await _db.SaveChangesAsync();
 
-        var manga = await _db.Mangas
-            .Include(m => m.Genres)
-            .AsNoTracking()
-            .Include(m => m.PathToFoldersWithGlava)
-            .FirstOrDefaultAsync(i => i.Name == item.Name);
+        var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
         if (manga == null)
         {
@@ -134,7 +121,6 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async override Task<IList<MangaEntity>> AddRange(IList<MangaEntity> items)
     {
-      
         var result = new List<MangaEntity>();
 
         foreach (var item in items)
@@ -160,7 +146,8 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
             .AsNoTracking()
             .Include(m => m.PathToFoldersWithGlava)
             .Skip((page -1) * sizeOfPage)
-            .Take(sizeOfPage).ToListAsync();
+            .Take(sizeOfPage)
+            .ToListAsync();
 
         if (list == null)
         {
@@ -173,13 +160,14 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     {
 
         var result = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
             .Include(i=> i.PathToFoldersWithGlava)
             .Where(i => i.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
         if (!result.Any())
         {
-            var errorMessage = "No results";
             return new List<MangaEntity>();
         }
 
@@ -187,12 +175,15 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     }
     public async Task<List<MangaEntity>> FiltrationByDate(int year)
     {
-        var result = await _db.Mangas.Where(i => i.ReleaseYear > year).ToListAsync();
+        var result = await _db.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(i => i.PathToFoldersWithGlava)
+            .Where(i => i.ReleaseYear > year)
+            .ToListAsync();
 
         if(result == null)
-        {
-            var errorMessage = "No results";
-           
+        {     
             return new List<MangaEntity>();
         }
 

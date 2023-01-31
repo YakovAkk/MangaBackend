@@ -53,7 +53,7 @@ try
 
     var validator = new ValidatorService(builder.Configuration, logger);
 
-    if (await validator.ValidateAppsettingsJson())
+    if (await validator.ValidateAppSettingsJson())
     {
         try
         {

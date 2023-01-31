@@ -26,7 +26,6 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
     {
         var genre = await _db.Genres
             .Include(m => m.Mangas)
-            .AsNoTracking()
             .FirstOrDefaultAsync(i => i.Id == id);
 
         if (genre == null)

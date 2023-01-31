@@ -6,15 +6,15 @@ namespace ValidateService.Validate
     public class ValidatorService
     {
         private readonly IConfiguration _configuration;
-        private readonly NLog.ILogger _logger;
+        private readonly ILogger _logger;
 
-        public ValidatorService(IConfiguration configuration, NLog.ILogger logger)
+        public ValidatorService(IConfiguration configuration, ILogger logger)
         {
             _configuration = configuration;
             _logger = logger;
         }
 
-        public async Task<bool> ValidateAppsettingsJson()
+        public async Task<bool> ValidateAppSettingsJson()
         {
             var connercionStringMsSql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMSSQL"];
             var connercionStringMySql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMYSQL"];
