@@ -14,4 +14,5 @@ public interface IUserService
     Task<UserEntity> RemoveMangaFromFavoriteAsync(string userid, string mangaid);
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid);
     Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(string userid);
+    Task<UserEntity> GetById(string user_id);
 }

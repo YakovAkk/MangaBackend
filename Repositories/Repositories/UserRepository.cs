@@ -1,5 +1,6 @@
 ﻿using Data.Database;
 using Data.Entities;
+using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories.Base;
 
@@ -53,7 +54,7 @@ public class UserRepository : IUserRespository
         if(userResult == null) 
         {
             var errorMessage = "User isn't exist";
-            throw new ArgumentNullException(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         return userResult;
@@ -201,5 +202,14 @@ public class UserRepository : IUserRespository
         }
 
         return userRes.FavoriteGenres;
+    }
+
+    public async Task SetRefreshToken(RefreshToken refreshToken, UserEntity user)
+    {
+        user.RefreshToken = refreshToken.Token;
+        user.TokenExpires = refreshToken.Expires;
+        user.TokenCreated = refreshToken.Created;
+
+        await _db.SaveChangesAsync();
     }
 }

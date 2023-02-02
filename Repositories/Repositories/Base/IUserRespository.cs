@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Model.ViewModel;
 
 namespace Repositories.Repositories.Base;
 public interface IUserRespository
@@ -15,4 +16,5 @@ public interface IUserRespository
     Task<UserEntity> RemoveMangaFromFavoriteAsync(UserEntity user, MangaEntity manga);
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user);
     Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user);
+    Task SetRefreshToken(RefreshToken refreshToken, UserEntity user);
 }

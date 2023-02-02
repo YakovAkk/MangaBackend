@@ -44,10 +44,60 @@ public class UserService : IUserService
     {
         return await _userRespository.GetAllAsync();
     }
+
+    public async Task<UserEntity> GetById(string user_id)
+    {
+        if (string.IsNullOrEmpty(user_id))
+        {
+            throw new Exception("user_id is null or empty");
+        }
+
+        try
+        {
+            return await _userRespository.GetByIdAsync(user_id);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
+    {
+        UserEntity userExistByName = null;
+        UserEntity userExistByEmail = null;
+
+        try
+        {
+            userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
+        }
+        catch (Exception)
+        {
+
+        }
+        try
+        {
+            userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
+        }
+        catch (Exception)
+        {
+
+        }
+
+        if (userExistByName == null && userExistByEmail == null)
+        {
+            var errorMessage = "User doesn't exist";
+
+            throw new ArgumentNullException(errorMessage);
+        }
+
+        return userExistByName ?? userExistByEmail;
+    }
+
     #endregion
 
     #region UsersFavorite
-    
+
     public async Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         if (addTOFavoriteDTO == null)
@@ -235,38 +285,4 @@ public class UserService : IUserService
     }
     #endregion
 
-    #region Helping
-    public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
-    {
-        UserEntity userExistByName = null;
-        UserEntity userExistByEmail = null;
-
-        try
-        {
-            userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
-        }
-        catch (Exception)
-        {
-            
-        }
-        try
-        {
-            userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
-        }
-        catch (Exception)
-        {
-           
-        }
-
-        if(userExistByName == null && userExistByEmail == null)
-        {
-            var errorMessage = "User doesn't exist";
-
-            throw new ArgumentNullException(errorMessage);
-        }
-
-        return userExistByName ?? userExistByEmail;
-    }
-
-    #endregion
 }

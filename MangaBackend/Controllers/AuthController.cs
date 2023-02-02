@@ -1,4 +1,6 @@
 ﻿using Data.Helping.Extension;
+using Data.Model.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -61,11 +63,25 @@ namespace MangaBackend.Controllers
             }
         }
 
-        //[HttpPost("refresh-token")]
-        //[ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> RefreshToken()
-        //{
+        [HttpPost("refresh-token"), Authorize]
+        [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDTO tokenDTO)
+        {
+            try
+            {
+                var response = await _authService.RefreshToken(tokenDTO);
+                var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+                {
+                    Data = new object[] { response }
+                });
 
-        //}
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap(null);
+                return BadRequest(wrapperResult);
+            }
+        }
     }
 }

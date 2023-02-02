@@ -15,6 +15,10 @@ public class UserEntity : IEntity
     public virtual List<MangaEntity> FavoriteMangas { get; set; }
     public virtual List<GenreEntity> FavoriteGenres { get; set; }
 
+    public string RefreshToken { get; set; } = string.Empty;
+    public DateTime TokenCreated { get; set; }
+    public DateTime TokenExpires { get; set; }
+
     public UserEntity()
     {
         FavoriteMangas = new List<MangaEntity>();

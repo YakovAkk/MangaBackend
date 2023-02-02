@@ -7,6 +7,7 @@ namespace Services.Services.Base
     public interface IAuthService
     {
         Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin);
+        Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
         Task<UserEntity> RegisterAsync(UserRegistrationDTO userDTO);
     }
 }
