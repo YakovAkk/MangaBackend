@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
 
     #region User
 
-    [HttpGet]
+    [HttpGet, Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
