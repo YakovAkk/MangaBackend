@@ -56,7 +56,7 @@ namespace Services.Services
 
                 var token = new TokensViewModel()
                 {
-                    AccessToken = CreateTocken(userExist),
+                    AccessToken = CreateToken(userExist),
                     RefreshToken = refreshToken.Token
                 };
 
@@ -125,7 +125,7 @@ namespace Services.Services
                     throw new UnauthorizedAccessException("Token Expired!");
                 }
 
-                var token = CreateTocken(userExist);
+                var token = CreateToken(userExist);
                 var newRefreshToken = GenereteRefreshToken();
                 await _userRespository.SetRefreshToken(newRefreshToken, userExist);
 
@@ -142,7 +142,7 @@ namespace Services.Services
         }
 
         #region Private
-        private string CreateTocken(UserEntity user)
+        private string CreateToken(UserEntity user)
         {
             var claims = new List<Claim>() 
             { 
