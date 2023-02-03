@@ -14,10 +14,13 @@ using Services.NotificationService.Service.Base;
 using Services.NotificationService.Service;
 using CorePush.Google;
 using CorePush.Apple;
-using Repositories.LogsTools.Base;
-using Repositories.LogsTools;
 using MangaBackend.Middleware.Extension;
 using ValidateService.Validate;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -34,20 +37,23 @@ try
     builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
+    builder.Services.AddTransient<IUserRespository, UserRepository>();
+    builder.Services.AddTransient<IUserService, UserService>();
+
+    builder.Services.AddTransient<IAuthService, AuthService>();
+
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
     builder.Services.AddTransient<IFillerService, FillerService>();
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
 
-    builder.Services.AddTransient<ILogsTool, LogsTool>();
-
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
     var validator = new ValidatorService(builder.Configuration, logger);
 
-    if (await validator.ValidateAppsettingsJson())
+    if (await validator.ValidateAppSettingsJson())
     {
         try
         {
@@ -89,7 +95,33 @@ try
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+    });
+    // Authentication setup
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+        options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("TokenSettings:Token").Value)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };  
+        });
+
 
     // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
@@ -117,6 +149,8 @@ try
     app.UseTiming();
 
     app.UseHttpsRedirection();
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
 

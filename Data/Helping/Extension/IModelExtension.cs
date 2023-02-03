@@ -4,9 +4,9 @@ namespace Data.Helping.Extension
 {
     public static class IModelExtension
     {
-        public static IList<object> ToList(this IModel model)
+        public static IList<object> ToList(this IEntity model)
         {
-            return new List<object>() { model};
+            return new List<object>() { model };
         }
     }
 }

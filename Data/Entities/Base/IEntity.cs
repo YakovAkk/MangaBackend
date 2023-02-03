@@ -1,6 +1,6 @@
 ﻿namespace Data.Entities.Base;
 
-public interface IModel
+public interface IEntity
 {
     string Id { get; set; }
 }

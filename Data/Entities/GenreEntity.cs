@@ -4,23 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public class GenreEntity : IModel
+public class GenreEntity : IEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string? Id { get; set; }
     public string Name { get; set; }
-    public bool IsFavorite { get; set; }
     public virtual List<MangaEntity> Mangas { get; set; }
-
     public GenreEntity()
     {
-        IsFavorite = false;
         Mangas = new List<MangaEntity>();
     }
 
     public override string ToString()
     {
-        return $"Id = {Id} Name = {Name} IsFavorite = {IsFavorite} Mangas = {Mangas}";
+        return $"Id = {Id} Name = {Name} Mangas = {Mangas}";
     }
 }

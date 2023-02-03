@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Services.DTO;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.FillerService.Base;
+using Services.Model.DTO;
 
 namespace MangaBackend.Controllers;
 
@@ -16,7 +17,7 @@ public class FillerController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> FillTheDatabase()
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");
@@ -54,18 +55,5 @@ public class FillerController : ControllerBase
 
         return Ok(result);
     }
-
-    //[HttpDelete]
-    //public async Task<IActionResult> ClearDatabase()
-    //{
-    //    var result = await _fillerService.DeleteAll();
-
-    //    if (!result.IsSuccess)
-    //    {
-    //        return BadRequest(result);
-    //    }
-
-    //    return Ok(result);
-    //}
 }
 

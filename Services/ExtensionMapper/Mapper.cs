@@ -1,5 +1,5 @@
 ﻿using Data.Entities;
-using Services.DTO;
+using Services.Model.DTO;
 
 namespace Services.ExtensionMapper;
 
@@ -13,7 +13,6 @@ public static class Mapper
             Name = dto.Name
         };
     }
-
     public static MangaEntity toEntity(this MangaDTO dto, List<GenreEntity> genres)
     {
         return new MangaEntity()
@@ -25,10 +24,19 @@ public static class Mapper
             PathToFoldersWithGlava = dto.PathToFoldersWithGlava,
             AgeRating = dto.AgeRating,
             Author = dto.Author,
-            IsFavorite = dto.IsFavorite,
             NumbetOfChapters = dto.NumbetOfChapters,
             ReleaseYear = dto.ReleaseYear,
             Genres = genres
+        };
+    }
+    public static UserEntity toEntity(this UserRegistrationDTO dto)
+    {
+        return new UserEntity()
+        {
+            DeviceToken = dto.DeviceToken,
+            Name = dto.UserName,
+            Password= dto.Password,
+            Email= dto.Email,
         };
     }
 }

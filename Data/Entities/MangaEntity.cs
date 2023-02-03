@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public class MangaEntity : IModel
+public class MangaEntity : IEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,20 +16,19 @@ public class MangaEntity : IModel
     public string AgeRating { get; set; }
     public int NumbetOfChapters { get; set; }
     public string Author { get; set; }
-    public bool IsFavorite { get; set; }
     public virtual List<GenreEntity> Genres { get; set; }
     public virtual List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
     public MangaEntity()
     {
+        Genres = new List<GenreEntity>();
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
-        IsFavorite = false;
     }
 
     public override string ToString()
     {
-        return $"Id = {Id} Name = {Name} IsFavorite = {IsFavorite} PathToTitlePicture = {PathToTitlePicture} " +
+        return $"Id = {Id} Name = {Name} PathToTitlePicture = {PathToTitlePicture} " +
             $"Description = {Description} ReleaseYear = {ReleaseYear} AgeRating = {AgeRating}" +
-            $"NumbetOfChapters = {NumbetOfChapters} Author = {Author} IsFavorite = {IsFavorite}" +
+            $"NumbetOfChapters = {NumbetOfChapters} Author = {Author} " +
             $"Genres = {Genres} PathToFoldersWithGlava = {PathToFoldersWithGlava}";
     }
 }

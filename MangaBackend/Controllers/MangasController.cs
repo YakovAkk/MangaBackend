@@ -19,25 +19,6 @@ public class MangasController : ControllerBase
         _mangaService = mangaService;
     }
 
-    [HttpGet("favorite")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetfavoriteMangas()
-    {
-        var result = await _mangaService.GetAllFavoriteAsync();
-
-        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-        {
-            Data = result
-        });
-
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
-        {
-            return NotFound(wrapperResult);
-        }
-
-        return Ok(wrapperResult);
-    }
-
     [HttpGet]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
@@ -97,28 +78,7 @@ public class MangasController : ControllerBase
         return Ok(wrapperResult);
     }
 
-    [HttpPost("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFavorite([FromRoute] string Id)
-    {     
-        try
-        {
-            var result = await _mangaService.AddToFavorite(Id);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result.ToList()
-            });
-           
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap(null);
-            return NotFound(wrapperResult);
-        }
-    }
-
-    [HttpPost("filtrarionbyname/{name}")]
+    [HttpGet("filtrarionbyname/{name}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
     {
@@ -138,7 +98,7 @@ public class MangasController : ControllerBase
         }
     }
 
-    [HttpPost("filtrarionbydate/{year}")]
+    [HttpGet("filtrarionbydate/{year}")]
     [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
     {
@@ -155,27 +115,6 @@ public class MangasController : ControllerBase
                 return BadRequest(wrapperResult);
             }
 
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap(null);
-            return NotFound(wrapperResult);
-        }
-    }
-
-    [HttpDelete("set/favorite/{Id}")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeletGenreById([FromRoute] string Id)
-    {
-        try
-        {
-            var result = await _mangaService.RemoveFavorite(Id);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result.ToList()
-            });
-          
             return Ok(wrapperResult);
         }
         catch (Exception ex)

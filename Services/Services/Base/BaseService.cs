@@ -1,26 +1,19 @@
 ﻿using Data.Entities.Base;
-using Microsoft.Extensions.Logging;
-using Repositories.LogsTools;
-using Repositories.LogsTools.Base;
 using Repositories.Repositories.Base;
-using Services.DTO.Base;
+using Services.Model.DTO.Base;
 using ValidateService.Validate;
 
 namespace Services.Services.Base;
 
 public abstract class BaseService<TR, TI> : IService<TR, TI>
-    where TR : IModel
+    where TR : IEntity
     where TI : IModelDTO
 {
     protected IRepository<TR> _repository;
-    private readonly ILogger<GenreService> _logger;
-    private readonly ILogsTool _logTool;
 
-    protected BaseService(IRepository<TR> repository, ILogger<GenreService> logger, ILogsTool logTool)
+    protected BaseService(IRepository<TR> repository)
     {
         _repository = repository;
-        _logger = logger;
-        _logTool = logTool;
     }
 
     public abstract Task<IList<TR>> AddRange(IList<TI> list);
@@ -30,15 +23,11 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
     public abstract Task<TR> UpdateAsync(TI item);
     public async virtual Task<TR> DeleteAsync(string id)
     {
-        _logTool.NameOfMethod = nameof(DeleteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"Id = {id}");
-
         try
         {
             if (!String.IsNullOrEmpty(id))
             {
                 var errorMessage = "Id was null or empty";
-                _logTool.WriteToLog(_logger, LogPosition.Error, $"{errorMessage}");
                 throw new Exception(errorMessage);
             }
 
@@ -46,7 +35,6 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
         }
         catch (Exception ex)
         {
-            _logTool.WriteToLog(_logger, LogPosition.Error, $"{ex.Message}");
             throw new Exception(ex.Message);
         }
     }
@@ -59,74 +47,21 @@ public abstract class BaseService<TR, TI> : IService<TR, TI>
             throw new Exception("Parameters aren't valid");
         }
 
-        _logTool.NameOfMethod = nameof(GetCertainPage);
-        _logTool.WriteToLog(_logger, LogPosition.Begin, $"sizeOfPage = {sizeOfPage} page = {page}");
-
         try
         {
             return await _repository.GetCertainPage(pageSize, numberOfPage);
         }
         catch (Exception ex)
         {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
             throw new Exception(ex.Message);
         }
 
-    }
-    public async virtual Task<IList<TR>> GetAllFavoriteAsync()
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        try
-        {
-            return await _repository.GetAllFavoriteAsync();
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
-    public async virtual Task<TR> AddToFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
-        try
-        {
-            return await _repository.AddToFavorite(Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
-    }
-    public async virtual Task<TR> RemoveFavorite(string Id)
-    {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin); 
-
-        try
-        {
-            return await _repository.RemoveFavorite(Id);
-        }
-        catch (Exception ex)
-        {
-            _logTool.WriteToLog(_logger, LogPosition.Error, ex.Message);
-            throw new Exception(ex.Message);
-        }
     }
     public async virtual Task<IList<TR>> FiltrationByName(string name)
     {
-        _logTool.NameOfMethod = nameof(GetAllFavoriteAsync);
-        _logTool.WriteToLog(_logger, LogPosition.Begin);
-
         if (String.IsNullOrEmpty(name))
         {
             var errorMessage = "Name was null or empty!";
-            _logTool.WriteToLog(_logger, LogPosition.Error, errorMessage);
             throw new Exception(errorMessage);
         }
 

@@ -10,6 +10,6 @@ public class GlavaMangaEntity
     public string? Id { get; set; }
     public int NumberOfGlava { get; set; }
     public string LinkToFirstPicture { get; set; }
-    public int AmountOfPictures { get; set; }
+    public int NumberOfPictures { get; set; }
 }
 

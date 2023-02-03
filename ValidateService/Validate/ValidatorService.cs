@@ -6,15 +6,15 @@ namespace ValidateService.Validate
     public class ValidatorService
     {
         private readonly IConfiguration _configuration;
-        private readonly NLog.ILogger _logger;
+        private readonly ILogger _logger;
 
-        public ValidatorService(IConfiguration configuration, NLog.ILogger logger)
+        public ValidatorService(IConfiguration configuration, ILogger logger)
         {
             _configuration = configuration;
             _logger = logger;
         }
 
-        public async Task<bool> ValidateAppsettingsJson()
+        public async Task<bool> ValidateAppSettingsJson()
         {
             var connercionStringMsSql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMSSQL"];
             var connercionStringMySql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMYSQL"];
@@ -69,7 +69,7 @@ namespace ValidateService.Validate
 
             var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
 
-            if (!IsCanParsePageSize && pageSize < 0)
+            if (!IsCanParsePageSize || pageSize < 0)
             {
                 isValid = false;
             }
@@ -78,7 +78,7 @@ namespace ValidateService.Validate
 
             var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
 
-            if (!IsCanParseNumberOfPage && numberOfPage < 0)
+            if (!IsCanParseNumberOfPage || numberOfPage < 0)
             {
                 isValid = false;
             }
@@ -88,9 +88,9 @@ namespace ValidateService.Validate
         public static bool IsValidYear(string year, out int yearnum)
         {
             bool isValid = true;
-            var IsCanParsePageSize = Int32.TryParse(year, out yearnum);
+            var IsCanParseYear = Int32.TryParse(year, out yearnum);
 
-            if (!IsCanParsePageSize && yearnum < 0)
+            if (!IsCanParseYear || yearnum < 0)
             {
                 isValid = false;
             }
