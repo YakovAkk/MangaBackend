@@ -51,7 +51,7 @@ public class GenresController : ControllerBase
         });
 
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
             return NotFound(wrapperResult);
         }
