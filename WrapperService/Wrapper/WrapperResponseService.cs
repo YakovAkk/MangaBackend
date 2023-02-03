@@ -1,6 +1,6 @@
-﻿using WrapperService.Model.InputModel;
+﻿using System.Net;
+using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
-using WrapperService.StatusCode;
 
 namespace WrapperService.Wrapper;
 
@@ -13,7 +13,7 @@ public static class WrapperResponseService
             return new ResponseWrapModel()
             {
                 Data = new object[0],
-                StatusCode = CodeStatus.Empty,
+                StatusCode = HttpStatusCode.NotFound,
                 ErrorMessage = "No data"
             };
         }
@@ -21,7 +21,7 @@ public static class WrapperResponseService
         return new ResponseWrapModel()
         {
             Data = inputModel.Data,
-            StatusCode = CodeStatus.Successful,
+            StatusCode = HttpStatusCode.OK,
             ErrorMessage = ""
         };
     }

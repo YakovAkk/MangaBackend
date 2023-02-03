@@ -35,8 +35,8 @@ public static class Mapper
         {
             DeviceToken = dto.DeviceToken,
             Name = dto.UserName,
-            Password= dto.Password,
-            Email= dto.Email,
+            Password = dto.Password,
+            Email = dto.Email,
         };
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Data.Helping.Extension
 {
-    public static class IModelExtension
+    public static class IEntityExtension
     {
         public static IList<object> ToList(this IEntity model)
         {

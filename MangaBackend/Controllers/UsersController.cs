@@ -1,13 +1,12 @@
 ﻿using Data.Entities;
 using Data.Helping.Extension;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
+using System.Net;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
-using WrapperService.StatusCode;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
@@ -35,7 +34,7 @@ public class UsersController : ControllerBase
             Data = result,
         });
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
             return NotFound(wrapperResult);
         }
@@ -158,7 +157,7 @@ public class UsersController : ControllerBase
             Data = result.ToList()
         });
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
             return NotFound(wrapperResult);
         }
@@ -177,7 +176,7 @@ public class UsersController : ControllerBase
             Data = result.ToList()
         });
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
             return NotFound(wrapperResult);
         }

@@ -1,9 +1,9 @@
 ﻿using Data.Helping.Extension;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services.Base;
+using System.Net;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
-using WrapperService.StatusCode;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
@@ -30,7 +30,7 @@ public class MangasController : ControllerBase
             Data = result
         });
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {    
             return NotFound(wrapperResult);
         }
@@ -70,7 +70,7 @@ public class MangasController : ControllerBase
             Data = result
         });
 
-        if (wrapperResult.StatusCode != CodeStatus.Successful)
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
             return NotFound(wrapperResult);
         }
@@ -110,7 +110,7 @@ public class MangasController : ControllerBase
                 Data = result
             });
 
-            if (wrapperResult.StatusCode != CodeStatus.Successful)
+            if (wrapperResult.StatusCode != HttpStatusCode.OK)
             {
                 return BadRequest(wrapperResult);
             }
