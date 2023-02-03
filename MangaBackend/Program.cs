@@ -29,8 +29,6 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Add services to the container.
-
     builder.Services.AddTransient<IMangaRepository, MangaRepository>();
     builder.Services.AddTransient<IMangaService, MangaService>();
 
@@ -51,6 +49,7 @@ try
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
+    // check if json app settings is correct
     var validator = new ValidatorService(builder.Configuration, logger);
 
     if (await validator.ValidateAppSettingsJson())
@@ -93,7 +92,6 @@ try
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
 
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
@@ -107,7 +105,6 @@ try
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
-    // Authentication setup
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
         options =>
@@ -122,15 +119,11 @@ try
             };  
         });
 
-
-    // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
 
     var app = builder.Build();
-
-    // Configure the HTTP request pipeline.
 
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -165,7 +158,6 @@ catch (Exception exception)
 }
 finally
 {
-    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
     LogManager.Shutdown();
 }
 
