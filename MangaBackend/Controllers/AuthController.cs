@@ -1,5 +1,4 @@
 ﻿using Data.Helping.Extension;
-using Data.Model.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
@@ -33,7 +32,7 @@ namespace MangaBackend.Controllers
                     Data = new object[] {response}
                 });
 
-                return Ok(response);
+                return Ok(wrapperResult);
             }
             catch (Exception ex)
             {
@@ -75,7 +74,7 @@ namespace MangaBackend.Controllers
                     Data = new object[] { response }
                 });
 
-                return Ok(response);
+                return Ok(wrapperResult);
             }
             catch (Exception ex)
             {
