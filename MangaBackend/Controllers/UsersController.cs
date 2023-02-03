@@ -1,13 +1,11 @@
 ﻿using Data.Entities;
 using Data.Helping.Extension;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
 using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
-using WrapperService.StatusCode;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
