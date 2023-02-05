@@ -60,7 +60,7 @@ namespace Services.Services
 
             return token;
         }
-        public async Task<UserEntity> RegisterAsync(UserRegistrationDTO userDTO)
+        public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
         {
 
             if (userDTO == null)
@@ -77,9 +77,9 @@ namespace Services.Services
 
             var userModel = userDTO.toEntity();
 
-            var res = await _userRespository.CreateAsync(userModel);
+            var result = await _userRespository.CreateAsync(userModel);
 
-            return res;
+            return result.toViewModel();
         }
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {

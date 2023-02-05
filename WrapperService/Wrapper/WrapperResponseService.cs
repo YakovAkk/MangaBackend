@@ -45,8 +45,8 @@ public static class WrapperResponseService
         return new WrapViewModel()
         {
             Data = inputModel,
-            StatusCode = HttpStatusCode.NotFound,
-            ErrorMessage = "No data"
+            StatusCode = HttpStatusCode.OK,
+            ErrorMessage = ""
         };
     }
 }
