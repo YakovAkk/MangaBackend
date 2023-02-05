@@ -2,7 +2,7 @@
 
 namespace WrapperService.Model.ResponseModel;
 
-public class ResponseWrapModel
+public class WrapViewModel
 {
     public object Data { get; set; }
     public string ErrorMessage { get; set; }

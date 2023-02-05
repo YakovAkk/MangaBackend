@@ -1,6 +1,5 @@
-﻿using Data.Helping.Extension;
-using Microsoft.AspNetCore.Mvc;
-using Services.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI.Common;
 using Services.Services.Base;
 using System.Net;
 using WrapperService.Model.InputModel;
@@ -21,35 +20,31 @@ public class GenresController : ControllerBase
     }
 
     [HttpGet("pagination/{pagesize}/{page}")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
     {
-        var result = await _genreService.GetCertainPage(pagesize, page);
-
-        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
+        try
         {
-            Data = result,
-        });
+            var result = await _genreService.GetCertainPage(pagesize, page);
 
-        if (wrapperResult.StatusCode != HttpStatusCode.OK)
-        {
-            return NotFound(wrapperResult);
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+
+            return Ok(wrapperResult);
         }
-
-        return Ok(wrapperResult);
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
         var result = await _genreService.GetAllAsync();
 
-        var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel() 
-        {
-           Data = result,
-        });
-
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
         if (wrapperResult.StatusCode != HttpStatusCode.OK)
         {
@@ -60,41 +55,35 @@ public class GenresController : ControllerBase
     }
 
     [HttpGet("{Id}")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGenreById([FromRoute] string Id)
     {
         try
         {
             var result = await _genreService.GetByIdAsync(Id);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result.ToList(),
-            });
+            var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = WrapperResponseService.Wrap(null);
+            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
             return NotFound(wrapperResult);
         }
     }
 
     [HttpGet("filtrarion/{name}")]
-    [ProducesResponseType(typeof(ResponseWrapModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
         try
         {
             var result = await _genreService.FiltrationByName(name);
-            var wrapperResult = WrapperResponseService.Wrap(new WrapInputModel()
-            {
-                Data = result
-            });
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
             return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
-            var wrapperResult = WrapperResponseService.Wrap(null);
+            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
             return NotFound(wrapperResult);
         }
     }

@@ -1,16 +1,25 @@
 ﻿using System.Net;
-using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
 
 namespace WrapperService.Wrapper;
 
 public static class WrapperResponseService
 {
-    public static ResponseWrapModel Wrap(WrapInputModel inputModel)
+    public static WrapViewModel Wrap<T>(T inputModel = null, string errorMessage = null) where T : class
     {
-        if(inputModel == null || inputModel.Data == null || inputModel.Data.Count() == 0)
+        if(errorMessage is not null)
         {
-            return new ResponseWrapModel()
+            return new WrapViewModel()
+            {
+                Data = new object[0],
+                StatusCode = HttpStatusCode.InternalServerError,
+                ErrorMessage = errorMessage
+            };
+        }
+
+        if (inputModel is null)
+        {
+            return new WrapViewModel()
             {
                 Data = new object[0],
                 StatusCode = HttpStatusCode.NotFound,
@@ -18,11 +27,26 @@ public static class WrapperResponseService
             };
         }
 
-        return new ResponseWrapModel()
+        if (typeof(T) == typeof(IEnumerable<object>))
         {
-            Data = inputModel.Data,
-            StatusCode = HttpStatusCode.OK,
-            ErrorMessage = ""
+            var result = (IEnumerable<object>)inputModel;
+
+            if (!result.Any())
+            {
+                return new WrapViewModel()
+                {
+                    Data = new object[0],
+                    StatusCode = HttpStatusCode.NotFound,
+                    ErrorMessage = "No data"
+                };
+            }
+        }
+
+        return new WrapViewModel()
+        {
+            Data = inputModel,
+            StatusCode = HttpStatusCode.NotFound,
+            ErrorMessage = "No data"
         };
     }
 }
