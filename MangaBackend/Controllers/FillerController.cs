@@ -22,13 +22,13 @@ public class FillerController : ControllerBase
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");
 
-        var resultGenres = await _fillerService.AddGenres();
-
         var result = new ResponseFillDTO
         {
             IsSuccess = true,
             MessageWhatWrong = ""
         };
+
+        var resultGenres = await _fillerService.AddGenres();
 
         if (!resultGenres.IsSuccess)
         {
