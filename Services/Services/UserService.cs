@@ -22,23 +22,15 @@ public class UserService : IUserService
     #region User
     public async Task<UserEntity> UpdateAsync(UserEntity user)
     {
-        if(user == null)
+        if (user == null)
         {
             var errorMessage = "User is null";
 
             throw new ArgumentNullException(errorMessage);
         }
+        var updatedUser = await _userRespository.UpdateAsync(user);
 
-        try
-        {
-            var updatedUser = await _userRespository.UpdateAsync(user);
-
-            return updatedUser;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return updatedUser;
     }
     public async Task<IList<UserEntity>> GetAllAsync()
     {
@@ -52,14 +44,7 @@ public class UserService : IUserService
             throw new Exception("user_id is null or empty");
         }
 
-        try
-        {
-            return await _userRespository.GetByIdAsync(user_id);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return await _userRespository.GetByIdAsync(user_id);
     }
 
     public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
@@ -67,22 +52,9 @@ public class UserService : IUserService
         UserEntity userExistByName = null;
         UserEntity userExistByEmail = null;
 
-        try
-        {
-            userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
-        }
-        catch (Exception)
-        {
+        userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
 
-        }
-        try
-        {
-            userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
-        }
-        catch (Exception)
-        {
-
-        }
+        userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
 
         if (userExistByName == null && userExistByEmail == null)
         {
@@ -97,7 +69,6 @@ public class UserService : IUserService
     #endregion
 
     #region UsersFavorite
-
     public async Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         if (addTOFavoriteDTO == null)
@@ -120,21 +91,13 @@ public class UserService : IUserService
 
             throw new ArgumentNullException(errorMessage);
         }
+        var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
+        var genre = await _genreRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
 
-            var genre = await _genreRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
+        var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
 
-            var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
-            return userResult;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception(ex.Message);
-        }
+        return userResult;
     }
     public async Task<UserEntity> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
@@ -158,21 +121,13 @@ public class UserService : IUserService
 
             throw new ArgumentNullException(errorMessage);
         }
+        var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
+        var manga = await _mangaRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
 
-            var manga = await _mangaRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
+        var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
 
-            var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
-
-            return userResult;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return userResult;
     }
     public async Task<UserEntity> RemoveGenreFromFavoriteAsync(string userid, string genreid)
     {
@@ -189,22 +144,13 @@ public class UserService : IUserService
 
             throw new ArgumentNullException(errorMessage);
         }
+        var user = await _userRespository.GetByIdAsync(userid);
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(userid);
+        var genre = await _genreRepository.GetByIdAsync(genreid);
 
-            var genre = await _genreRepository.GetByIdAsync(genreid);
+        var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
 
-            var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
-
-            return userResult;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception(ex.Message);
-        }
+        return userResult;
     }
     public async Task<UserEntity> RemoveMangaFromFavoriteAsync(string userid, string genreid)
     {
@@ -222,21 +168,13 @@ public class UserService : IUserService
             throw new ArgumentNullException(errorMessage);
         }
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(userid);
+        var user = await _userRespository.GetByIdAsync(userid);
 
-            var manga = await _mangaRepository.GetByIdAsync(genreid);
+        var manga = await _mangaRepository.GetByIdAsync(genreid);
 
-            var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
+        var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
 
-            return userResult;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception(ex.Message);
-        }
+        return userResult;
     }
     public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid)
     {
@@ -247,18 +185,11 @@ public class UserService : IUserService
             throw new ArgumentNullException(errorMessage);
         }
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(userid);
+        var user = await _userRespository.GetByIdAsync(userid);
 
-            var list = await _userRespository.GetAllFavoriteMangaAsync(user);
+        var list = await _userRespository.GetAllFavoriteMangaAsync(user);
 
-            return list;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }  
+        return list;
     }
     public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(string userid)
     {
@@ -269,20 +200,11 @@ public class UserService : IUserService
 
             throw new ArgumentNullException(errorMessage);
         }
+        var user = await _userRespository.GetByIdAsync(userid);
 
-        try
-        {
-            var user = await _userRespository.GetByIdAsync(userid);
+        var list = await _userRespository.GetAllFavoriteGenreAsync(user);
 
-            var list = await _userRespository.GetAllFavoriteGenreAsync(user);
-
-            return list;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return list;
     }
     #endregion
-
 }

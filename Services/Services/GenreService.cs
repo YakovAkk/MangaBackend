@@ -24,15 +24,7 @@ public class GenreService : IGenreService
 
         var model = item.toEntity();
 
-        try
-        {
-            return await _genreRepository.CreateAsync(model);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        
+        return await _genreRepository.CreateAsync(model);
     }
     public async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
     {
@@ -65,15 +57,7 @@ public class GenreService : IGenreService
             throw new Exception(errorMessage);
         }
 
-        try
-        {
-            return await _genreRepository.GetByIdAsync(id);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        
+        return await _genreRepository.GetByIdAsync(id);
     }
     public async Task<GenreEntity> UpdateAsync(GenreDTO item)
     {
@@ -90,35 +74,22 @@ public class GenreService : IGenreService
             throw new Exception(errorMessage);
         }
 
-        try
-        {
-            var genre = await _genreRepository.GetByIdAsync(item.Id);
+        var genre = await _genreRepository.GetByIdAsync(item.Id);
 
-            genre = item.toEntity();
+        genre = item.toEntity();
 
-            return await _genreRepository.UpdateAsync(genre);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return await _genreRepository.UpdateAsync(genre);
     }
     public async Task<GenreEntity> DeleteAsync(string id)
     {
-        try
-        {
-            if (!String.IsNullOrEmpty(id))
-            {
-                var errorMessage = "Id was null or empty";
-                throw new Exception(errorMessage);
-            }
 
-            return await _genreRepository.DeleteAsync(id);
-        }
-        catch (Exception ex)
+        if (!String.IsNullOrEmpty(id))
         {
-            throw new Exception(ex.Message);
+            var errorMessage = "Id was null or empty";
+            throw new Exception(errorMessage);
         }
+
+        return await _genreRepository.DeleteAsync(id);
     }
     public async Task<IList<GenreEntity>> GetCertainPage(string sizeOfPage, string page)
     {
@@ -129,15 +100,7 @@ public class GenreService : IGenreService
             throw new Exception("Parameters aren't valid");
         }
 
-        try
-        {
-            return await _genreRepository.GetCertainPage(pageSize, numberOfPage);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-
+        return await _genreRepository.GetCertainPage(pageSize, numberOfPage);
     }
     public async Task<IList<GenreEntity>> FiltrationByName(string name)
     {
