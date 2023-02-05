@@ -48,9 +48,14 @@ namespace Services.Services
             {
                 throw new Exception("Password is incorrect!");
             }
-
+            
             var refreshToken = GenereteRefreshToken();
             await _userRespository.SetRefreshToken(refreshToken, userExist);
+                var token = new TokensViewModel()
+                {
+                    AccessToken = CreateToken(userExist),
+                    RefreshToken = refreshToken.Token
+                };
 
             var token = new TokensViewModel()
             {
@@ -100,7 +105,30 @@ namespace Services.Services
 
             if (userExist.RefreshToken != tokenDTO.RefreshToken)
             {
+
                 throw new UnauthorizedAccessException("Invalid refresh token!");
+
+                var userExist = await _userService.GetUserByNameOrEmail(tokenDTO.User_NameOrEmail);
+
+                if(userExist.RefreshToken != tokenDTO.RefreshToken)
+                {
+                    throw new UnauthorizedAccessException("Invalid refresh token!");
+                }
+                else if (userExist.TokenExpires < DateTime.Now)
+                {
+                    throw new UnauthorizedAccessException("Token Expired!");
+                }
+
+                var token = CreateToken(userExist);
+                var newRefreshToken = GenereteRefreshToken();
+                await _userRespository.SetRefreshToken(newRefreshToken, userExist);
+
+                return new TokensViewModel()
+                {
+                    AccessToken = token,
+                    RefreshToken = newRefreshToken.Token
+                };
+
             }
             else if (userExist.TokenExpires < DateTime.Now)
             {
@@ -119,7 +147,7 @@ namespace Services.Services
         }
 
         #region Private
-        private string CreateTocken(UserEntity user)
+        private string CreateToken(UserEntity user)
         {
             var claims = new List<Claim>()
             {
