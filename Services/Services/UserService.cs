@@ -37,7 +37,7 @@ public class UserService : IUserService
         return await _userRespository.GetAllAsync();
     }
 
-    public async Task<UserEntity> GetById(string user_id)
+    public async Task<UserEntity> GetByIdAsync(string user_id)
     {
         if (string.IsNullOrEmpty(user_id))
         {

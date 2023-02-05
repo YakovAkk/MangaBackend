@@ -48,18 +48,14 @@ namespace Services.Services
             {
                 throw new Exception("Password is incorrect!");
             }
-            
+
             var refreshToken = GenereteRefreshToken();
             await _userRespository.SetRefreshToken(refreshToken, userExist);
-                var token = new TokensViewModel()
-                {
-                    AccessToken = CreateToken(userExist),
-                    RefreshToken = refreshToken.Token
-                };
 
             var token = new TokensViewModel()
             {
-                AccessToken = CreateTocken(userExist),
+                User_Id = userExist.Id,
+                AccessToken = CreateToken(userExist),
                 RefreshToken = refreshToken.Token
             };
 
@@ -95,52 +91,30 @@ namespace Services.Services
                 throw new ArgumentNullException(errorMessage);
             }
 
-            if (string.IsNullOrEmpty(tokenDTO.RefreshToken) || string.IsNullOrEmpty(tokenDTO.User_NameOrEmail))
+            if (string.IsNullOrEmpty(tokenDTO.RefreshToken) || string.IsNullOrEmpty(tokenDTO.User_Id))
             {
                 var errorMessage = "RefreshToken Or User_id field is null or empty";
 
                 throw new ArgumentNullException(errorMessage);
             }
-            var userExist = await _userService.GetUserByNameOrEmail(tokenDTO.User_NameOrEmail);
+            var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
 
             if (userExist.RefreshToken != tokenDTO.RefreshToken)
             {
-
                 throw new UnauthorizedAccessException("Invalid refresh token!");
-
-                var userExist = await _userService.GetUserByNameOrEmail(tokenDTO.User_NameOrEmail);
-
-                if(userExist.RefreshToken != tokenDTO.RefreshToken)
-                {
-                    throw new UnauthorizedAccessException("Invalid refresh token!");
-                }
-                else if (userExist.TokenExpires < DateTime.Now)
-                {
-                    throw new UnauthorizedAccessException("Token Expired!");
-                }
-
-                var token = CreateToken(userExist);
-                var newRefreshToken = GenereteRefreshToken();
-                await _userRespository.SetRefreshToken(newRefreshToken, userExist);
-
-                return new TokensViewModel()
-                {
-                    AccessToken = token,
-                    RefreshToken = newRefreshToken.Token
-                };
-
             }
             else if (userExist.TokenExpires < DateTime.Now)
             {
                 throw new UnauthorizedAccessException("Token Expired!");
             }
 
-            var token = CreateTocken(userExist);
+            var token = CreateToken(userExist);
             var newRefreshToken = GenereteRefreshToken();
             await _userRespository.SetRefreshToken(newRefreshToken, userExist);
 
             return new TokensViewModel()
             {
+                User_Id = userExist.Id,
                 AccessToken = token,
                 RefreshToken = newRefreshToken.Token
             };
