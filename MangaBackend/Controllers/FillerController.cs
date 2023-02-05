@@ -46,6 +46,15 @@ public class FillerController : ControllerBase
             _logger.LogDebug($"Mangas wasn't added because {resultMangas.MessageWhatWrong}");
         }
 
+        var resultAdmin = await _fillerService.AddAdmin();
+
+        if (!resultMangas.IsSuccess)
+        {
+            result.IsSuccess = false;
+            result.MessageWhatWrong += $" Admin wasn't added because {resultMangas.MessageWhatWrong}";
+            _logger.LogDebug($"Admin wasn't added because {resultMangas.MessageWhatWrong}");
+        }
+
         if (!result.IsSuccess)
         {
             return BadRequest(result);
