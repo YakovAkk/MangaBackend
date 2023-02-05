@@ -48,7 +48,7 @@ public class FillerController : ControllerBase
 
         var resultAdmin = await _fillerService.AddAdmin();
 
-        if (!resultMangas.IsSuccess)
+        if (!resultAdmin.IsSuccess)
         {
             result.IsSuccess = false;
             result.MessageWhatWrong += $" Admin wasn't added because {resultMangas.MessageWhatWrong}";
