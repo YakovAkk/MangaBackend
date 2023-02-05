@@ -8,7 +8,7 @@ using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
+public class MangaService : IMangaService
 {
     private readonly ILocalStorage _localStorage;
     private readonly IGenreRepository _genreRepository;
@@ -16,14 +16,14 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
     public MangaService(
         IMangaRepository repository,
         IGenreRepository genreRepository, 
-        ILocalStorage localStorage) : base(repository)
+        ILocalStorage localStorage)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
         _localStorage = localStorage;
     }
 
-    public override async Task<MangaEntity> AddAsync(MangaDTO item)
+    public async Task<MangaEntity> AddAsync(MangaDTO item)
     {
         if (item == null)
         {
@@ -45,7 +45,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         try
         {
-            return await _repository.CreateAsync(model);
+            return await _mangaRepository.CreateAsync(model);
         }
         catch (Exception ex)
         {
@@ -92,7 +92,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             throw new Exception(ex.Message);
         }  
     }
-    public async override Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
+    public async Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
     {
         if (list == null)
         {
@@ -128,7 +128,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         
     }
-    public async override Task<IList<MangaEntity>> GetAllAsync()
+    public async Task<IList<MangaEntity>> GetAllAsync()
     {
         var result = await _mangaRepository.GetAllAsync();
 
@@ -147,7 +147,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         return result;
     }
-    public async override Task<MangaEntity> GetByIdAsync(string Id)
+    public async Task<MangaEntity> GetByIdAsync(string Id)
     {
         if (String.IsNullOrEmpty(Id))
         {
@@ -174,7 +174,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         }
         
     }
-    public async override Task<MangaEntity> UpdateAsync(MangaDTO item)
+    public async Task<MangaEntity> UpdateAsync(MangaDTO item)
     {
        
         if (item == null)
@@ -203,10 +203,10 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         try
         {
-            var manga = await _repository.GetByIdAsync(item.Id);
+            var manga = await _mangaRepository.GetByIdAsync(item.Id);
             manga = item.toEntity(genres);
 
-            return await _repository.UpdateAsync(manga);
+            return await _mangaRepository.UpdateAsync(manga);
         }
         catch (Exception ex)
         {
@@ -230,5 +230,51 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         {
             throw new Exception(ex.Message);
         }
+    }
+    public async Task<MangaEntity> DeleteAsync(string id)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(id))
+            {
+                var errorMessage = "Id was null or empty";
+                throw new Exception(errorMessage);
+            }
+
+            return await _mangaRepository.DeleteAsync(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+    public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
+    {
+        int pageSize, numberOfPage;
+
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
+        {
+            throw new Exception("Parameters aren't valid");
+        }
+
+        try
+        {
+            return await _mangaRepository.GetCertainPage(pageSize, numberOfPage);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
+    }
+    public async Task<IList<MangaEntity>> FiltrationByName(string name)
+    {
+        if (String.IsNullOrEmpty(name))
+        {
+            var errorMessage = "Name was null or empty!";
+            throw new Exception(errorMessage);
+        }
+
+        return await _mangaRepository.FiltrationByName(name);
     }
 }

@@ -3,16 +3,18 @@ using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
+using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
+public class GenreService : IGenreService
 {
-    public GenreService(IGenreRepository repository) : base(repository) 
+    private readonly IGenreRepository _genreRepository;
+    public GenreService(IGenreRepository repository)
     {
-
+        _genreRepository = repository;
     }
-    public override async Task<GenreEntity> AddAsync(GenreDTO item)
+    public async Task<GenreEntity> AddAsync(GenreDTO item)
     {
         if (item == null)
         {
@@ -24,7 +26,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 
         try
         {
-            return await _repository.CreateAsync(model);
+            return await _genreRepository.CreateAsync(model);
         }
         catch (Exception ex)
         {
@@ -32,7 +34,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
         }
         
     }
-    public override async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
+    public async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
     {
         if (list == null)
         {
@@ -49,13 +51,13 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
             listModels.Add(genre);
         }
 
-        return await _repository.AddRange(listModels);
+        return await _genreRepository.AddRange(listModels);
     }
-    public override async Task<IList<GenreEntity>> GetAllAsync()
+    public async Task<IList<GenreEntity>> GetAllAsync()
     {
-        return await _repository.GetAllAsync();
+        return await _genreRepository.GetAllAsync();
     }
-    public override async Task<GenreEntity> GetByIdAsync(string id)
+    public async Task<GenreEntity> GetByIdAsync(string id)
     {
         if (String.IsNullOrEmpty(id))
         {
@@ -65,7 +67,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 
         try
         {
-            return await _repository.GetByIdAsync(id);
+            return await _genreRepository.GetByIdAsync(id);
         }
         catch (Exception ex)
         {
@@ -73,7 +75,7 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
         }
         
     }
-    public async override Task<GenreEntity> UpdateAsync(GenreDTO item)
+    public async Task<GenreEntity> UpdateAsync(GenreDTO item)
     {
         if (item == null)
         {
@@ -90,15 +92,61 @@ public class GenreService : BaseService<GenreEntity, GenreDTO>, IGenreService
 
         try
         {
-            var genre = await _repository.GetByIdAsync(item.Id);
+            var genre = await _genreRepository.GetByIdAsync(item.Id);
 
             genre = item.toEntity();
 
-            return await _repository.UpdateAsync(genre);
+            return await _genreRepository.UpdateAsync(genre);
         }
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
         }
+    }
+    public async Task<GenreEntity> DeleteAsync(string id)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(id))
+            {
+                var errorMessage = "Id was null or empty";
+                throw new Exception(errorMessage);
+            }
+
+            return await _genreRepository.DeleteAsync(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+    public async Task<IList<GenreEntity>> GetCertainPage(string sizeOfPage, string page)
+    {
+        int pageSize, numberOfPage;
+
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
+        {
+            throw new Exception("Parameters aren't valid");
+        }
+
+        try
+        {
+            return await _genreRepository.GetCertainPage(pageSize, numberOfPage);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
+    }
+    public async Task<IList<GenreEntity>> FiltrationByName(string name)
+    {
+        if (String.IsNullOrEmpty(name))
+        {
+            var errorMessage = "Name was null or empty!";
+            throw new Exception(errorMessage);
+        }
+
+        return await _genreRepository.FiltrationByName(name);
     }
 }
