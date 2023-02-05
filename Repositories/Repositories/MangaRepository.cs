@@ -5,12 +5,14 @@ using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories;
 
-public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
+public class MangaRepository : IMangaRepository
 {
-    public MangaRepository(AppDBContent db) : base(db)
+    private readonly AppDBContent _db;
+    public MangaRepository(AppDBContent db)
     {
+        _db = db;
     }
-    public async override Task<IList<MangaEntity>> GetAllAsync()
+    public async Task<IList<MangaEntity>> GetAllAsync()
     {
         var list = await _db.Mangas
             .Include(m => m.Genres)
@@ -25,7 +27,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         return list;
     }
-    public async override Task<MangaEntity> DeleteAsync(string id)
+    public async Task<MangaEntity> DeleteAsync(string id)
     {
         var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Id == id);
 
@@ -42,7 +44,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
     
         return manga;
     }
-    public async override Task<MangaEntity> CreateAsync(MangaEntity item)
+    public async Task<MangaEntity> CreateAsync(MangaEntity item)
     {
         var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
 
@@ -72,7 +74,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
         }
         return manga;
     }
-    public async override Task<MangaEntity> GetByIdAsync(string Id)
+    public async Task<MangaEntity> GetByIdAsync(string Id)
     {
         var manga = await _db.Mangas
             .Include(m => m.Genres)
@@ -87,9 +89,8 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         return manga;
     }
-    public async override Task<MangaEntity> UpdateAsync(MangaEntity item)
+    public async Task<MangaEntity> UpdateAsync(MangaEntity item)
     {
-      
         if (item == null)
         {
             var errorMessage = "Item was null";
@@ -119,7 +120,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         return manga;
     }
-    public async override Task<IList<MangaEntity>> AddRange(IList<MangaEntity> items)
+    public async Task<IList<MangaEntity>> AddRange(IList<MangaEntity> items)
     {
         var result = new List<MangaEntity>();
 
@@ -139,7 +140,7 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         return result;
     }
-    public async override Task<IList<MangaEntity>> GetCertainPage(int sizeOfPage, int page)
+    public async Task<IList<MangaEntity>> GetCertainPage(int sizeOfPage, int page)
     {
         var list = await _db.Mangas
             .Include(m => m.Genres)
@@ -156,9 +157,8 @@ public class MangaRepository : BaseRepository<MangaEntity>, IMangaRepository
 
         return list;
     }
-    public async override Task<IList<MangaEntity>> FiltrationByName(string name)
+    public async Task<IList<MangaEntity>> FiltrationByName(string name)
     {
-
         var result = await _db.Mangas
             .Include(m => m.Genres)
             .AsNoTracking()

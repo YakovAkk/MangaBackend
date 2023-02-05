@@ -9,10 +9,12 @@ public class FillerService : IFillerService
 {
     private readonly IMangaService _mangaService;
     private readonly IGenreService _genreService;
-    public FillerService(IMangaService mangaService, IGenreService genreService)
+    private readonly IAuthService _authService;
+    public FillerService(IMangaService mangaService, IGenreService genreService, IAuthService authService)
     {
         _mangaService = mangaService;
         _genreService = genreService;
+        _authService = authService;
     }
 
     public async Task<ResponseFillDTO> AddGenres()
@@ -150,7 +152,33 @@ public class FillerService : IFillerService
             };
         }  
     }
+    public async Task<ResponseFillDTO> AddAdmin()
+    {
+        var admin = new UserRegistrationDTO()
+        {
+           UserName = "admin",
+           Email = "admin@gmail.com",
+           Password = "pa$$w0rd1",
+           ConfirmPassword = "pa$$w0rd1"
+        };
 
+        var response = await _authService.RegisterAsync(admin);
+
+        if(response is null)
+        {
+            return new ResponseFillDTO()
+            {
+                IsSuccess = false,
+                MessageWhatWrong = "Error"
+            };
+        }
+
+        return new ResponseFillDTO()
+        {
+            IsSuccess = true,
+            MessageWhatWrong = ""
+        };
+    }
     public async Task<ResponseFillDTO> DeleteAll()
     {
         var genrelist = await _genreService.GetAllAsync();
@@ -173,7 +201,6 @@ public class FillerService : IFillerService
             MessageWhatWrong = ""
         };
     }
-
     private MangaDTO CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()

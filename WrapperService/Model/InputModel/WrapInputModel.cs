@@ -2,7 +2,7 @@
 {
     public class WrapInputModel
     {
-        public IEnumerable<object> Data { get; set; }
+        public object Data { get; set; }
 
         public WrapInputModel()
         {

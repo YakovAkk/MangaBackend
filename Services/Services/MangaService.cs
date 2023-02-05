@@ -8,22 +8,22 @@ using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
+public class MangaService : IMangaService
 {
     private readonly ILocalStorage _localStorage;
     private readonly IGenreRepository _genreRepository;
     private readonly IMangaRepository _mangaRepository;
     public MangaService(
         IMangaRepository repository,
-        IGenreRepository genreRepository, 
-        ILocalStorage localStorage) : base(repository)
+        IGenreRepository genreRepository,
+        ILocalStorage localStorage)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
         _localStorage = localStorage;
     }
 
-    public override async Task<MangaEntity> AddAsync(MangaDTO item)
+    public async Task<MangaEntity> AddAsync(MangaDTO item)
     {
         if (item == null)
         {
@@ -43,14 +43,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
 
         var model = item.toEntity(genres);
 
-        try
-        {
-            return await _repository.CreateAsync(model);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return await _mangaRepository.CreateAsync(model);
     }
     public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
     {
@@ -75,24 +68,16 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         if (!genres.Any())
         {
             var errorMessage = "The genres are incorrect";
-           
+
             throw new Exception(errorMessage);
         }
 
         manga.Genres.AddRange(genres);
+        var res = await _mangaRepository.UpdateAsync(manga);
 
-        try
-        {
-            var res = await _mangaRepository.UpdateAsync(manga);
-            return res;
-        }
-        catch (Exception ex)
-        {
-            
-            throw new Exception(ex.Message);
-        }  
+        return res;
     }
-    public async override Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
+    public async Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
     {
         if (list == null)
         {
@@ -109,7 +94,7 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
 
             if (!genres.Any())
-            { 
+            {
                 return new List<MangaEntity>();
             }
 
@@ -118,17 +103,9 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             listModels.Add(manga);
         }
 
-        try
-        {
-            return await _mangaRepository.AddRange(listModels);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        
+        return await _mangaRepository.AddRange(listModels);
     }
-    public async override Task<IList<MangaEntity>> GetAllAsync()
+    public async Task<IList<MangaEntity>> GetAllAsync()
     {
         var result = await _mangaRepository.GetAllAsync();
 
@@ -145,49 +122,42 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
                 res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
             }
         }
+
         return result;
     }
-    public async override Task<MangaEntity> GetByIdAsync(string Id)
+    public async Task<MangaEntity> GetByIdAsync(string Id)
     {
         if (String.IsNullOrEmpty(Id))
         {
             var errorMessage = "Id was null or empty";
-         
+
             throw new Exception(errorMessage);
         }
-        try
+        var result = await _mangaRepository.GetByIdAsync(Id);
+
+        result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
+
+        foreach (var res in result.PathToFoldersWithGlava)
         {
-            var result = await _mangaRepository.GetByIdAsync(Id);
-
-            result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
-
-            foreach (var res in result.PathToFoldersWithGlava)
-            {
-                res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
-            }
-
-            return result;
+            res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
         }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        
+
+        return result;
     }
-    public async override Task<MangaEntity> UpdateAsync(MangaDTO item)
+    public async Task<MangaEntity> UpdateAsync(MangaDTO item)
     {
-       
+
         if (item == null)
         {
             var errorMessage = "The item was null";
-          
+
             throw new Exception(errorMessage);
         }
 
         if (String.IsNullOrEmpty(item.Id))
         {
-             var errorMessage = "Id was null or empty";
-             throw new Exception(errorMessage);
+            var errorMessage = "Id was null or empty";
+            throw new Exception(errorMessage);
         }
 
         var allGenres = await _genreRepository.GetAllAsync();
@@ -197,21 +167,13 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
         if (!genres.Any())
         {
             var errorMessage = "The database doesn't contain any genres";
-            
+
             throw new Exception(errorMessage);
         }
+        var manga = await _mangaRepository.GetByIdAsync(item.Id);
+        manga = item.toEntity(genres);
 
-        try
-        {
-            var manga = await _repository.GetByIdAsync(item.Id);
-            manga = item.toEntity(genres);
-
-            return await _repository.UpdateAsync(manga);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        return await _mangaRepository.UpdateAsync(manga);
     }
     public async Task<List<MangaEntity>> FiltrationByDate(string year)
     {
@@ -222,13 +184,37 @@ public class MangaService : BaseService<MangaEntity, MangaDTO>, IMangaService
             throw new Exception("Parameters aren't valid");
         }
 
-        try
+        return await _mangaRepository.FiltrationByDate(yearnum);
+    }
+    public async Task<MangaEntity> DeleteAsync(string id)
+    {
+        if (!String.IsNullOrEmpty(id))
         {
-            return await _mangaRepository.FiltrationByDate(yearnum);
+            var errorMessage = "Id was null or empty";
+            throw new Exception(errorMessage);
         }
-        catch (Exception ex)
+
+        return await _mangaRepository.DeleteAsync(id);
+    }
+    public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
+    {
+        int pageSize, numberOfPage;
+
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
         {
-            throw new Exception(ex.Message);
+            throw new Exception("Parameters aren't valid");
         }
+
+        return await _mangaRepository.GetCertainPage(pageSize, numberOfPage);
+    }
+    public async Task<IList<MangaEntity>> FiltrationByName(string name)
+    {
+        if (String.IsNullOrEmpty(name))
+        {
+            var errorMessage = "Name was null or empty!";
+            throw new Exception(errorMessage);
+        }
+
+        return await _mangaRepository.FiltrationByName(name);
     }
 }

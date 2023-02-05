@@ -5,14 +5,16 @@ using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories;
 
-public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
+public class GenreRepository : IGenreRepository
 {
     private readonly IMangaRepository _mangaRepository;
-    public GenreRepository(AppDBContent db, IMangaRepository mangaRepository) : base(db)
+    private readonly AppDBContent _db;
+    public GenreRepository(AppDBContent db, IMangaRepository mangaRepository) 
     {
         _mangaRepository = mangaRepository;
+        _db = db;
     }
-    public async override Task<IList<GenreEntity>> GetAllAsync()
+    public async Task<IList<GenreEntity>> GetAllAsync()
     {
         var list = await _db.Genres.ToListAsync();
 
@@ -22,7 +24,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
         }
         return list;
     }
-    public async override Task<GenreEntity> GetByIdAsync(string id)
+    public async Task<GenreEntity> GetByIdAsync(string id)
     {
         var genre = await _db.Genres
             .Include(m => m.Mangas)
@@ -36,7 +38,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
 
         return genre;
     }
-    public async override Task<GenreEntity> CreateAsync(GenreEntity item)
+    public async Task<GenreEntity> CreateAsync(GenreEntity item)
     {
         var genre = await _db.Genres.FirstOrDefaultAsync(i => i.Name == item.Name);
 
@@ -67,7 +69,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
         }
         return genre;
     }
-    public async override Task<GenreEntity> DeleteAsync(string id)
+    public async Task<GenreEntity> DeleteAsync(string id)
     {
         var genre = await _db.Genres
             .Include(g => g.Mangas)
@@ -91,7 +93,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
         await _db.SaveChangesAsync();
         return genre;
     }
-    public async override Task<GenreEntity> UpdateAsync(GenreEntity item)
+    public async Task<GenreEntity> UpdateAsync(GenreEntity item)
     {
         var result = _db.Genres
             .Update(item);
@@ -116,7 +118,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
         }
         return genre;
     }
-    public async override Task<IList<GenreEntity>> AddRange(IList<GenreEntity> items)
+    public async Task<IList<GenreEntity>> AddRange(IList<GenreEntity> items)
     {
         var result = new List<GenreEntity>();
 
@@ -135,7 +137,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
 
         return result;
     }
-    public async override Task<IList<GenreEntity>> GetCertainPage(int sizeOfPage, int page)
+    public async Task<IList<GenreEntity>> GetCertainPage(int sizeOfPage, int page)
     {
 
         var list = await _db.Genres
@@ -150,7 +152,7 @@ public class GenreRepository : BaseRepository<GenreEntity>, IGenreRepository
 
         return list;
     }
-    public async override Task<IList<GenreEntity>> FiltrationByName(string name)
+    public async Task<IList<GenreEntity>> FiltrationByName(string name)
     {
         var result = await _db.Genres
             .Where(i => i.Name.ToLower().Contains(name.ToLower()))

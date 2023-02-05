@@ -8,6 +8,6 @@ namespace Services.Services.Base
     {
         Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin);
         Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
-        Task<UserEntity> RegisterAsync(UserRegistrationDTO userDTO);
+        Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO);
     }
 }

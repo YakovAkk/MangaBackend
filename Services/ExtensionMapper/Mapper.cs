@@ -1,10 +1,12 @@
 ﻿using Data.Entities;
 using Services.Model.DTO;
+using Services.Model.ViewModel;
 
 namespace Services.ExtensionMapper;
 
 public static class Mapper
 {
+    #region GenreEntity
     public static GenreEntity toEntity(this GenreDTO dto)
     {
         return new GenreEntity()
@@ -13,6 +15,9 @@ public static class Mapper
             Name = dto.Name
         };
     }
+    #endregion  
+
+    #region MangaEntity
     public static MangaEntity toEntity(this MangaDTO dto, List<GenreEntity> genres)
     {
         return new MangaEntity()
@@ -29,6 +34,9 @@ public static class Mapper
             Genres = genres
         };
     }
+    #endregion
+
+    #region UserEntity
     public static UserEntity toEntity(this UserRegistrationDTO dto)
     {
         return new UserEntity()
@@ -39,4 +47,18 @@ public static class Mapper
             Email = dto.Email,
         };
     }
+
+    public static UserViewModel toViewModel(this UserEntity user)
+    {
+        return new UserViewModel()
+        {
+            Id = user.Id,
+            Name = user.Name,
+            DeviceToken = user.DeviceToken,
+            Email = user.Email,
+            FavoriteGenres = user.FavoriteGenres,
+            FavoriteMangas = user.FavoriteMangas,
+        };
+    }
+    #endregion
 }
