@@ -25,12 +25,6 @@ public class MangaService : IMangaService
 
     public async Task<MangaEntity> AddAsync(MangaDTO item)
     {
-        if (item == null)
-        {
-            var errorMessage = "The item was null";
-            throw new Exception(errorMessage);
-        }
-
         var allGenres = await _genreRepository.GetAllAsync();
 
         var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
@@ -47,12 +41,6 @@ public class MangaService : IMangaService
     }
     public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
     {
-        if (mangaDTO == null || mangaDTO?.MangaId == null)
-        {
-            var errorMessage = "The item was null";
-            throw new Exception(errorMessage);
-        }
-
         var manga = await _mangaRepository.GetByIdAsync(mangaDTO.MangaId);
 
         if (manga == null)
@@ -79,12 +67,6 @@ public class MangaService : IMangaService
     }
     public async Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
     {
-        if (list == null)
-        {
-            var errorMessage = "The list was null";
-            throw new Exception(errorMessage);
-        }
-
         var listModels = new List<MangaEntity>();
 
         foreach (var item in list)
@@ -127,12 +109,6 @@ public class MangaService : IMangaService
     }
     public async Task<MangaEntity> GetByIdAsync(string Id)
     {
-        if (String.IsNullOrEmpty(Id))
-        {
-            var errorMessage = "Id was null or empty";
-
-            throw new Exception(errorMessage);
-        }
         var result = await _mangaRepository.GetByIdAsync(Id);
 
         result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
@@ -146,20 +122,6 @@ public class MangaService : IMangaService
     }
     public async Task<MangaEntity> UpdateAsync(MangaDTO item)
     {
-
-        if (item == null)
-        {
-            var errorMessage = "The item was null";
-
-            throw new Exception(errorMessage);
-        }
-
-        if (String.IsNullOrEmpty(item.Id))
-        {
-            var errorMessage = "Id was null or empty";
-            throw new Exception(errorMessage);
-        }
-
         var allGenres = await _genreRepository.GetAllAsync();
 
         var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
@@ -188,12 +150,6 @@ public class MangaService : IMangaService
     }
     public async Task<MangaEntity> DeleteAsync(string id)
     {
-        if (!String.IsNullOrEmpty(id))
-        {
-            var errorMessage = "Id was null or empty";
-            throw new Exception(errorMessage);
-        }
-
         return await _mangaRepository.DeleteAsync(id);
     }
     public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
@@ -209,12 +165,6 @@ public class MangaService : IMangaService
     }
     public async Task<IList<MangaEntity>> FiltrationByName(string name)
     {
-        if (String.IsNullOrEmpty(name))
-        {
-            var errorMessage = "Name was null or empty!";
-            throw new Exception(errorMessage);
-        }
-
         return await _mangaRepository.FiltrationByName(name);
     }
 }

@@ -28,20 +28,6 @@ namespace Services.Services
 
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
-            if (userDTOLogin == null)
-            {
-                var errorMessage = "User is null";
-
-                throw new ArgumentNullException(errorMessage);
-            }
-
-            if (string.IsNullOrEmpty(userDTOLogin.NameOrEmail))
-            {
-                var errorMessage = "Name Or Email field is null or empty";
-
-                throw new ArgumentNullException(errorMessage);
-            }
-
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
             if (userDTOLogin.Password != userExist.Password)
@@ -63,13 +49,6 @@ namespace Services.Services
         }
         public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
         {
-
-            if (userDTO == null)
-            {
-                var errorMessage = "User is null";
-                throw new ArgumentNullException(errorMessage);
-            }
-
             if (userDTO.Password != userDTO.ConfirmPassword)
             {
                 var errorMessage = "Both of passwords must be equal!";
@@ -84,19 +63,6 @@ namespace Services.Services
         }
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
-            if (tokenDTO == null)
-            {
-                var errorMessage = "User is null";
-
-                throw new ArgumentNullException(errorMessage);
-            }
-
-            if (string.IsNullOrEmpty(tokenDTO.RefreshToken) || string.IsNullOrEmpty(tokenDTO.User_Id))
-            {
-                var errorMessage = "RefreshToken Or User_id field is null or empty";
-
-                throw new ArgumentNullException(errorMessage);
-            }
             var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
 
             if (userExist.RefreshToken != tokenDTO.RefreshToken)

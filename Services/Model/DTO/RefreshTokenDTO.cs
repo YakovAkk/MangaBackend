@@ -2,7 +2,7 @@
 {
     public class RefreshTokenDTO
     {
-        public string User_Id { get; set; }
-        public string RefreshToken { get; set; }
+        public string User_Id { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }
