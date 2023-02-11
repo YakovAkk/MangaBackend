@@ -66,7 +66,7 @@ public class UserRepository : IUserRespository
         if(user == null)
         {
             var errorMessage = "User isn't exist";
-            throw new ArgumentNullException(errorMessage);
+            throw new UnauthorizedAccessException(errorMessage);
         }
 
         return user;
