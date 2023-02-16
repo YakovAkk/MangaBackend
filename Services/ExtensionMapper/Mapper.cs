@@ -37,13 +37,14 @@ public static class Mapper
     #endregion
 
     #region UserEntity
-    public static UserEntity toEntity(this UserRegistrationDTO dto)
+    public static UserEntity toEntity(this UserRegistrationDTO dto, byte[] passwordHash, byte[] passwordSalt)
     {
         return new UserEntity()
         {
             DeviceToken = dto.DeviceToken,
             Name = dto.UserName,
-            Password = dto.Password,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
             Email = dto.Email,
         };
     }

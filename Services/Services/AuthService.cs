@@ -30,7 +30,7 @@ namespace Services.Services
         {
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
-            if (userDTOLogin.Password != userExist.Password)
+            if (!VerifyPasswordHash(userDTOLogin.NameOrEmail, userExist.PasswordHash, userExist.PasswordSalt))
             {
                 throw new Exception("Password is incorrect!");
             }
@@ -61,7 +61,9 @@ namespace Services.Services
                 throw new Exception(errorMessage);
             }
 
-            var userModel = userDTO.toEntity();
+            CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var userModel = userDTO.toEntity(passwordHash, passwordSalt);
 
             var result = await _userRespository.CreateAsync(userModel);
 
@@ -124,6 +126,24 @@ namespace Services.Services
             };
             return refreshToken;
         }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }   
         #endregion
     }
 }
