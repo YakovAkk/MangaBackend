@@ -20,11 +20,16 @@ public class UserService : IUserService
     }
 
     #region User
-    public async Task<UserEntity> UpdateAsync(UserEntity user)
+    public async Task<bool> UpdateAsync(UserEntity user)
     {
         var updatedUser = await _userRespository.UpdateAsync(user);
 
-        return updatedUser;
+        if(updatedUser != null)
+        {
+            return true;
+        }
+        
+        return false;
     }
     public async Task<IList<UserEntity>> GetAllAsync()
     {
@@ -58,7 +63,7 @@ public class UserService : IUserService
     #endregion
 
     #region UsersFavorite
-    public async Task<UserEntity> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
+    public async Task<bool> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
@@ -66,9 +71,14 @@ public class UserService : IUserService
 
         var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
 
-        return userResult;
+        if(userResult != null)
+        {
+            return true;
+        }
+
+        return false;
     }
-    public async Task<UserEntity> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
+    public async Task<bool> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
     {
         var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
@@ -76,9 +86,14 @@ public class UserService : IUserService
 
         var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
 
-        return userResult;
+        if (userResult != null)
+        {
+            return true;
+        }
+
+        return false;
     }
-    public async Task<UserEntity> RemoveGenreFromFavoriteAsync(string userid, string genreid)
+    public async Task<bool> RemoveGenreFromFavoriteAsync(string userid, string genreid)
     {
         var user = await _userRespository.GetByIdAsync(userid);
 
@@ -86,9 +101,14 @@ public class UserService : IUserService
 
         var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
 
-        return userResult;
+        if (userResult != null)
+        {
+            return true;
+        }
+
+        return false;
     }
-    public async Task<UserEntity> RemoveMangaFromFavoriteAsync(string userid, string genreid)
+    public async Task<bool> RemoveMangaFromFavoriteAsync(string userid, string genreid)
     {
         var user = await _userRespository.GetByIdAsync(userid);
 
@@ -96,7 +116,12 @@ public class UserService : IUserService
 
         var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
 
-        return userResult;
+        if (userResult != null)
+        {
+            return true;
+        }
+
+        return false;
     }
     public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid)
     {

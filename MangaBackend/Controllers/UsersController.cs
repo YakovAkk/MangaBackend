@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
 using System.Net;
-using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 
