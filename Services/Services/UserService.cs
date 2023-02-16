@@ -20,6 +20,28 @@ public class UserService : IUserService
     }
 
     #region User
+    public async Task<bool> IsUserExists(UserRegistrationDTO userDTO)
+    {
+        try
+        {
+            var userName = await GetUserByNameOrEmail(userDTO.UserName);
+
+            var userEmail = await GetUserByNameOrEmail(userDTO.Email);
+
+            if(userName != null && userEmail != null)
+            {
+                return true;
+            }
+        }
+        catch (Exception)
+        {
+ 
+        }
+
+        return false;
+
+    }
+
     public async Task<bool> UpdateAsync(UserEntity user)
     {
         var updatedUser = await _userRespository.UpdateAsync(user);
@@ -139,5 +161,7 @@ public class UserService : IUserService
 
         return list;
     }
+
+
     #endregion
 }

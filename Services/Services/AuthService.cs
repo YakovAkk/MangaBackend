@@ -55,6 +55,12 @@ namespace Services.Services
                 throw new Exception(errorMessage);
             }
 
+            if (await _userService.IsUserExists(userDTO))
+            {
+                var errorMessage = "User already exists!";
+                throw new Exception(errorMessage);
+            }
+
             var userModel = userDTO.toEntity();
 
             var result = await _userRespository.CreateAsync(userModel);

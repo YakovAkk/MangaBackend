@@ -15,4 +15,5 @@ public interface IUserService
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid);
     Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(string userid);
     Task<UserEntity> GetByIdAsync(string user_id);
+    Task<bool> IsUserExists(UserRegistrationDTO userDTO);
 }

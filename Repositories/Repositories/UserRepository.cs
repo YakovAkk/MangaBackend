@@ -61,27 +61,11 @@ public class UserRepository : IUserRespository
     }
     public async Task<UserEntity> GetByNameAsync(string name)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == name);
-
-        if(user == null)
-        {
-            var errorMessage = "User isn't exist";
-            throw new UnauthorizedAccessException(errorMessage);
-        }
-
-        return user;
+        return await _db.Users.FirstOrDefaultAsync(u => u.Name == name);
     }
     public async Task<UserEntity> GetByEmailAsync(string email)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-        {
-            var errorMessage = "User isn't exist";
-            throw new ArgumentNullException(errorMessage);
-        }
-
-        return user;
+        return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
     public async Task<UserEntity> UpdateAsync(UserEntity user)
     {
