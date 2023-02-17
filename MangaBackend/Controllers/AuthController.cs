@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -26,7 +27,11 @@ namespace MangaBackend.Controllers
             {
                 var response = await _authService.LoginAsync(userLoginDTO);
                 HttpContext.Response.Headers.Add("refresh-token", response.RefreshToken);
-                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+                var wrapperResult = WrapperResponseService.Wrap<object>(
+                    new { 
+                        User_Id  = response.User_Id,
+                        AccessToken = response.AccessToken,
+                    });
                 return Ok(wrapperResult);
             }
             catch (Exception ex)
@@ -54,16 +59,28 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost("refresh-token"), Authorize]
+        [HttpGet("refresh-token/{userId}"), Authorize]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDTO tokenDTO)
+        public async Task<IActionResult> RefreshToken([FromRoute] string userId)
         {
-            
+            var refreshToken = HttpContext.Request.Headers["refresh-token"];
+
+            var tokenDTO = new RefreshTokenDTO()
+            {
+                User_Id = userId,
+                RefreshToken = refreshToken
+            };
 
             try
             {
                 var response = await _authService.RefreshToken(tokenDTO);
-                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+                HttpContext.Response.Headers.Add("refresh-token", response.RefreshToken);
+                var wrapperResult = WrapperResponseService.Wrap<object>(
+                    new
+                    {
+                        User_Id = response.User_Id,
+                        AccessToken = response.AccessToken,
+                    });
 
                 return Ok(wrapperResult);
             }
