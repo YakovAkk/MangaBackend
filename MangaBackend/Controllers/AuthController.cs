@@ -25,8 +25,8 @@ namespace MangaBackend.Controllers
             try
             {
                 var response = await _authService.LoginAsync(userLoginDTO);
+                HttpContext.Response.Headers.Add("refresh-token", response.RefreshToken);
                 var wrapperResult = WrapperResponseService.Wrap<object>(response);
-
                 return Ok(wrapperResult);
             }
             catch (Exception ex)
@@ -58,6 +58,8 @@ namespace MangaBackend.Controllers
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> RefreshToken(RefreshTokenDTO tokenDTO)
         {
+            
+
             try
             {
                 var response = await _authService.RefreshToken(tokenDTO);
