@@ -34,9 +34,14 @@ namespace Services.Services
         {
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
-            if (!VerifyPasswordHash(userDTOLogin.NameOrEmail, userExist.PasswordHash, userExist.PasswordSalt))
+            if (!VerifyPasswordHash(userDTOLogin.Password, userExist.PasswordHash, userExist.PasswordSalt))
             {
                 throw new Exception("Password is incorrect!");
+            }
+
+            if(userExist.VerifiedAt == null)
+            {
+                throw new Exception("Please, verify you email!");  
             }
 
             var refreshToken = GenereteRefreshToken();
@@ -67,9 +72,16 @@ namespace Services.Services
 
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var userModel = userDTO.toEntity(passwordHash, passwordSalt);
+            var verificationToken = CreateRandomToken();
+
+            var userModel = userDTO.toEntity(passwordHash, passwordSalt, verificationToken);
 
             var result = await _userRespository.CreateAsync(userModel);
+
+            var message = new Message(new string[] { result.Email }, "Manga APP",
+                $"https://localhost:5000/api/Auth/verify?userId={result.Id}&token={result.VerificationToken}");
+
+            _emailService.SendEmail(message);
 
             return result.toViewModel();
         }
@@ -97,8 +109,25 @@ namespace Services.Services
                 RefreshToken = newRefreshToken.Token
             };
         }
+        public async Task<bool> VerifyAsync(VerifyDTO verifyDTO)
+        {
+            var user = await _userService.GetByIdAsync(verifyDTO.UserID);
+
+            if(user.VerificationToken != verifyDTO.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            await _userRespository.VerifyAsync(user);
+
+            return true;
+        }
 
         #region Private
+        private string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
         private string CreateToken(UserEntity user)
         {
             var claims = new List<Claim>()
@@ -147,7 +176,9 @@ namespace Services.Services
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }   
+        }
+
+
         #endregion
     }
 }

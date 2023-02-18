@@ -17,4 +17,5 @@ public interface IUserRespository
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user);
     Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user);
     Task SetRefreshToken(RefreshToken refreshToken, UserEntity user);
+    Task VerifyAsync(UserEntity user);
 }

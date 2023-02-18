@@ -76,7 +76,7 @@ public class UserService : IUserService
         {
             var errorMessage = "User doesn't exist";
 
-            throw new ArgumentNullException(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         return userExistByName ?? userExistByEmail;

@@ -196,4 +196,10 @@ public class UserRepository : IUserRespository
 
         await _db.SaveChangesAsync();
     }
+
+    public async Task VerifyAsync(UserEntity user)
+    {
+        user.VerifiedAt= DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+    }
 }
