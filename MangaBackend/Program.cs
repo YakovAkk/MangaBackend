@@ -21,6 +21,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using EmailingService.Services.Base;
+using EmailingService.Services;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -45,6 +47,8 @@ try
     builder.Services.AddTransient<IFillerService, FillerService>();
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
+
+    builder.Services.AddTransient<IEmailService, EmailService>();
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();

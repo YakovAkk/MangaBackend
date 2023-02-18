@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Model.ViewModel;
+using EmailingService.Services.Base;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.Repositories.Base;
@@ -18,12 +19,14 @@ namespace Services.Services
     {
         private readonly IUserService _userService;
         private readonly IUserRespository _userRespository;
-        public readonly IConfiguration _configuration;
-        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration, IEmailService emailService)
         {
             _userService = userService;
             _userRespository = userRespository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
@@ -44,6 +47,10 @@ namespace Services.Services
                 AccessToken = CreateToken(userExist),
                 RefreshToken = refreshToken.Token
             };
+
+            var body = "<h1>Welcome</h1>";
+
+            await _emailService.SendEmail(body);
 
             return token;
         }
