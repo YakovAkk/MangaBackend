@@ -62,7 +62,7 @@ public class FillerService : IFillerService
             new GenreDTO("Shojo"),
             new GenreDTO("Shojo-ai"),
             new GenreDTO("Shonen"),
-            new GenreDTO("Shonen=ai"),
+            new GenreDTO("Shonen Ai"),
             new GenreDTO("Sport"),
             new GenreDTO("Superpower"),
             new GenreDTO("Seinen"),
