@@ -1,7 +1,9 @@
-﻿namespace EmailingService.Services.Base
+﻿using EmailingService.Model;
+
+namespace EmailingService.Services.Base
 {
     public interface IEmailService
     {
-        public Task SendEmail(string body);
+        public void SendEmail(Message message);
     }
 }

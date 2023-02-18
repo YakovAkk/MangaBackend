@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.Model.ViewModel;
+using EmailingService.Model;
 using EmailingService.Services.Base;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -47,10 +48,6 @@ namespace Services.Services
                 AccessToken = CreateToken(userExist),
                 RefreshToken = refreshToken.Token
             };
-
-            var body = "<h1>Welcome</h1>";
-
-            await _emailService.SendEmail(body);
 
             return token;
         }

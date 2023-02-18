@@ -23,6 +23,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using EmailingService.Services.Base;
 using EmailingService.Services;
+using EmailingService.Model;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -48,10 +49,18 @@ try
 
     builder.Services.AddTransient<INotificationService, NotificationService>();
 
-    builder.Services.AddTransient<IEmailService, EmailService>();
+   
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
+
+    // Add email Conf
+    builder.Services.AddScoped<IEmailService, EmailService>();
+
+    var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfiguration>();
+    builder.Services.AddSingleton(emailConfig);
 
     // check if json app settings is correct
     var validator = new ValidatorService(builder.Configuration, logger);
