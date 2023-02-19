@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Helping.Model;
 using Data.Model.ViewModel;
 
 namespace Repositories.Repositories.Base;
@@ -17,5 +18,5 @@ public interface IUserRespository
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(UserEntity user);
     Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(UserEntity user);
     Task SetRefreshToken(RefreshToken refreshToken, UserEntity user);
-    Task VerifyAsync(UserEntity user);
+    Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist);
 }

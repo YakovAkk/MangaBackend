@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Helping.Model;
 using Data.Model.ViewModel;
 using EmailingService.Model;
 using EmailingService.Services.Base;
@@ -30,6 +31,24 @@ namespace Services.Services
             _emailService = emailService;
         }
 
+        public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
+        {
+            var userExist = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
+
+            if(userExist.ResetPasswordToken == null)
+            {
+                var resetPasswordToken = CreateResetPasswordToken();
+                await _userRespository.SetResetPasswordToken(resetPasswordToken, userExist);
+            }
+
+            var message = new Message(new string[] { userExist.Email }, "Manga APP",
+                 $"Token : {userExist.ResetPasswordToken}");
+
+            _emailService.SendEmail(message);
+
+            return true;
+        }
+
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
@@ -44,13 +63,13 @@ namespace Services.Services
                 throw new Exception("Please, verify you email!");  
             }
 
-            var refreshToken = GenereteRefreshToken();
+            var refreshToken = CreateRefreshToken();
             await _userRespository.SetRefreshToken(refreshToken, userExist);
 
             var token = new TokensViewModel()
             {
                 User_Id = userExist.Id,
-                AccessToken = CreateToken(userExist),
+                AccessToken = CreateAccessToken(userExist),
                 RefreshToken = refreshToken.Token
             };
 
@@ -98,8 +117,8 @@ namespace Services.Services
                 throw new UnauthorizedAccessException("Token Expired!");
             }
 
-            var token = CreateToken(userExist);
-            var newRefreshToken = GenereteRefreshToken();
+            var token = CreateAccessToken(userExist);
+            var newRefreshToken = CreateRefreshToken();
             await _userRespository.SetRefreshToken(newRefreshToken, userExist);
 
             return new TokensViewModel()
@@ -124,11 +143,18 @@ namespace Services.Services
         }
 
         #region Private
+        private ResetPasswordToken CreateResetPasswordToken()
+        {
+            var resetToken = new ResetPasswordToken();
+            resetToken.Expires = DateTime.Now.AddDays(1);
+
+            resetToken.Token = 
+        }
         private string CreateRandomToken()
         {
             return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
         }
-        private string CreateToken(UserEntity user)
+        private string CreateAccessToken(UserEntity user)
         {
             var claims = new List<Claim>()
             {
@@ -149,7 +175,7 @@ namespace Services.Services
 
             return jwt;
         }
-        private RefreshToken GenereteRefreshToken()
+        private RefreshToken CreateRefreshToken()
         {
             var refreshToken = new RefreshToken()
             {
@@ -159,7 +185,6 @@ namespace Services.Services
             };
             return refreshToken;
         }
-
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -168,7 +193,6 @@ namespace Services.Services
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -177,8 +201,6 @@ namespace Services.Services
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
-
-
         #endregion
     }
 }

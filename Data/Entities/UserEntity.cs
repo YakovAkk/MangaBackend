@@ -23,6 +23,9 @@ public class UserEntity : IEntity
     public string? VerificationToken { get; set; } = string.Empty;
     public DateTime? VerifiedAt { get; set; }
 
+    public string? ResetPasswordToken { get; set; } = string.Empty;
+    public DateTime? ResetPasswordTokenExpires { get; set; }
+
     public UserEntity()
     {
         FavoriteMangas = new List<MangaEntity>();

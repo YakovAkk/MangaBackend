@@ -1,4 +1,6 @@
-﻿namespace Services.Model.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Services.Model.DTO;
 
 public class UserLoginDTO
 {
