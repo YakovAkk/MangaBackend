@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
 using System.IdentityModel.Tokens.Jwt;
@@ -50,7 +51,6 @@ namespace Services.Services
 
             return true;
         }
-
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
@@ -143,7 +143,7 @@ namespace Services.Services
 
             return true;
         }
-        public async Task<bool> VerifyResetPasswordToken(VerifyResetPasswordTokenDTO tokenDTO)
+        public async Task<bool> VerifyResetPasswordTokenAsync(VerifyResetPasswordTokenDTO tokenDTO)
         {
             var user = await _userService.GetUserByNameOrEmail(tokenDTO.Email);
 
@@ -157,11 +157,33 @@ namespace Services.Services
                 throw new UnauthorizedAccessException("Token Expired!");
             }
 
-            var resetPasswordToken = CreateResetPasswordToken();
-            await _userRespository.SetResetPasswordToken(resetPasswordToken, user);
-
             return true;
         }
+        public async Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel)
+        {
+            var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
+
+            if (user.ResetPasswordToken != inputModel.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            if (inputModel.Password != inputModel.ConfirmPassword)
+            {
+                var errorMessage = "Both of passwords must be equal!";
+                throw new Exception(errorMessage);
+            }
+
+            CreatePasswordHash(inputModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+
+            var result = await _userService.UpdateAsync(user);
+
+            return result;
+        }
+
 
         #region Private
         private ResetPasswordToken CreateResetPasswordToken()

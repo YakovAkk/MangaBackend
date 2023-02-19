@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services.Base;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
@@ -139,7 +140,7 @@ namespace MangaBackend.Controllers
         {
             try
             {
-                var response = await _authService.VerifyResetPasswordToken(tokenDTO);
+                var response = await _authService.VerifyResetPasswordTokenAsync(tokenDTO);
                 var wrapperResult = WrapperResponseService.Wrap<object>(response);
 
                 return Ok(wrapperResult);
@@ -151,11 +152,22 @@ namespace MangaBackend.Controllers
             }
         }
 
-        //[HttpPost("reset-password")]
-        //[ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> ResetPassword()
-        //{
+        [HttpPost("reset-password")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordInputModel inputModel)
+        {
+            try
+            {
+                var response = await _authService.ResetPasswordAsync(inputModel);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
 
-        //}
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
     }
 }

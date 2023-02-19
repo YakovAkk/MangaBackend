@@ -46,12 +46,12 @@ public class UserService : IUserService
     {
         var updatedUser = await _userRespository.UpdateAsync(user);
 
-        if(updatedUser != null)
+        if(updatedUser == null)
         {
-            return true;
+            return false;
         }
         
-        return false;
+        return true;
     }
     public async Task<IList<UserEntity>> GetAllAsync()
     {
