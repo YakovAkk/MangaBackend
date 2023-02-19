@@ -1,5 +1,6 @@
 ﻿using Data.Database;
 using Data.Entities;
+using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories.Base;
@@ -187,7 +188,6 @@ public class UserRepository : IUserRespository
 
         return userRes.FavoriteGenres;
     }
-
     public async Task SetRefreshToken(RefreshToken refreshToken, UserEntity user)
     {
         user.RefreshToken = refreshToken.Token;
@@ -196,10 +196,16 @@ public class UserRepository : IUserRespository
 
         await _db.SaveChangesAsync();
     }
-
     public async Task VerifyAsync(UserEntity user)
     {
-        user.VerifiedAt= DateTime.UtcNow;
+        user.VerifiedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+    }
+    public async Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist)
+    {
+        userExist.ResetPasswordToken = resetPasswordToken.Token;
+        userExist.ResetPasswordTokenExpires = resetPasswordToken.Expires;
+
         await _db.SaveChangesAsync();
     }
 }

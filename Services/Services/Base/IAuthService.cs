@@ -9,5 +9,6 @@ namespace Services.Services.Base
         Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
         Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO);
         Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO);
+        Task<bool> VerifyAsync(VerifyDTO verifyDTO);
     }
 }

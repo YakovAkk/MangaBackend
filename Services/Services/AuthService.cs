@@ -19,6 +19,8 @@ namespace Services.Services
 {
     public class AuthService : IAuthService
     {
+        private static readonly Random random = new Random();
+
         private readonly IUserService _userService;
         private readonly IUserRespository _userRespository;
         private readonly IConfiguration _configuration;
@@ -35,7 +37,7 @@ namespace Services.Services
         {
             var userExist = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
 
-            if(userExist.ResetPasswordToken == null)
+            if(string.IsNullOrEmpty(userExist.ResetPasswordToken))
             {
                 var resetPasswordToken = CreateResetPasswordToken();
                 await _userRespository.SetResetPasswordToken(resetPasswordToken, userExist);
@@ -145,10 +147,11 @@ namespace Services.Services
         #region Private
         private ResetPasswordToken CreateResetPasswordToken()
         {
-            var resetToken = new ResetPasswordToken();
-            resetToken.Expires = DateTime.Now.AddDays(1);
-
-            resetToken.Token = 
+            return new ResetPasswordToken()
+            {
+                Expires = DateTime.Now.AddDays(1),
+                Token = random.Next(0, 100000).ToString()
+            };
         }
         private string CreateRandomToken()
         {
