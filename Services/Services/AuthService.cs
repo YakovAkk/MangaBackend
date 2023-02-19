@@ -100,7 +100,7 @@ namespace Services.Services
             var result = await _userRespository.CreateAsync(userModel);
 
             var message = new Message(new string[] { result.Email }, "Manga APP",
-                $"https://localhost:5000/api/Auth/verify?userId={result.Id}&token={result.VerificationToken}");
+                $"https://localhost:5000/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
 
             _emailService.SendEmail(message);
 
@@ -130,7 +130,7 @@ namespace Services.Services
                 RefreshToken = newRefreshToken.Token
             };
         }
-        public async Task<bool> VerifyAsync(VerifyDTO verifyDTO)
+        public async Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO)
         {
             var user = await _userService.GetByIdAsync(verifyDTO.UserID);
 
@@ -143,6 +143,25 @@ namespace Services.Services
 
             return true;
         }
+        public async Task<bool> VerifyResetPasswordToken(VerifyResetPasswordTokenDTO tokenDTO)
+        {
+            var user = await _userService.GetUserByNameOrEmail(tokenDTO.Email);
+
+            if (user.ResetPasswordToken != tokenDTO.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            if (user.ResetPasswordTokenExpires < DateTime.Now)
+            {
+                throw new UnauthorizedAccessException("Token Expired!");
+            }
+
+            var resetPasswordToken = CreateResetPasswordToken();
+            await _userRespository.SetResetPasswordToken(resetPasswordToken, user);
+
+            return true;
+        }
 
         #region Private
         private ResetPasswordToken CreateResetPasswordToken()
@@ -150,7 +169,7 @@ namespace Services.Services
             return new ResetPasswordToken()
             {
                 Expires = DateTime.Now.AddDays(1),
-                Token = random.Next(0, 100000).ToString()
+                Token = random.Next(10000, 100000).ToString()
             };
         }
         private string CreateRandomToken()

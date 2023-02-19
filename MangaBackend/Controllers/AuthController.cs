@@ -103,7 +103,7 @@ namespace MangaBackend.Controllers
                     UserID = query["userId"],
                     Token = query["token"]
                 };
-                var response = await _authService.VerifyAsync(verifyDTO);
+                var response = await _authService.VerifyEmailAsync(verifyDTO);
                 var wrapperResult = WrapperResponseService.Wrap<object>(response);
 
                 return Ok(wrapperResult);
@@ -133,12 +133,23 @@ namespace MangaBackend.Controllers
             }
         }
 
-        //[HttpPost("verify-reset-password-token")]
-        //[ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> VerifyResetPasswordToken()
-        //{
-            
-        //}
+        [HttpPost("verify-reset-password-token")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> VerifyResetPasswordToken(VerifyResetPasswordTokenDTO tokenDTO)
+        {
+            try
+            {
+                var response = await _authService.VerifyResetPasswordToken(tokenDTO);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
 
         //[HttpPost("reset-password")]
         //[ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
