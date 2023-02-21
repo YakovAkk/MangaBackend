@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services.Base;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
@@ -81,6 +82,84 @@ namespace MangaBackend.Controllers
                         User_Id = response.User_Id,
                         AccessToken = response.AccessToken,
                     });
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
+        [HttpGet("verify-email")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Verify()
+        {
+            try
+            {
+                var query = HttpContext.Request.Query;
+                var verifyDTO = new VerifyDTO() 
+                { 
+                    UserID = query["userId"],
+                    Token = query["token"]
+                };
+                var response = await _authService.VerifyEmailAsync(verifyDTO);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
+        [HttpPost("send-reset-password-token")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SendResetPasswordToken(SendResetTokenDTO sendResetTokenDTO)
+        {
+            try
+            {
+                var response = await _authService.SendResetTokenAsync(sendResetTokenDTO);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
+        [HttpPost("verify-reset-password-token")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> VerifyResetPasswordToken(VerifyResetPasswordTokenDTO tokenDTO)
+        {
+            try
+            {
+                var response = await _authService.VerifyResetPasswordTokenAsync(tokenDTO);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordInputModel inputModel)
+        {
+            try
+            {
+                var response = await _authService.ResetPasswordAsync(inputModel);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
 
                 return Ok(wrapperResult);
             }

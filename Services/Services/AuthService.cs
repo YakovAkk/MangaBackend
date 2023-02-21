@@ -1,10 +1,14 @@
 ﻿using Data.Entities;
+using Data.Helping.Model;
 using Data.Model.ViewModel;
+using EmailingService.Model;
+using EmailingService.Services.Base;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,32 +20,58 @@ namespace Services.Services
 {
     public class AuthService : IAuthService
     {
+        private static readonly Random random = new Random();
+
         private readonly IUserService _userService;
         private readonly IUserRespository _userRespository;
-        public readonly IConfiguration _configuration;
-        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration, IEmailService emailService)
         {
             _userService = userService;
             _userRespository = userRespository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
+        public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
+        {
+            var userExist = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
+
+            if(string.IsNullOrEmpty(userExist.ResetPasswordToken))
+            {
+                var resetPasswordToken = CreateResetPasswordToken();
+                await _userRespository.SetResetPasswordToken(resetPasswordToken, userExist);
+            }
+
+            var message = new Message(new string[] { userExist.Email }, "Manga APP",
+                 $"Token : {userExist.ResetPasswordToken}");
+
+            _emailService.SendEmail(message);
+
+            return true;
+        }
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
             var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
-            if (!VerifyPasswordHash(userDTOLogin.NameOrEmail, userExist.PasswordHash, userExist.PasswordSalt))
+            if (!VerifyPasswordHash(userDTOLogin.Password, userExist.PasswordHash, userExist.PasswordSalt))
             {
                 throw new Exception("Password is incorrect!");
             }
 
-            var refreshToken = GenereteRefreshToken();
+            if(userExist.VerifiedAt == null)
+            {
+                throw new Exception("Please, verify you email!");  
+            }
+
+            var refreshToken = CreateRefreshToken();
             await _userRespository.SetRefreshToken(refreshToken, userExist);
 
             var token = new TokensViewModel()
             {
                 User_Id = userExist.Id,
-                AccessToken = CreateToken(userExist),
+                AccessToken = CreateAccessToken(userExist),
                 RefreshToken = refreshToken.Token
             };
 
@@ -63,9 +93,16 @@ namespace Services.Services
 
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var userModel = userDTO.toEntity(passwordHash, passwordSalt);
+            var verificationToken = CreateRandomToken();
+
+            var userModel = userDTO.toEntity(passwordHash, passwordSalt, verificationToken);
 
             var result = await _userRespository.CreateAsync(userModel);
+
+            var message = new Message(new string[] { result.Email }, "Manga APP",
+                $"https://localhost:5000/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
+
+            _emailService.SendEmail(message);
 
             return result.toViewModel();
         }
@@ -82,8 +119,8 @@ namespace Services.Services
                 throw new UnauthorizedAccessException("Token Expired!");
             }
 
-            var token = CreateToken(userExist);
-            var newRefreshToken = GenereteRefreshToken();
+            var token = CreateAccessToken(userExist);
+            var newRefreshToken = CreateRefreshToken();
             await _userRespository.SetRefreshToken(newRefreshToken, userExist);
 
             return new TokensViewModel()
@@ -93,9 +130,75 @@ namespace Services.Services
                 RefreshToken = newRefreshToken.Token
             };
         }
+        public async Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO)
+        {
+            var user = await _userService.GetByIdAsync(verifyDTO.UserID);
+
+            if(user.VerificationToken != verifyDTO.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            await _userRespository.VerifyAsync(user);
+
+            return true;
+        }
+        public async Task<bool> VerifyResetPasswordTokenAsync(VerifyResetPasswordTokenDTO tokenDTO)
+        {
+            var user = await _userService.GetUserByNameOrEmail(tokenDTO.Email);
+
+            if (user.ResetPasswordToken != tokenDTO.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            if (user.ResetPasswordTokenExpires < DateTime.Now)
+            {
+                throw new UnauthorizedAccessException("Token Expired!");
+            }
+
+            return true;
+        }
+        public async Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel)
+        {
+            var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
+
+            if (user.ResetPasswordToken != inputModel.Token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            if (inputModel.Password != inputModel.ConfirmPassword)
+            {
+                var errorMessage = "Both of passwords must be equal!";
+                throw new Exception(errorMessage);
+            }
+
+            CreatePasswordHash(inputModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+
+            var result = await _userService.UpdateAsync(user);
+
+            return result;
+        }
+
 
         #region Private
-        private string CreateToken(UserEntity user)
+        private ResetPasswordToken CreateResetPasswordToken()
+        {
+            return new ResetPasswordToken()
+            {
+                Expires = DateTime.Now.AddDays(1),
+                Token = random.Next(10000, 100000).ToString()
+            };
+        }
+        private string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
+        private string CreateAccessToken(UserEntity user)
         {
             var claims = new List<Claim>()
             {
@@ -116,7 +219,7 @@ namespace Services.Services
 
             return jwt;
         }
-        private RefreshToken GenereteRefreshToken()
+        private RefreshToken CreateRefreshToken()
         {
             var refreshToken = new RefreshToken()
             {
@@ -126,7 +229,6 @@ namespace Services.Services
             };
             return refreshToken;
         }
-
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -135,7 +237,6 @@ namespace Services.Services
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -143,7 +244,7 @@ namespace Services.Services
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }   
+        }
         #endregion
     }
 }
