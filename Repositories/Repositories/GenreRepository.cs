@@ -5,18 +5,20 @@ using Repositories.Repositories.Base;
 
 namespace Repositories.Repositories;
 
-public class GenreRepository : IGenreRepository
+public class GenreRepository : DbService<AppDBContext>, IGenreRepository
 {
     private readonly IMangaRepository _mangaRepository;
-    private readonly AppDBContent _db;
-    public GenreRepository(AppDBContent db, IMangaRepository mangaRepository) 
+    private readonly AppDBContext _db;
+    public GenreRepository(AppDBContext db, IMangaRepository mangaRepository, 
+        DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
         _mangaRepository = mangaRepository;
         _db = db;
     }
     public async Task<IList<GenreEntity>> GetAllAsync()
     {
-        var list = await _db.Genres.ToListAsync();
+        using var dbContext = CreateDbContext();
+        var list = await dbContext.Genres.ToListAsync();
 
         if (list == null)
         {
@@ -91,31 +93,6 @@ public class GenreRepository : IGenreRepository
             .ForAll(m => m.Genres.Remove(genre));
 
         await _db.SaveChangesAsync();
-        return genre;
-    }
-    public async Task<GenreEntity> UpdateAsync(GenreEntity item)
-    {
-        var result = _db.Genres
-            .Update(item);
-
-        if(result == null)
-        {
-            var errorMessage = $"The genre {item.Name} wan't updated";
-           
-            throw new Exception(errorMessage);
-        }
-
-        await _db.SaveChangesAsync();
-
-        var genre = await _db.Genres
-            .Include(g => g.Mangas)
-            .FirstOrDefaultAsync(i => i.Name == item.Name);
-
-        if (genre == null)
-        {
-            var errorMessage = $"The genre {item.Name} hasn't updated in the database!";
-            throw new Exception(errorMessage);
-        }
         return genre;
     }
     public async Task<IList<GenreEntity>> AddRange(IList<GenreEntity> items)

@@ -75,14 +75,14 @@ try
             {
                 case "LocalDatabaseMYSQL":
                     {
-                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        builder.Services.AddDbContext<AppDBContext>(options =>
                         options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
                         logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
                         break;
                     }
                 case "LocalDatabaseMSSQL":
                     {
-                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        builder.Services.AddDbContext<AppDBContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
                         logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
                         break;

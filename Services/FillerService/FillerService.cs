@@ -19,62 +19,62 @@ public class FillerService : IFillerService
 
     public async Task<ResponseFillDTO> AddGenres()
     {
-        var listOfGenres = new List<GenreDTO>()
+        var listOfGenres = new List<GenreInput>()
         {
-            new GenreDTO("Action"),
-            new GenreDTO("Romance"),
-            new GenreDTO("Comedy"),
-            new GenreDTO("Drama"),
-            new GenreDTO("Fantasy"),
-            new GenreDTO("Everyday life"),
-            new GenreDTO("Adventures"),
-            new GenreDTO("Art"),
-            new GenreDTO("Madness"),
-            new GenreDTO("Action movie"),
-            new GenreDTO("Military"),
-            new GenreDTO("Harem"),
-            new GenreDTO("Gender intrigue"),
-            new GenreDTO("Heroic fantasy"),
-            new GenreDTO("Demons"),
-            new GenreDTO("Detective"),
-            new GenreDTO("Children's"),
-            new GenreDTO("Josei"),
-            new GenreDTO("The game"),
-            new GenreDTO("Isekai"),
-            new GenreDTO("Story"),
-            new GenreDTO("Cyberpunk"),
-            new GenreDTO("Kodomo"),
-            new GenreDTO("Space"),
-            new GenreDTO("Magic"),
-            new GenreDTO("Maho-shoujo"),
-            new GenreDTO("Cars"),
-            new GenreDTO("Fur"),
-            new GenreDTO("Mystic"),
-            new GenreDTO("Music"),
-            new GenreDTO("Science fiction"),
-            new GenreDTO("Omegaverse"),
-            new GenreDTO("Parody"),
-            new GenreDTO("Police"),
-            new GenreDTO("Post-apocalyptic"),
-            new GenreDTO("Psychology"),
-            new GenreDTO("Samurai fighter"),
-            new GenreDTO("Supernatural"),
-            new GenreDTO("Shojo"),
-            new GenreDTO("Shojo-ai"),
-            new GenreDTO("Shonen"),
-            new GenreDTO("Shonen Ai"),
-            new GenreDTO("Sport"),
-            new GenreDTO("Superpower"),
-            new GenreDTO("Seinen"),
-            new GenreDTO("Tragedy"),
-            new GenreDTO("Thriller"),
-            new GenreDTO("Horror"),
-            new GenreDTO("Fiction"),
-            new GenreDTO("Schlola"),
-            new GenreDTO("Erotica"),
-            new GenreDTO("Ecchi"),
-            new GenreDTO("Yuri"),
-            new GenreDTO("Yaoi")
+            new GenreInput("Action"),
+            new GenreInput("Romance"),
+            new GenreInput("Comedy"),
+            new GenreInput("Drama"),
+            new GenreInput("Fantasy"),
+            new GenreInput("Everyday life"),
+            new GenreInput("Adventures"),
+            new GenreInput("Art"),
+            new GenreInput("Madness"),
+            new GenreInput("Action movie"),
+            new GenreInput("Military"),
+            new GenreInput("Harem"),
+            new GenreInput("Gender intrigue"),
+            new GenreInput("Heroic fantasy"),
+            new GenreInput("Demons"),
+            new GenreInput("Detective"),
+            new GenreInput("Children's"),
+            new GenreInput("Josei"),
+            new GenreInput("The game"),
+            new GenreInput("Isekai"),
+            new GenreInput("Story"),
+            new GenreInput("Cyberpunk"),
+            new GenreInput("Kodomo"),
+            new GenreInput("Space"),
+            new GenreInput("Magic"),
+            new GenreInput("Maho-shoujo"),
+            new GenreInput("Cars"),
+            new GenreInput("Fur"),
+            new GenreInput("Mystic"),
+            new GenreInput("Music"),
+            new GenreInput("Science fiction"),
+            new GenreInput("Omegaverse"),
+            new GenreInput("Parody"),
+            new GenreInput("Police"),
+            new GenreInput("Post-apocalyptic"),
+            new GenreInput("Psychology"),
+            new GenreInput("Samurai fighter"),
+            new GenreInput("Supernatural"),
+            new GenreInput("Shojo"),
+            new GenreInput("Shojo-ai"),
+            new GenreInput("Shonen"),
+            new GenreInput("Shonen Ai"),
+            new GenreInput("Sport"),
+            new GenreInput("Superpower"),
+            new GenreInput("Seinen"),
+            new GenreInput("Tragedy"),
+            new GenreInput("Thriller"),
+            new GenreInput("Horror"),
+            new GenreInput("Fiction"),
+            new GenreInput("Schlola"),
+            new GenreInput("Erotica"),
+            new GenreInput("Ecchi"),
+            new GenreInput("Yuri"),
+            new GenreInput("Yaoi")
         };
 
         try
@@ -171,28 +171,6 @@ public class FillerService : IFillerService
                 IsSuccess = false,
                 MessageWhatWrong = "Error"
             };
-        }
-
-        return new ResponseFillDTO()
-        {
-            IsSuccess = true,
-            MessageWhatWrong = ""
-        };
-    }
-    public async Task<ResponseFillDTO> DeleteAll()
-    {
-        var genrelist = await _genreService.GetAllAsync();
-
-        foreach (var genre in genrelist)
-        {
-            await _genreService.DeleteAsync(genre.Id);
-        }
-
-        var mangalist = await _mangaService.GetAllAsync();
-
-        foreach (var manga in mangalist)
-        {
-            await _mangaService.DeleteAsync(manga.Id);
         }
 
         return new ResponseFillDTO()

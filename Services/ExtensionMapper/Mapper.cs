@@ -7,7 +7,7 @@ namespace Services.ExtensionMapper;
 public static class Mapper
 {
     #region GenreEntity
-    public static GenreEntity toEntity(this GenreDTO dto)
+    public static GenreEntity toEntity(this GenreInput dto)
     {
         return new GenreEntity()
         {

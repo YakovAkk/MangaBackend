@@ -10,6 +10,5 @@ public interface IGenreRepository
     Task<GenreEntity> DeleteAsync(string id);
     Task<IList<GenreEntity>> GetAllAsync();
     Task<GenreEntity> CreateAsync(GenreEntity item);
-    Task<GenreEntity> UpdateAsync(GenreEntity item);
     Task<IList<GenreEntity>> FiltrationByName(string name);
 }

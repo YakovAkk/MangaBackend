@@ -7,8 +7,8 @@ namespace Repositories.Repositories;
 
 public class MangaRepository : IMangaRepository
 {
-    private readonly AppDBContent _db;
-    public MangaRepository(AppDBContent db)
+    private readonly AppDBContext _db;
+    public MangaRepository(AppDBContext db)
     {
         _db = db;
     }
@@ -26,23 +26,6 @@ public class MangaRepository : IMangaRepository
         }
 
         return list;
-    }
-    public async Task<MangaEntity> DeleteAsync(string id)
-    {
-        var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Id == id);
-
-        if (manga == null)
-        {
-            var errorMessage = $"The manga with id = {id} isn't contained in the database!";
-
-            throw new Exception(errorMessage);
-        }
-
-        _db.Mangas.Remove(manga);
-
-        await _db.SaveChangesAsync();
-    
-        return manga;
     }
     public async Task<MangaEntity> CreateAsync(MangaEntity item)
     {
@@ -84,37 +67,6 @@ public class MangaRepository : IMangaRepository
         if (manga == null)
         {
             var errorMessage = $"The manga with id = {Id} isn't contained in the database!";
-            throw new Exception(errorMessage);
-        }
-
-        return manga;
-    }
-    public async Task<MangaEntity> UpdateAsync(MangaEntity item)
-    {
-        if (item == null)
-        {
-            var errorMessage = "Item was null";
-
-            throw new Exception(errorMessage);
-        }
-
-        var result = _db.Mangas.Update(item);
-
-        if (result == null)
-        {
-            var errorMessage = $"The manga {item.Name} hasn't updated in the database!";
-         
-            throw new Exception(errorMessage);
-        }
-
-        await _db.SaveChangesAsync();
-
-        var manga = await _db.Mangas.FirstOrDefaultAsync(i => i.Name == item.Name);
-
-        if (manga == null)
-        {
-            var errorMessage = $"The manga {item.Name} hasn't added in the database!";
-
             throw new Exception(errorMessage);
         }
 

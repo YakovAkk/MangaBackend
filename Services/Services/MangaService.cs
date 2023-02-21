@@ -23,48 +23,6 @@ public class MangaService : IMangaService
         _localStorage = localStorage;
     }
 
-    public async Task<MangaEntity> AddAsync(MangaDTO item)
-    {
-        var allGenres = await _genreRepository.GetAllAsync();
-
-        var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
-
-        if (!genres.Any())
-        {
-            var errorMessage = "The database doesn't contain the genres";
-            throw new Exception(errorMessage);
-        }
-
-        var model = item.toEntity(genres);
-
-        return await _mangaRepository.CreateAsync(model);
-    }
-    public async Task<MangaEntity> AddGenresToManga(AddGenreToMangaDTO mangaDTO)
-    {
-        var manga = await _mangaRepository.GetByIdAsync(mangaDTO.MangaId);
-
-        if (manga == null)
-        {
-            var errorMessage = "The manga isn't contained in the database!";
-            throw new Exception(errorMessage);
-        }
-
-        var allGenres = await _genreRepository.GetAllAsync();
-
-        var genres = allGenres.Where(g => mangaDTO.Genres_id.Contains(g.Id));
-
-        if (!genres.Any())
-        {
-            var errorMessage = "The genres are incorrect";
-
-            throw new Exception(errorMessage);
-        }
-
-        manga.Genres.AddRange(genres);
-        var res = await _mangaRepository.UpdateAsync(manga);
-
-        return res;
-    }
     public async Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
     {
         var listModels = new List<MangaEntity>();
@@ -120,23 +78,6 @@ public class MangaService : IMangaService
 
         return result;
     }
-    public async Task<MangaEntity> UpdateAsync(MangaDTO item)
-    {
-        var allGenres = await _genreRepository.GetAllAsync();
-
-        var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
-
-        if (!genres.Any())
-        {
-            var errorMessage = "The database doesn't contain any genres";
-
-            throw new Exception(errorMessage);
-        }
-        var manga = await _mangaRepository.GetByIdAsync(item.Id);
-        manga = item.toEntity(genres);
-
-        return await _mangaRepository.UpdateAsync(manga);
-    }
     public async Task<List<MangaEntity>> FiltrationByDate(string year)
     {
         int yearnum = 0;
@@ -147,10 +88,6 @@ public class MangaService : IMangaService
         }
 
         return await _mangaRepository.FiltrationByDate(yearnum);
-    }
-    public async Task<MangaEntity> DeleteAsync(string id)
-    {
-        return await _mangaRepository.DeleteAsync(id);
     }
     public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
     {

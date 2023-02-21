@@ -8,8 +8,8 @@ using Repositories.Repositories.Base;
 namespace Repositories.Repositories;
 public class UserRepository : IUserRespository
 {
-    private readonly AppDBContent _db;
-    public UserRepository(AppDBContent db)
+    private readonly AppDBContext _db;
+    public UserRepository(AppDBContext db)
     {
         _db = db;
     }

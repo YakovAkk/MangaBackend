@@ -1,4 +1,6 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
@@ -7,20 +9,16 @@ using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class GenreService : IGenreService
+public class GenreService : DbService<AppDBContext>, IGenreService
 {
     private readonly IGenreRepository _genreRepository;
-    public GenreService(IGenreRepository repository)
+    public GenreService(IGenreRepository repository , DbContextOptions<AppDBContext> dbContextOptions) 
+        : base(dbContextOptions)
     {
         _genreRepository = repository;
     }
-    public async Task<GenreEntity> AddAsync(GenreDTO item)
-    {
-        var model = item.toEntity();
-
-        return await _genreRepository.CreateAsync(model);
-    }
-    public async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
+    
+    public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> list)
     {
         var listModels = new List<GenreEntity>();
 
@@ -40,18 +38,6 @@ public class GenreService : IGenreService
     public async Task<GenreEntity> GetByIdAsync(string id)
     {
         return await _genreRepository.GetByIdAsync(id);
-    }
-    public async Task<GenreEntity> UpdateAsync(GenreDTO item)
-    {
-        var genre = await _genreRepository.GetByIdAsync(item.Id);
-
-        genre = item.toEntity();
-
-        return await _genreRepository.UpdateAsync(genre);
-    }
-    public async Task<GenreEntity> DeleteAsync(string id)
-    {
-        return await _genreRepository.DeleteAsync(id);
     }
     public async Task<IList<GenreEntity>> GetCertainPage(string sizeOfPage, string page)
     {
