@@ -34,7 +34,7 @@ public class GenreRepository : DbService<AppDBContext>, IGenreRepository
 
         if (genre == null)
         {
-            var errorMessage = $"The manga with id = { id } isn't contained in the database!";
+            var errorMessage = $"The genre with id = { id } isn't contained in the database!";
             throw new Exception(errorMessage);
         }
 

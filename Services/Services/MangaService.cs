@@ -1,14 +1,17 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using Services.Storage.Base;
+using System;
 using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class MangaService : IMangaService
+public class MangaService : DbService<AppDBContext>, IMangaService
 {
     private readonly ILocalStorage _localStorage;
     private readonly IGenreRepository _genreRepository;
@@ -16,40 +19,21 @@ public class MangaService : IMangaService
     public MangaService(
         IMangaRepository repository,
         IGenreRepository genreRepository,
-        ILocalStorage localStorage)
+        ILocalStorage localStorage,
+        DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
         _genreRepository = genreRepository;
         _mangaRepository = repository;
         _localStorage = localStorage;
     }
-
-    public async Task<IList<MangaEntity>> AddRange(IList<MangaDTO> list)
-    {
-        var listModels = new List<MangaEntity>();
-
-        foreach (var item in list)
-        {
-            var allGenres = await _genreRepository.GetAllAsync();
-
-            var genres = allGenres.Where(g => item.Genres_id.Contains(g.Id)).ToList();
-
-            if (!genres.Any())
-            {
-                return new List<MangaEntity>();
-            }
-
-            var manga = item.toEntity(genres);
-
-            listModels.Add(manga);
-        }
-
-        return await _mangaRepository.AddRange(listModels);
-    }
+    
     public async Task<IList<MangaEntity>> GetAllAsync()
     {
-        var result = await _mangaRepository.GetAllAsync();
+        using var dbContext = CreateDbContext();
 
-        if (!result.Any())
+        var result = await dbContext.Mangas.ToListAsync();
+
+        if (result == null)
         {
             return new List<MangaEntity>();
         }
@@ -65,6 +49,28 @@ public class MangaService : IMangaService
 
         return result;
     }
+    public async Task<IList<MangaEntity>> AddRange(IList<MangaInput> mangas)
+    {
+        using var dbContext = CreateDbContext();
+
+        var genresNames = mangas.SelectMany(x => x.Genres_names);
+
+        var genres = dbContext.Genres.Where(x => genresNames.Contains(x.Name)).ToList();
+
+        foreach (var manga in mangas)
+        {
+            var genresForManga = genres.Where(x => manga.Genres_names.Contains(x.Name)).ToList();
+
+            var mangaEntity = manga.toEntity(genresForManga);
+
+            if (dbContext.Mangas.SingleOrDefault(x => x.Name == mangaEntity.Name) == null)
+                dbContext.Mangas.Add(mangaEntity);
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return await GetAllAsync();
+    }
     public async Task<MangaEntity> GetByIdAsync(string Id)
     {
         var result = await _mangaRepository.GetByIdAsync(Id);
@@ -78,17 +84,6 @@ public class MangaService : IMangaService
 
         return result;
     }
-    public async Task<List<MangaEntity>> FiltrationByDate(string year)
-    {
-        int yearnum = 0;
-
-        if (!ValidatorService.IsValidYear(year, out yearnum))
-        {
-            throw new Exception("Parameters aren't valid");
-        }
-
-        return await _mangaRepository.FiltrationByDate(yearnum);
-    }
     public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
     {
         int pageSize, numberOfPage;
@@ -99,6 +94,17 @@ public class MangaService : IMangaService
         }
 
         return await _mangaRepository.GetCertainPage(pageSize, numberOfPage);
+    }
+    public async Task<List<MangaEntity>> FiltrationByDate(string year)
+    {
+        int yearnum = 0;
+
+        if (!ValidatorService.IsValidYear(year, out yearnum))
+        {
+            throw new Exception("Parameters aren't valid");
+        }
+
+        return await _mangaRepository.FiltrationByDate(yearnum);
     }
     public async Task<IList<MangaEntity>> FiltrationByName(string name)
     {

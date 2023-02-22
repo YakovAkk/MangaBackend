@@ -18,7 +18,7 @@ public static class Mapper
     #endregion  
 
     #region MangaEntity
-    public static MangaEntity toEntity(this MangaDTO dto, List<GenreEntity> genres)
+    public static MangaEntity toEntity(this MangaInput dto, List<GenreEntity> genres)
     {
         return new MangaEntity()
         {
