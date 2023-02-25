@@ -13,16 +13,11 @@ namespace Services.Services;
 public class MangaService : DbService<AppDBContext>, IMangaService
 {
     private readonly ILocalStorage _localStorage;
-    private readonly IGenreRepository _genreRepository;
-    private readonly IMangaRepository _mangaRepository;
+
     public MangaService(
-        IMangaRepository repository,
-        IGenreRepository genreRepository,
         ILocalStorage localStorage,
         DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
-        _genreRepository = genreRepository;
-        _mangaRepository = repository;
         _localStorage = localStorage;
     }
     

@@ -11,12 +11,8 @@ namespace Services.Services;
 
 public class GenreService : DbService<AppDBContext>, IGenreService
 {
-    private readonly IGenreRepository _genreRepository;
-    public GenreService(IGenreRepository repository , DbContextOptions<AppDBContext> dbContextOptions) 
-        : base(dbContextOptions)
-    {
-        _genreRepository = repository;
-    }
+    public GenreService( DbContextOptions<AppDBContext> dbContextOptions) 
+        : base(dbContextOptions) { }
     
     public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> genres)
     {

@@ -32,10 +32,8 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddTransient<IMangaRepository, MangaRepository>();
     builder.Services.AddTransient<IMangaService, MangaService>();
 
-    builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
 
     builder.Services.AddTransient<IUserRespository, UserRepository>();
