@@ -40,7 +40,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         var list = await dbContext.Genres.ToListAsync();
 
-        return list == null ? new List<GenreEntity>() : list;
+        return list;
     }
     public async Task<GenreEntity> GetByIdAsync(string id)
     {
@@ -74,16 +74,16 @@ public class GenreService : DbService<AppDBContext>, IGenreService
              .Take(pageSize)
              .ToListAsync();
 
-        return list == null ? new List<GenreEntity>() : list;
+        return list;
     }
     public async Task<IList<GenreEntity>> FiltrationByName(string name)
     {
         using var dbContext = CreateDbContext();
 
-        var result = await dbContext.Genres
+        var list = await dbContext.Genres
             .Where(i => i.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
-        return !result.Any() ? new List<GenreEntity>() : result;
+        return list;
     }
 }

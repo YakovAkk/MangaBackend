@@ -9,14 +9,14 @@ namespace Services.Services;
 public class UserService : IUserService
 {
     private readonly IUserRespository _userRespository;
-    private readonly IGenreRepository _genreRepository;
-    private readonly IMangaRepository _mangaRepository;
+    private readonly IGenreService _genreService;
+    private readonly IMangaService _mangaService;
     private readonly ILogger<UserService> _logger;
-    public UserService(IUserRespository userRespository, IGenreRepository genreRepository, IMangaRepository mangaRepository)
+    public UserService(IUserRespository userRespository, IGenreService genreService, IMangaService mangaService)
     {
         _userRespository = userRespository;
-        _genreRepository = genreRepository;
-        _mangaRepository = mangaRepository;
+        _genreService = genreService;
+        _mangaService = mangaService;
     }
 
     #region User
@@ -89,7 +89,7 @@ public class UserService : IUserService
     {
         var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
-        var genre = await _genreRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
+        var genre = await _genreService.GetByIdAsync(addTOFavoriteDTO.Item_Id);
 
         var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
 
@@ -104,7 +104,7 @@ public class UserService : IUserService
     {
         var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
 
-        var manga = await _mangaRepository.GetByIdAsync(addTOFavoriteDTO.Item_Id);
+        var manga = await _mangaService.GetByIdAsync(addTOFavoriteDTO.Item_Id);
 
         var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
 
@@ -119,7 +119,7 @@ public class UserService : IUserService
     {
         var user = await _userRespository.GetByIdAsync(userid);
 
-        var genre = await _genreRepository.GetByIdAsync(genreid);
+        var genre = await _genreService.GetByIdAsync(genreid);
 
         var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
 
@@ -134,7 +134,7 @@ public class UserService : IUserService
     {
         var user = await _userRespository.GetByIdAsync(userid);
 
-        var manga = await _mangaRepository.GetByIdAsync(genreid);
+        var manga = await _mangaService.GetByIdAsync(genreid);
 
         var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
 

@@ -1,6 +1,6 @@
 ﻿namespace Services.Model.DTO.Base;
 
-public interface IModelDTO
+public interface IModelInput
 {
     public string Id { get; set; }
 }

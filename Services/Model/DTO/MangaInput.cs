@@ -3,7 +3,7 @@ using Services.Model.DTO.Base;
 
 namespace Services.Model.DTO;
 
-public class MangaInput : IModelDTO
+public class MangaInput : IModelInput
 {
     public string? Id { get; set; }
     public string Name { get; set; }

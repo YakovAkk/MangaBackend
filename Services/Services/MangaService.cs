@@ -6,7 +6,6 @@ using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using Services.Storage.Base;
-using System;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -32,11 +31,6 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         using var dbContext = CreateDbContext();
 
         var result = await dbContext.Mangas.ToListAsync();
-
-        if (result == null)
-        {
-            return new List<MangaEntity>();
-        }
 
         foreach (var item in result)
         {
@@ -73,16 +67,27 @@ public class MangaService : DbService<AppDBContext>, IMangaService
     }
     public async Task<MangaEntity> GetByIdAsync(string Id)
     {
-        var result = await _mangaRepository.GetByIdAsync(Id);
+        using var dbContext = CreateDbContext();
 
-        result.PathToTitlePicture = $"{_localStorage.RelativePath}{result.PathToTitlePicture}";
+        var manga = await dbContext.Mangas
+            .Include(m => m.Genres)
+            .Include(m => m.PathToFoldersWithGlava)
+            .FirstOrDefaultAsync(i => i.Id == Id);
 
-        foreach (var res in result.PathToFoldersWithGlava)
+        if (manga == null)
+        {
+            var errorMessage = $"The manga with id = {Id} isn't contained in the database!";
+            throw new Exception(errorMessage);
+        }
+
+        manga.PathToTitlePicture = $"{_localStorage.RelativePath}{manga.PathToTitlePicture}";
+
+        foreach (var res in manga.PathToFoldersWithGlava)
         {
             res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
         }
 
-        return result;
+        return manga;
     }
     public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
     {
@@ -93,21 +98,49 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             throw new Exception("Parameters aren't valid");
         }
 
-        return await _mangaRepository.GetCertainPage(pageSize, numberOfPage);
+        using var dbContext = CreateDbContext();
+
+        var list = await dbContext.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(m => m.PathToFoldersWithGlava)
+            .Skip((numberOfPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return list;
     }
     public async Task<List<MangaEntity>> FiltrationByDate(string year)
     {
-        int yearnum = 0;
+        int yearNum = 0;
 
-        if (!ValidatorService.IsValidYear(year, out yearnum))
+        if (!ValidatorService.IsValidYear(year, out yearNum))
         {
             throw new Exception("Parameters aren't valid");
         }
 
-        return await _mangaRepository.FiltrationByDate(yearnum);
+        using var dbContext = CreateDbContext();
+
+        var result = await dbContext.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(i => i.PathToFoldersWithGlava)
+            .Where(i => i.ReleaseYear > yearNum)
+            .ToListAsync();
+
+        return result;
     }
     public async Task<IList<MangaEntity>> FiltrationByName(string name)
     {
-        return await _mangaRepository.FiltrationByName(name);
+        using var dbContext = CreateDbContext();
+
+        var result = await dbContext.Mangas
+            .Include(m => m.Genres)
+            .AsNoTracking()
+            .Include(i => i.PathToFoldersWithGlava)
+            .Where(i => i.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        return result;
     }
 }
