@@ -1,4 +1,6 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repositories.Repositories.Base;
 using Services.Model.DTO;
@@ -6,13 +8,14 @@ using Services.Services.Base;
 
 namespace Services.Services;
 
-public class UserService : IUserService
+public class UserService : DbService<AppDBContext>, IUserService
 {
     private readonly IUserRespository _userRespository;
     private readonly IGenreService _genreService;
     private readonly IMangaService _mangaService;
-    private readonly ILogger<UserService> _logger;
-    public UserService(IUserRespository userRespository, IGenreService genreService, IMangaService mangaService)
+
+    public UserService(IUserRespository userRespository, IGenreService genreService, IMangaService mangaService,
+        DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
         _userRespository = userRespository;
         _genreService = genreService;
@@ -22,146 +25,160 @@ public class UserService : IUserService
     #region User
     public async Task<bool> IsUserExists(UserRegistrationDTO userDTO)
     {
-        try
+        var userByName = await GetUserByNameOrEmail(userDTO.UserName);
+        var userByEmail = await GetUserByNameOrEmail(userDTO.Email);
+
+        if(userByName != null)
         {
-            var userName = await GetUserByNameOrEmail(userDTO.UserName);
-
-            var userEmail = await GetUserByNameOrEmail(userDTO.Email);
-
-            if(userName != null && userEmail != null)
-            {
-                return true;
-            }
+            throw new Exception("User with the name is alteady registered!");
         }
-        catch (Exception)
+
+        if (userByEmail != null)
         {
- 
+            throw new Exception("User with the email is alteady registered!");
         }
 
         return false;
-
     }
-
     public async Task<bool> UpdateAsync(UserEntity user)
     {
-        var updatedUser = await _userRespository.UpdateAsync(user);
+        using var dbContext = CreateDbContext();
 
-        if(updatedUser == null)
+        var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Name == user.Name);
+
+        if (existingUser == null)
         {
-            return false;
+            var errorMessage = "User doesn't exist";
+            throw new Exception(errorMessage);
         }
-        
+
+        var updatedUser = dbContext.Users.Update(existingUser);
+
+        await dbContext.SaveChangesAsync();
+
         return true;
     }
     public async Task<IList<UserEntity>> GetAllAsync()
     {
-        return await _userRespository.GetAllAsync();
+        using var dbContext = CreateDbContext();
+
+        var list = await dbContext.Users.ToListAsync();
+
+        return list;
     }
-
-    public async Task<UserEntity> GetByIdAsync(string user_id)
+    public async Task<UserEntity> GetByIdAsync(string userId)
     {
-        return await _userRespository.GetByIdAsync(user_id);
-    }
+        using var dbContext = CreateDbContext();
 
-    public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
-    {
-        UserEntity userExistByName = null;
-        UserEntity userExistByEmail = null;
+        var user = await dbContext.Users
+            .Include(m => m.FavoriteMangas)
+            .Include(m => m.FavoriteGenres)
+            .FirstOrDefaultAsync(i => i.Id == userId);
 
-        userExistByName = await _userRespository.GetByNameAsync(nameOrEmail);
-
-        userExistByEmail = await _userRespository.GetByEmailAsync(nameOrEmail);
-
-        if (userExistByName == null && userExistByEmail == null)
+        if (user == null)
         {
-            var errorMessage = "User doesn't exist";
-
+            var errorMessage = $"The user doesn't exist!";
             throw new Exception(errorMessage);
         }
 
-        return userExistByName ?? userExistByEmail;
+        return user;
+    }
+    public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
+    {
+        using var dbContext = CreateDbContext();
+
+        UserEntity userExist = await dbContext.Users
+            .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
+
+        return userExist;
     }
 
     #endregion
 
     #region UsersFavorite
-    public async Task<bool> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
+    public async Task<bool> AddGenreToFavoriteAsync(string userid, string genreid)
     {
-        var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
+        using var dbContext = CreateDbContext();
 
-        var genre = await _genreService.GetByIdAsync(addTOFavoriteDTO.Item_Id);
-
-        var userResult = await _userRespository.AddGenreToFavoriteAsync(user, genre);
-
-        if(userResult != null)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    public async Task<bool> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO)
-    {
-        var user = await _userRespository.GetByIdAsync(addTOFavoriteDTO.User_Id);
-
-        var manga = await _mangaService.GetByIdAsync(addTOFavoriteDTO.Item_Id);
-
-        var userResult = await _userRespository.AddMangaToFavoriteAsync(user, manga);
-
-        if (userResult != null)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    public async Task<bool> RemoveGenreFromFavoriteAsync(string userid, string genreid)
-    {
-        var user = await _userRespository.GetByIdAsync(userid);
+        var user = await GetByIdAsync(userid);
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        var userResult = await _userRespository.RemoveGenreFromFavoriteAsync(user, genre);
+        if (user.FavoriteGenres.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) == null)
+            user.FavoriteGenres.Add(genre);
+        else
+            throw new Exception("User has the genre in favorite already");
 
-        if (userResult != null)
-        {
-            return true;
-        }
+        await dbContext.SaveChangesAsync();
 
-        return false;
+        return true;
+    }
+    public async Task<bool> AddMangaToFavoriteAsync(string userid, string mangaid)
+    {
+        using var dbContext = CreateDbContext();
+
+        var user = await GetByIdAsync(userid);
+
+        var genre = await _mangaService.GetByIdAsync(mangaid);
+
+        if (user.FavoriteMangas.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) == null)
+            user.FavoriteMangas.Add(genre);
+        else
+            throw new Exception("User has the manga in favorite already");
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
+    }
+    public async Task<bool> RemoveGenreFromFavoriteAsync(string userid, string genreid)
+    {
+        using var dbContext = CreateDbContext();
+
+        var user = await GetByIdAsync(userid);
+
+        var genre = await _genreService.GetByIdAsync(genreid);
+
+        if (user.FavoriteGenres.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) != null)
+            user.FavoriteGenres.Remove(genre);
+        else
+            throw new Exception("User doesn't have the genre in favorite already");
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
     }
     public async Task<bool> RemoveMangaFromFavoriteAsync(string userid, string genreid)
     {
-        var user = await _userRespository.GetByIdAsync(userid);
+        using var dbContext = CreateDbContext();
 
-        var manga = await _mangaService.GetByIdAsync(genreid);
+        var user = await GetByIdAsync(userid);
 
-        var userResult = await _userRespository.RemoveMangaFromFavoriteAsync(user, manga);
+        var genre = await _mangaService.GetByIdAsync(genreid);
 
-        if (userResult != null)
-        {
-            return true;
-        }
+        if (user.FavoriteMangas.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) != null)
+            user.FavoriteMangas.Add(genre);
+        else
+            throw new Exception("User doesn't have the manga in favorite already");
 
-        return false;
+        await dbContext.SaveChangesAsync();
+
+        return true;
     }
     public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid)
     {
-        var user = await _userRespository.GetByIdAsync(userid);
+        using var dbContext = CreateDbContext();
 
-        var list = await _userRespository.GetAllFavoriteMangaAsync(user);
+        var user = await GetByIdAsync(userid);
 
-        return list;
+        return user.FavoriteMangas;
     }
     public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(string userid)
     {
-        var user = await _userRespository.GetByIdAsync(userid);
+        using var dbContext = CreateDbContext();
 
-        var list = await _userRespository.GetAllFavoriteGenreAsync(user);
+        var user = await GetByIdAsync(userid);
 
-        return list;
+        return user.FavoriteGenres;
     }
-
-
     #endregion
 }

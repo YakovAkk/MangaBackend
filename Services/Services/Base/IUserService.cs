@@ -8,8 +8,8 @@ public interface IUserService
     Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail);
     Task<IList<UserEntity>> GetAllAsync();
     Task<bool> UpdateAsync(UserEntity user);
-    Task<bool> AddMangaToFavoriteAsync(FavoriteDTO addTOFavoriteDTO);
-    Task<bool> AddGenreToFavoriteAsync(FavoriteDTO addTOFavoriteDTO);
+    Task<bool> AddMangaToFavoriteAsync(string userid, string mangaid);
+    Task<bool> AddGenreToFavoriteAsync(string userid, string genreid);
     Task<bool> RemoveGenreFromFavoriteAsync(string userid, string genreid);
     Task<bool> RemoveMangaFromFavoriteAsync(string userid, string mangaid);
     Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid);

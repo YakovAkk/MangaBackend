@@ -85,11 +85,8 @@ namespace Services.Services
                 throw new Exception(errorMessage);
             }
 
-            if (await _userService.IsUserExists(userDTO))
-            {
-                var errorMessage = "User already exists!";
-                throw new Exception(errorMessage);
-            }
+            await _userService.IsUserExists(userDTO);
+
 
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 

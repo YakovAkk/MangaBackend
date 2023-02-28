@@ -58,13 +58,13 @@ public class UsersController : ControllerBase
 
     #region Favorite
 
-    [HttpPut("favorite/genre")]
+    [HttpPut("favorite/genre/{userid}/{genreid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFavorite([FromBody] FavoriteDTO addTOFavoriteDTO)
+    public async Task<IActionResult> AddGenreToFavorite([FromRoute] string userid, string genreid)
     {
         try
         {
-            var result = await _userService.AddGenreToFavoriteAsync(addTOFavoriteDTO);
+            var result = await _userService.AddGenreToFavoriteAsync(userid,genreid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -75,13 +75,13 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut("favorite/manga")]
+    [HttpPut("favorite/manga/{userid}/{mangaid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFavorite([FromBody] FavoriteDTO addTOFavoriteDTO)
+    public async Task<IActionResult> AddMangaToFavorite([FromRoute] string userid, string mangaid)
     {
         try
         {
-            var result = await _userService.AddMangaToFavoriteAsync(addTOFavoriteDTO);
+            var result = await _userService.AddMangaToFavoriteAsync(userid,mangaid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
