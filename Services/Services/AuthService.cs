@@ -1,8 +1,10 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using EmailingService.Model;
 using EmailingService.Services.Base;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.Repositories.Base;
@@ -18,18 +20,20 @@ using System.Text;
 
 namespace Services.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : DbService<AppDBContext>, IAuthService
     {
         private static readonly Random random = new Random();
 
         private readonly IUserService _userService;
-        private readonly IUserRespository _userRespository;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-        public AuthService(IUserService userService, IUserRespository userRespository, IConfiguration configuration, IEmailService emailService)
+        public AuthService(
+            IUserService userService, 
+            IConfiguration configuration, 
+            IEmailService emailService,
+            DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
         {
             _userService = userService;
-            _userRespository = userRespository;
             _configuration = configuration;
             _emailService = emailService;
         }
@@ -41,7 +45,7 @@ namespace Services.Services
             if(string.IsNullOrEmpty(userExist.ResetPasswordToken))
             {
                 var resetPasswordToken = CreateResetPasswordToken();
-                await _userRespository.SetResetPasswordToken(resetPasswordToken, userExist);
+                await _userService.SetResetPasswordToken(resetPasswordToken, userExist);
             }
 
             var message = new Message(new string[] { userExist.Email }, "Manga APP",
@@ -66,7 +70,7 @@ namespace Services.Services
             }
 
             var refreshToken = CreateRefreshToken();
-            await _userRespository.SetRefreshToken(refreshToken, userExist);
+            await _userService.SetRefreshToken(refreshToken, userExist);
 
             var token = new TokensViewModel()
             {
@@ -94,7 +98,7 @@ namespace Services.Services
 
             var userModel = userDTO.toEntity(passwordHash, passwordSalt, verificationToken);
 
-            var result = await _userRespository.CreateAsync(userModel);
+            var result = await _userService.CreateAsync(userModel);
 
             var message = new Message(new string[] { result.Email }, "Manga APP",
                 $"https://localhost:5000/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
@@ -118,7 +122,7 @@ namespace Services.Services
 
             var token = CreateAccessToken(userExist);
             var newRefreshToken = CreateRefreshToken();
-            await _userRespository.SetRefreshToken(newRefreshToken, userExist);
+            await _userService.SetRefreshToken(newRefreshToken, userExist);
 
             return new TokensViewModel()
             {
@@ -136,7 +140,7 @@ namespace Services.Services
                 throw new UnauthorizedAccessException("Token isn't correct!");
             }
 
-            await _userRespository.VerifyAsync(user);
+            await _userService.VerifyAsync(user);
 
             return true;
         }

@@ -1,7 +1,8 @@
 ﻿using Data.Database;
 using Data.Entities;
+using Data.Helping.Model;
+using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Repositories.Repositories.Base;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -10,17 +11,54 @@ namespace Services.Services;
 
 public class UserService : DbService<AppDBContext>, IUserService
 {
-    private readonly IUserRespository _userRespository;
     private readonly IGenreService _genreService;
     private readonly IMangaService _mangaService;
 
-    public UserService(IUserRespository userRespository, IGenreService genreService, IMangaService mangaService,
+    public UserService(IGenreService genreService, IMangaService mangaService,
         DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
-        _userRespository = userRespository;
         _genreService = genreService;
         _mangaService = mangaService;
     }
+
+    #region Auth
+    public async Task<UserEntity> CreateAsync(UserEntity user)
+    {
+        using var dbContext = CreateDbContext();
+
+        await dbContext.Users.AddAsync(user);
+
+        await dbContext.SaveChangesAsync();
+
+        return user;
+    }
+    public async Task SetRefreshToken(RefreshToken refreshToken, UserEntity user)
+    {
+        using var dbContext = CreateDbContext();
+
+        user.RefreshToken = refreshToken.Token;
+        user.TokenExpires = refreshToken.Expires;
+        user.TokenCreated = refreshToken.Created;
+
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task VerifyAsync(UserEntity user)
+    {
+        using var dbContext = CreateDbContext();
+
+        user.VerifiedAt = DateTime.UtcNow;
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist)
+    {
+        using var dbContext = CreateDbContext();
+
+        userExist.ResetPasswordToken = resetPasswordToken.Token;
+        userExist.ResetPasswordTokenExpires = resetPasswordToken.Expires;
+
+        await dbContext.SaveChangesAsync();
+    }
+    #endregion
 
     #region User
     public async Task<bool> IsUserExists(UserRegistrationDTO userDTO)

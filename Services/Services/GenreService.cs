@@ -10,7 +10,7 @@ namespace Services.Services;
 
 public class GenreService : DbService<AppDBContext>, IGenreService
 {
-    public GenreService( DbContextOptions<AppDBContext> dbContextOptions) 
+    public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
         : base(dbContextOptions) { }
     
     public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> genres)
