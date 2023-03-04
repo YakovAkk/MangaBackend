@@ -12,7 +12,7 @@ public static class WrapperResponseService
             return new WrapViewModel()
             {
                 Data = new object[0],
-                StatusCode = HttpStatusCode.InternalServerError,
+                StatusCode = HttpStatusCode.NotFound,
                 ErrorMessage = errorMessage
             };
         }

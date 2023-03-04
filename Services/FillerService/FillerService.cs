@@ -19,62 +19,62 @@ public class FillerService : IFillerService
 
     public async Task<ResponseFillDTO> AddGenres()
     {
-        var listOfGenres = new List<GenreDTO>()
+        var listOfGenres = new List<GenreInput>()
         {
-            new GenreDTO("Action"),
-            new GenreDTO("Romance"),
-            new GenreDTO("Comedy"),
-            new GenreDTO("Drama"),
-            new GenreDTO("Fantasy"),
-            new GenreDTO("Everyday life"),
-            new GenreDTO("Adventures"),
-            new GenreDTO("Art"),
-            new GenreDTO("Madness"),
-            new GenreDTO("Action movie"),
-            new GenreDTO("Military"),
-            new GenreDTO("Harem"),
-            new GenreDTO("Gender intrigue"),
-            new GenreDTO("Heroic fantasy"),
-            new GenreDTO("Demons"),
-            new GenreDTO("Detective"),
-            new GenreDTO("Children's"),
-            new GenreDTO("Josei"),
-            new GenreDTO("The game"),
-            new GenreDTO("Isekai"),
-            new GenreDTO("Story"),
-            new GenreDTO("Cyberpunk"),
-            new GenreDTO("Kodomo"),
-            new GenreDTO("Space"),
-            new GenreDTO("Magic"),
-            new GenreDTO("Maho-shoujo"),
-            new GenreDTO("Cars"),
-            new GenreDTO("Fur"),
-            new GenreDTO("Mystic"),
-            new GenreDTO("Music"),
-            new GenreDTO("Science fiction"),
-            new GenreDTO("Omegaverse"),
-            new GenreDTO("Parody"),
-            new GenreDTO("Police"),
-            new GenreDTO("Post-apocalyptic"),
-            new GenreDTO("Psychology"),
-            new GenreDTO("Samurai fighter"),
-            new GenreDTO("Supernatural"),
-            new GenreDTO("Shojo"),
-            new GenreDTO("Shojo-ai"),
-            new GenreDTO("Shonen"),
-            new GenreDTO("Shonen Ai"),
-            new GenreDTO("Sport"),
-            new GenreDTO("Superpower"),
-            new GenreDTO("Seinen"),
-            new GenreDTO("Tragedy"),
-            new GenreDTO("Thriller"),
-            new GenreDTO("Horror"),
-            new GenreDTO("Fiction"),
-            new GenreDTO("Schlola"),
-            new GenreDTO("Erotica"),
-            new GenreDTO("Ecchi"),
-            new GenreDTO("Yuri"),
-            new GenreDTO("Yaoi")
+            new GenreInput("Action"),
+            new GenreInput("Romance"),
+            new GenreInput("Comedy"),
+            new GenreInput("Drama"),
+            new GenreInput("Fantasy"),
+            new GenreInput("Everyday life"),
+            new GenreInput("Adventures"),
+            new GenreInput("Art"),
+            new GenreInput("Madness"),
+            new GenreInput("Action movie"),
+            new GenreInput("Military"),
+            new GenreInput("Harem"),
+            new GenreInput("Gender intrigue"),
+            new GenreInput("Heroic fantasy"),
+            new GenreInput("Demons"),
+            new GenreInput("Detective"),
+            new GenreInput("Children's"),
+            new GenreInput("Josei"),
+            new GenreInput("The game"),
+            new GenreInput("Isekai"),
+            new GenreInput("Story"),
+            new GenreInput("Cyberpunk"),
+            new GenreInput("Kodomo"),
+            new GenreInput("Space"),
+            new GenreInput("Magic"),
+            new GenreInput("Maho-shoujo"),
+            new GenreInput("Cars"),
+            new GenreInput("Fur"),
+            new GenreInput("Mystic"),
+            new GenreInput("Music"),
+            new GenreInput("Science fiction"),
+            new GenreInput("Omegaverse"),
+            new GenreInput("Parody"),
+            new GenreInput("Police"),
+            new GenreInput("Post-apocalyptic"),
+            new GenreInput("Psychology"),
+            new GenreInput("Samurai fighter"),
+            new GenreInput("Supernatural"),
+            new GenreInput("Shojo"),
+            new GenreInput("Shojo-ai"),
+            new GenreInput("Shonen"),
+            new GenreInput("Shonen Ai"),
+            new GenreInput("Sport"),
+            new GenreInput("Superpower"),
+            new GenreInput("Seinen"),
+            new GenreInput("Tragedy"),
+            new GenreInput("Thriller"),
+            new GenreInput("Horror"),
+            new GenreInput("Fiction"),
+            new GenreInput("Schlola"),
+            new GenreInput("Erotica"),
+            new GenreInput("Ecchi"),
+            new GenreInput("Yuri"),
+            new GenreInput("Yaoi")
         };
 
         try
@@ -118,7 +118,7 @@ public class FillerService : IFillerService
             };
         }
 
-        var mangas = new List<MangaDTO>();
+        var mangas = new List<MangaInput>();
         mangas.Add(CreateAttackOfTheTitansManga(genres));
         mangas.Add(CreateNarutoManga(genres));
         mangas.Add(CreateSevenDeadlySinsManga(genres));
@@ -179,29 +179,7 @@ public class FillerService : IFillerService
             MessageWhatWrong = ""
         };
     }
-    public async Task<ResponseFillDTO> DeleteAll()
-    {
-        var genrelist = await _genreService.GetAllAsync();
-
-        foreach (var genre in genrelist)
-        {
-            await _genreService.DeleteAsync(genre.Id);
-        }
-
-        var mangalist = await _mangaService.GetAllAsync();
-
-        foreach (var manga in mangalist)
-        {
-            await _mangaService.DeleteAsync(manga.Id);
-        }
-
-        return new ResponseFillDTO()
-        {
-            IsSuccess = true,
-            MessageWhatWrong = ""
-        };
-    }
-    private MangaDTO CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
+    private MangaInput CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -252,11 +230,11 @@ public class FillerService : IFillerService
             },
         };
 
-        return new MangaDTO()
+        return new MangaInput()
         {
             Name = "Attack of the Titans",
             PathToTitlePicture = "manga/attackofthetitans/titleimage.jpg",
-            Genres_id = genres_id,
+            Genres_names = genres_id,
             PathToFoldersWithGlava = PathToFoldersWithGlava,
             Description = "Давным-давно человечество было всего лишь «их» кормом, до тех пор, пока оно не построило гигантскую стену вокруг своей страны. С тех пор прошло сто лет мира и большинство людей жили счастливой, беззаботной жизнью. Но за долгие годы спокойствия пришлось заплатить огромную цену, и в 845 году они снова познали чувство ужаса и беспомощности – стена, которая была их единственным спасением, пала. «Они» прорвались. Половина человечества съедена, треть территории навсегда потеряна...",
             NumbetOfChapters = 140,
@@ -265,7 +243,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2009
         };
     }
-    private MangaDTO CreateNarutoManga(IList<GenreEntity> genres)
+    private MangaInput CreateNarutoManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -304,11 +282,11 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaDTO()
+        return new MangaInput()
         {
             Name = "Naruto",
             PathToTitlePicture = "manga/naruto/titleimage.jpg",
-            Genres_id = genres_id,
+            Genres_names = genres_id,
             PathToFoldersWithGlava = PathToFoldersWithGlava,
             Description = "Двенадцать лет назад, мощный Девятихвостый Демон-Лис напал на деревню ниндзя, Коноху. Демон был быстро побежден и запечатан в младенце по имени Наруто Узумаки. Но для этого, главному ниндзя Конохи, четвёртому хокаге пришлось пожертвовать жизнью... Теперь, по прошествии 12-и лет, Наруто является номером один среди придурков ниндзя, который полон решимости стать следующим Хокаге и получить признание всех, кто когда-либо сомневался в нем!",
             NumbetOfChapters = 702,
@@ -317,7 +295,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1999
         };
     }
-    private MangaDTO CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
+    private MangaInput CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -366,11 +344,11 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaDTO()
+        return new MangaInput()
         {
             Name = "Seven Deadly Sins",
             PathToTitlePicture = "manga/sevendeadlysins/titleimage.jpg",
-            Genres_id = genres_id,
+            Genres_names = genres_id,
             PathToFoldersWithGlava = PathToFoldersWithGlava,
             Description = "В королевстве Лионесс несколько рыцарей, прозванных «Семью смертными грехами» пыталисиь совершить государственный переворот. Им не позволили это сделать члены «Святого рыцарства». История на этом не завершилась и возобновилась спустя десять лет. Королевская семья была арестована, а сбежать удалось дочери короля Элизабет. Она полагает, что единственным шансом спастись выступают рыцари и, переодевшись так, чтобы её не узнали, отправилась искать Мелиодаса и его соратников. Она оказывается в таверне, не подозревая, что попала по назначению и отыскала рыцаря, на которого делала ставку. В Британии наконец-то настали спокойные дни, но опять-таки временно. Смельчакам рыцарям и Элизабет предстояло вовлечься в борьбу с Десятью заповедями. Весь мир оказался под серьезной угрозой. Печать вследствие происходящих событий была вскрыта, и демоны могли безо всяких препятствий покинули заточение, а в нем они провели века. Мерлин, Диана, Банд, Эсканор, Кинг и Хоук взялись за оружие и ступили на тропу войны, ведь интересы мира и королевства были превыше. После таких сражений рыцарям полагался отдых, но без новых приключений им не обойтись, а те будут ещё круче прежних.",
             NumbetOfChapters = 378,
@@ -379,7 +357,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2012
         };
     }
-    private MangaDTO CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
+    private MangaInput CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -423,11 +401,11 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaDTO()
+        return new MangaInput()
         {
             Name = "TokyoGhoul",
             PathToTitlePicture = "manga/tokyoghoul/titleimage.jpg",
-            Genres_id = genres_id,
+            Genres_names = genres_id,
             PathToFoldersWithGlava = PathToFoldersWithGlava,
             Description = "Раса гулей существует с незапамятных времен. Её представители вовсе не против людей, они их даже любят — преимущественно в сыром виде. Любители человечины внешне неотличимы от нас, сильны, быстры и живучи — но их мало, потому гули выработали строгие правила охоты и маскировки, а нарушителей наказывают сами или по-тихому сдают борцам с нечистью. В век науки люди знают про гулей, но как говорится, привыкли. Власти не считают людоедов угрозой, более того, рассматривают их как идеальную основу для создания суперсолдат. Эксперименты идут уже давно…" +
             " Ничего этого не ведал Канэки Кэн, робкий и невзрачный токийский первокурсник, безнадежно влюбленный в красавицу-интеллектуалку Ризэ, частую гостью в кафе «Место встречи», где парень подрабатывает официантом. Не думал Кэн, что скоро самому придётся стать гулем, и многие знакомые предстанут в неожиданном свете. Главному герою предстоит мучительный поиск нового пути, ибо он понял, что люди и гули похожи: просто одни друг друга жрут в прямом смысле, другие — в переносном. Правда жизни жестока, переделать её нельзя, и силен тот, кто не отворачивается. А дальше уж как-нибудь!",

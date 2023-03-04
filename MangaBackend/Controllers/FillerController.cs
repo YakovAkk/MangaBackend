@@ -17,7 +17,7 @@ public class FillerController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost, Authorize]
+    [HttpPost]
     public async Task<IActionResult> FillTheDatabase()
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");

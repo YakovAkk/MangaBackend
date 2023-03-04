@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
+    <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Model\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
+    <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
 </Project>

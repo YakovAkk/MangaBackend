@@ -2,7 +2,7 @@
 
 namespace Services.Model.DTO;
 
-public class GenreDTO : IModelDTO
+public class GenreInput : IModelInput
 {
     public string? Id { get; set; }
     public string Name { get; set; }
@@ -12,12 +12,12 @@ public class GenreDTO : IModelDTO
         return $"Id = {Id} Name = {Name}";
     }
 
-    public GenreDTO()
+    public GenreInput()
     {
 
     }
 
-    public GenreDTO(string name)
+    public GenreInput(string name)
     {
         Name = name;
     }

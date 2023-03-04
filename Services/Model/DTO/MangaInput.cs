@@ -3,7 +3,7 @@ using Services.Model.DTO.Base;
 
 namespace Services.Model.DTO;
 
-public class MangaDTO : IModelDTO
+public class MangaInput : IModelInput
 {
     public string? Id { get; set; }
     public string Name { get; set; }
@@ -14,12 +14,12 @@ public class MangaDTO : IModelDTO
     public string Author { get; set; }
     public string Description { get; set; }
     public List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
-    public List<string> Genres_id { get; set; }
+    public List<string> Genres_names { get; set; }
 
-    public MangaDTO()
+    public MangaInput()
     {
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
-        Genres_id = new List<string>();
+        Genres_names = new List<string>();
     }
 
 }

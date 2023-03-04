@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Repositories.Repositories;
-using Repositories.Repositories.Base;
 using Services.Services;
 using Services.Services.Base;
 using NLog;
@@ -32,24 +30,13 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddTransient<IMangaRepository, MangaRepository>();
     builder.Services.AddTransient<IMangaService, MangaService>();
-
-    builder.Services.AddTransient<IGenreRepository, GenreRepository>();
     builder.Services.AddTransient<IGenreService, GenreService>();
-
-    builder.Services.AddTransient<IUserRespository, UserRepository>();
     builder.Services.AddTransient<IUserService, UserService>();
-
     builder.Services.AddTransient<IAuthService, AuthService>();
-
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
-
     builder.Services.AddTransient<IFillerService, FillerService>();
-
     builder.Services.AddTransient<INotificationService, NotificationService>();
-
-   
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
@@ -75,14 +62,14 @@ try
             {
                 case "LocalDatabaseMYSQL":
                     {
-                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        builder.Services.AddDbContext<AppDBContext>(options =>
                         options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
                         logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
                         break;
                     }
                 case "LocalDatabaseMSSQL":
                     {
-                        builder.Services.AddDbContext<AppDBContent>(options =>
+                        builder.Services.AddDbContext<AppDBContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
                         logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
                         break;

@@ -1,5 +1,6 @@
-﻿using Data.Entities;
-using Repositories.Repositories.Base;
+﻿using Data.Database;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -7,51 +8,50 @@ using ValidateService.Validate;
 
 namespace Services.Services;
 
-public class GenreService : IGenreService
+public class GenreService : DbService<AppDBContext>, IGenreService
 {
-    private readonly IGenreRepository _genreRepository;
-    public GenreService(IGenreRepository repository)
+    public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
+        : base(dbContextOptions) { }
+    
+    public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> genres)
     {
-        _genreRepository = repository;
-    }
-    public async Task<GenreEntity> AddAsync(GenreDTO item)
-    {
-        var model = item.toEntity();
+        using var dbContext = CreateDbContext();
 
-        return await _genreRepository.CreateAsync(model);
-    }
-    public async Task<IList<GenreEntity>> AddRange(IList<GenreDTO> list)
-    {
-        var listModels = new List<GenreEntity>();
-
-        foreach (var item in list)
+        foreach (var genre in genres)
         {
-            var genre = item.toEntity();
+            var genreEntity = genre.toEntity();
 
-            listModels.Add(genre);
+            if(dbContext.Genres.SingleOrDefault(x => x.Name == genreEntity.Name) == null)
+                dbContext.Genres.Add(genreEntity);
         }
 
-        return await _genreRepository.AddRange(listModels);
+        await dbContext.SaveChangesAsync();
+
+        return await GetAllAsync();
     }
     public async Task<IList<GenreEntity>> GetAllAsync()
     {
-        return await _genreRepository.GetAllAsync();
+        using var dbContext = CreateDbContext();
+
+        var list = await dbContext.Genres.ToListAsync();
+
+        return list;
     }
     public async Task<GenreEntity> GetByIdAsync(string id)
     {
-        return await _genreRepository.GetByIdAsync(id);
-    }
-    public async Task<GenreEntity> UpdateAsync(GenreDTO item)
-    {
-        var genre = await _genreRepository.GetByIdAsync(item.Id);
+        using var dbContext = CreateDbContext();
 
-        genre = item.toEntity();
+        var genre = await dbContext.Genres
+            .Include(m => m.Mangas)
+            .FirstOrDefaultAsync(i => i.Id == id);
 
-        return await _genreRepository.UpdateAsync(genre);
-    }
-    public async Task<GenreEntity> DeleteAsync(string id)
-    {
-        return await _genreRepository.DeleteAsync(id);
+        if (genre == null)
+        {
+            var errorMessage = $"The genre doesn't exist!";
+            throw new Exception(errorMessage);
+        }
+
+        return genre;
     }
     public async Task<IList<GenreEntity>> GetCertainPage(string sizeOfPage, string page)
     {
@@ -62,10 +62,23 @@ public class GenreService : IGenreService
             throw new Exception("Parameters aren't valid");
         }
 
-        return await _genreRepository.GetCertainPage(pageSize, numberOfPage);
+        using var dbContext = CreateDbContext();
+
+        var list = await dbContext.Genres
+             .Skip((numberOfPage - 1) * pageSize)
+             .Take(pageSize)
+             .ToListAsync();
+
+        return list;
     }
     public async Task<IList<GenreEntity>> FiltrationByName(string name)
     {
-        return await _genreRepository.FiltrationByName(name);
+        using var dbContext = CreateDbContext();
+
+        var list = await dbContext.Genres
+            .Where(i => i.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
+
+        return list;
     }
 }
