@@ -3,7 +3,6 @@ using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Repositories.Base;
 using Services.Model.DTO;
 using Services.Services.Base;
 

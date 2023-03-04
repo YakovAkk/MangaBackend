@@ -1,7 +1,6 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Repositories.Repositories.Base;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;

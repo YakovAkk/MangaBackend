@@ -29,7 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\EmailService\EmailingService.csproj" />
-    <ProjectReference Include="..\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
     <ProjectReference Include="..\ValidateService\ValidateService.csproj" />
     <ProjectReference Include="..\WrapperService\WrapperService.csproj" />

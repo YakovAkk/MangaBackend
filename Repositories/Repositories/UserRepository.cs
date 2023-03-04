@@ -13,27 +13,6 @@ public class UserRepository : IUserRespository
     {
         _db = db;
     }
-    public async Task<UserEntity> CreateAsync(UserEntity user)
-    {
-        var userAdded = await _db.Users.AddAsync(user);
-        await _db.SaveChangesAsync();
-
-        if(userAdded == null)
-        {
-            var errorMessage = "User hasn't been added";
-         
-            throw new Exception(errorMessage);  
-        }
-        var userResult = await _db.Users.FirstOrDefaultAsync(u => u.Name == user.Name);
-
-        if(userResult == null)
-        {
-            var errorMessage = "User hasn't been added";
-        
-            throw new Exception(errorMessage);
-        }
-        return userResult;
-    }
     public async Task SetRefreshToken(RefreshToken refreshToken, UserEntity user)
     {
         user.RefreshToken = refreshToken.Token;

@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Repositories.Repositories;
-using Repositories.Repositories.Base;
 using Services.Services;
 using Services.Services.Base;
 using NLog;
@@ -33,21 +31,12 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddTransient<IMangaService, MangaService>();
-
     builder.Services.AddTransient<IGenreService, GenreService>();
-
-    builder.Services.AddTransient<IUserRespository, UserRepository>();
     builder.Services.AddTransient<IUserService, UserService>();
-
     builder.Services.AddTransient<IAuthService, AuthService>();
-
     builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
-
     builder.Services.AddTransient<IFillerService, FillerService>();
-
     builder.Services.AddTransient<INotificationService, NotificationService>();
-
-   
 
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
