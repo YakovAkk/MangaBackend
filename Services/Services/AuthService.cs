@@ -99,8 +99,10 @@ namespace Services.Services
 
             var result = await _userService.CreateAsync(userModel);
 
+            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
+
             var message = new Message(new string[] { result.Email }, "Manga APP",
-                $"https://localhost:5000/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
+                $"{applicationURL}/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
 
             _emailService.SendEmail(message);
 
