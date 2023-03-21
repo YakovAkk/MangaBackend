@@ -40,13 +40,10 @@ namespace EmailingService.Services
                 await client.AuthenticateAsync(_emailConfig.Username, _emailConfig.Password);
 
                 await client.SendAsync(emailMessage);
-
-               
             }
-            catch
+            catch(Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
             finally
             {

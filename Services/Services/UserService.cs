@@ -39,6 +39,7 @@ public class UserService : DbService<AppDBContext>, IUserService
         user.TokenExpires = refreshToken.Expires;
         user.TokenCreated = refreshToken.Created;
 
+        dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
     }
     public async Task VerifyAsync(UserEntity user)
@@ -46,15 +47,18 @@ public class UserService : DbService<AppDBContext>, IUserService
         using var dbContext = CreateDbContext();
 
         user.VerifiedAt = DateTime.UtcNow;
+
+        dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
     }
-    public async Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist)
+    public async Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity user)
     {
         using var dbContext = CreateDbContext();
 
-        userExist.ResetPasswordToken = resetPasswordToken.Token;
-        userExist.ResetPasswordTokenExpires = resetPasswordToken.Expires;
+        user.ResetPasswordToken = resetPasswordToken.Token;
+        user.ResetPasswordTokenExpires = resetPasswordToken.Expires;
 
+        dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
     }
     #endregion
