@@ -138,24 +138,6 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost("verify-reset-password-token")]
-        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> VerifyResetPasswordToken(VerifyResetPasswordTokenDTO tokenDTO)
-        {
-            try
-            {
-                var response = await _authService.VerifyResetPasswordTokenAsync(tokenDTO);
-                var wrapperResult = WrapperResponseService.Wrap<object>(response);
-
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-                return BadRequest(wrapperResult);
-            }
-        }
-
         [HttpPost("reset-password")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPassword(ResetPasswordInputModel inputModel)

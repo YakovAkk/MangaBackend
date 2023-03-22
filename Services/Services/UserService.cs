@@ -4,6 +4,7 @@ using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services.Base;
 
 namespace Services.Services;
@@ -81,11 +82,11 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return false;
     }
-    public async Task<bool> UpdateAsync(UserEntity user)
+    public async Task<bool> UpdateUserAsync(UserInputModel userInputModel)
     {
         using var dbContext = CreateDbContext();
 
-        var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Name == user.Name);
+        var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userInputModel.Id);
 
         if (existingUser == null)
         {
@@ -93,7 +94,10 @@ public class UserService : DbService<AppDBContext>, IUserService
             throw new Exception(errorMessage);
         }
 
-        var updatedUser = dbContext.Users.Update(existingUser);
+        if(!string.IsNullOrEmpty(userInputModel.Name))
+            existingUser.Name = userInputModel.Name;
+
+        dbContext.Users.Update(existingUser);
 
         await dbContext.SaveChangesAsync();
 

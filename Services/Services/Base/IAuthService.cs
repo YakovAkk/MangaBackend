@@ -13,6 +13,5 @@ namespace Services.Services.Base
         Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel);
         Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO);
         Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO);
-        Task<bool> VerifyResetPasswordTokenAsync(VerifyResetPasswordTokenDTO tokenDTO);
     }
 }
