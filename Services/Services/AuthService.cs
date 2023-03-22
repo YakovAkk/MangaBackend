@@ -90,24 +90,20 @@ namespace Services.Services
 
             await _userService.IsUserExists(userDTO);
 
-
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var verificationToken = CreateRandomToken();
 
             var userModel = userDTO.toEntity(passwordHash, passwordSalt, verificationToken);
 
-            var result = await _userService.CreateAsync(userModel);
+            var user = await _userService.CreateAsync(userModel);
 
-            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
-
-            var message = new Message(new string[] { result.Email }, "Manga APP",
-                $"{applicationURL}/api/Auth/verify-email?userId={result.Id}&token={result.VerificationToken}");
-
+            var message = CreateVerifyEmailTemplate(user);
             _emailService.SendEmail(message);
 
-            return result.toViewModel();
+            return user.toViewModel();
         }
+
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
             var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
@@ -185,9 +181,23 @@ namespace Services.Services
 
             return result;
         }
+        public async Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel InputModel)
+        {
+            var user = await _userService.GetUserByNameOrEmail(InputModel.Email);
 
+            var message = CreateVerifyEmailTemplate(user);
+            _emailService.SendEmail(message);
+
+            return true;
+        }
 
         #region Private
+        private Message CreateVerifyEmailTemplate(UserEntity user)
+        {
+            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
+            return new Message(new string[] { user.Email }, "Manga APP",
+                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}");
+        }
         private ResetPasswordToken CreateResetPasswordToken()
         {
             return new ResetPasswordToken()

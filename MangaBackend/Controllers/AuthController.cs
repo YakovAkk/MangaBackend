@@ -20,6 +20,8 @@ namespace MangaBackend.Controllers
             _authService = authService;
         }
 
+
+        #region Authorization
         [HttpPost("login")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
@@ -59,7 +61,9 @@ namespace MangaBackend.Controllers
                 return BadRequest(wrapperResult);
             }
         }
+        #endregion
 
+        #region Refresh and send
         [HttpGet("refresh-token/{userId}"), Authorize]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> RefreshToken([FromRoute] string userId)
@@ -169,5 +173,25 @@ namespace MangaBackend.Controllers
                 return BadRequest(wrapperResult);
             }
         }
+
+        [HttpPost("resend-verify-email-letter")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email)
+        {
+            try
+            {
+                var response = await _authService.ResendVerifyEmailLetter(email);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
+        #endregion
     }
 }

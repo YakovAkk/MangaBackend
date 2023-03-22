@@ -128,8 +128,13 @@ public class UserService : DbService<AppDBContext>, IUserService
     {
         using var dbContext = CreateDbContext();
 
-        UserEntity userExist = await dbContext.Users
+        var userExist = await dbContext.Users
             .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
+
+        if(userExist == null)
+        {
+            throw new Exception("User doesn't exist!");
+        }
 
         return userExist;
     }
