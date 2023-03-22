@@ -12,6 +12,7 @@ using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using System.Data.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -103,7 +104,6 @@ namespace Services.Services
 
             return user.toViewModel();
         }
-
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
             var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
@@ -141,30 +141,11 @@ namespace Services.Services
 
             return true;
         }
-        public async Task<bool> VerifyResetPasswordTokenAsync(VerifyResetPasswordTokenDTO tokenDTO)
-        {
-            var user = await _userService.GetUserByNameOrEmail(tokenDTO.Email);
-
-            if (user.ResetPasswordToken != tokenDTO.Token)
-            {
-                throw new UnauthorizedAccessException("Token isn't correct!");
-            }
-
-            if (user.ResetPasswordTokenExpires < DateTime.Now)
-            {
-                throw new UnauthorizedAccessException("Token Expired!");
-            }
-
-            return true;
-        }
         public async Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel)
         {
             var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
 
-            if (user.ResetPasswordToken != inputModel.Token)
-            {
-                throw new UnauthorizedAccessException("Token isn't correct!");
-            }
+            VerifyResetPasswordTokenAsync(user, inputModel.Token);
 
             if (inputModel.Password != inputModel.ConfirmPassword)
             {
@@ -174,12 +155,19 @@ namespace Services.Services
 
             CreatePasswordHash(inputModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+            var resetPasswordToken = CreateResetPasswordToken();
+            await _userService.SetResetPasswordToken(resetPasswordToken, user);
+
             user.PasswordSalt = passwordSalt;
             user.PasswordHash = passwordHash;
 
-            var result = await _userService.UpdateAsync(user);
+            using (var dbContext = CreateDbContext())
+            {
+                dbContext.Users.Update(user);
+                await dbContext.SaveChangesAsync(); 
+            }
 
-            return result;
+            return true;
         }
         public async Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel InputModel)
         {
@@ -192,6 +180,20 @@ namespace Services.Services
         }
 
         #region Private
+        private bool VerifyResetPasswordTokenAsync(UserEntity user, string token)
+        {
+            if (user.ResetPasswordToken != token)
+            {
+                throw new UnauthorizedAccessException("Token isn't correct!");
+            }
+
+            if (user.ResetPasswordTokenExpires < DateTime.Now)
+            {
+                throw new UnauthorizedAccessException("Token Expired!");
+            }
+
+            return true;
+        }
         private Message CreateVerifyEmailTemplate(UserEntity user)
         {
             var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;

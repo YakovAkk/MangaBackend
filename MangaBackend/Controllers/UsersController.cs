@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services.Base;
 using System.Net;
 using WrapperService.Model.ResponseModel;
@@ -39,11 +40,11 @@ public class UsersController : ControllerBase
 
     [HttpPut]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromBody] UserEntity userEntity)
+    public async Task<IActionResult> Update([FromBody] UserInputModel userInputModel)
     {
         try
         {
-            var result = await _userService.UpdateAsync(userEntity);
+            var result = await _userService.UpdateUserAsync(userInputModel);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
