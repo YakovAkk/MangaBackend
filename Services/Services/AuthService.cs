@@ -98,13 +98,12 @@ namespace Services.Services
 
             var user = await _userService.CreateAsync(userModel);
 
-            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
-            var message = new Message(new string[] { user.Email }, "Manga APP",
-                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}");
+            var message = CreateVerifyEmailTemplate(user);
             _emailService.SendEmail(message);
 
             return user.toViewModel();
         }
+
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
             var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
@@ -186,15 +185,19 @@ namespace Services.Services
         {
             var user = await _userService.GetUserByNameOrEmail(InputModel.Email);
 
-            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
-            var message = new Message(new string[] { user.Email }, "Manga APP",
-                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}");
+            var message = CreateVerifyEmailTemplate(user);
             _emailService.SendEmail(message);
 
             return true;
         }
 
         #region Private
+        private Message CreateVerifyEmailTemplate(UserEntity user)
+        {
+            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
+            return new Message(new string[] { user.Email }, "Manga APP",
+                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}");
+        }
         private ResetPasswordToken CreateResetPasswordToken()
         {
             return new ResetPasswordToken()
