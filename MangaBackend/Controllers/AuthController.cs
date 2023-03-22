@@ -22,7 +22,7 @@ namespace MangaBackend.Controllers
 
 
         #region Authorization
-        [HttpPost("login")]
+        [HttpPost("sign in")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
         {
@@ -44,7 +44,7 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost("registration")]
+        [HttpPost("sign up")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
         {
@@ -64,11 +64,12 @@ namespace MangaBackend.Controllers
         #endregion
 
         #region Refresh and send
-        [HttpGet("refresh-token/{userId}"), Authorize]
+        [HttpGet("update-refresh-token"), Authorize]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RefreshToken([FromRoute] string userId)
+        public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = HttpContext.Request.Headers["refresh-token"];
+            var userId = HttpContext.Request.Headers["userId"];
 
             var tokenDTO = new RefreshTokenDTO()
             {
@@ -120,6 +121,24 @@ namespace MangaBackend.Controllers
             }
         }
 
+        [HttpPost("resend-verify-email-letter")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email)
+        {
+            try
+            {
+                var response = await _authService.ResendVerifyEmailLetter(email);
+                var wrapperResult = WrapperResponseService.Wrap<object>(response);
+
+                return Ok(wrapperResult);
+            }
+            catch (Exception ex)
+            {
+                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+                return BadRequest(wrapperResult);
+            }
+        }
+
         [HttpPost("send-reset-password-token")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendResetPasswordToken(SendResetTokenDTO sendResetTokenDTO)
@@ -156,23 +175,6 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost("resend-verify-email-letter")]
-        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email)
-        {
-            try
-            {
-                var response = await _authService.ResendVerifyEmailLetter(email);
-                var wrapperResult = WrapperResponseService.Wrap<object>(response);
-
-                return Ok(wrapperResult);
-            }
-            catch (Exception ex)
-            {
-                var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-                return BadRequest(wrapperResult);
-            }
-        }
 
         #endregion
     }
