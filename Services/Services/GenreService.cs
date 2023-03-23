@@ -33,7 +33,8 @@ public class GenreService : DbService<AppDBContext>, IGenreService
     {
         using var dbContext = CreateDbContext();
 
-        var list = await dbContext.Genres.ToListAsync();
+        var list = await dbContext.Genres
+            .ToListAsync();
 
         return list;
     }

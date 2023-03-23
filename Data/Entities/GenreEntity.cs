@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public class GenreEntity : IEntity
+public partial class GenreEntity : IEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

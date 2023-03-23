@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Model.InputModel;

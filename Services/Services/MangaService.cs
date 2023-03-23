@@ -5,6 +5,8 @@ using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using Services.Storage.Base;
+using System;
+using System.Collections.Generic;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -24,9 +26,17 @@ public class MangaService : DbService<AppDBContext>, IMangaService
     {
         using var dbContext = CreateDbContext();
 
-        var result = await dbContext.Mangas.ToListAsync();
+        var list = await dbContext.Mangas
+            .Include(m => m.Genres)
+            .Include(m => m.PathToFoldersWithGlava)
+            .ToListAsync();
 
-        foreach (var item in result)
+        foreach (var genre in list.SelectMany(x => x.Genres))
+        {
+            genre.CleanMangas();
+        } 
+
+        foreach (var item in list)
         {
             item.PathToTitlePicture = $"{_localStorage.RelativePath}{item.PathToTitlePicture}";
             foreach (var res in item.PathToFoldersWithGlava)
@@ -35,19 +45,19 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             }
         }
 
-        return result;
+        return list;
     }
     public async Task<IList<MangaEntity>> AddRange(IList<MangaInput> mangas)
     {
         using var dbContext = CreateDbContext();
 
-        var genresNames = mangas.SelectMany(x => x.Genres_names);
+        var genresIds = mangas.SelectMany(x => x.Genres_Ids);
 
-        var genres = dbContext.Genres.Where(x => genresNames.Contains(x.Name)).ToList();
+        var genres = dbContext.Genres.Where(x => genresIds.Contains(x.Id)).ToList();
 
         foreach (var manga in mangas)
         {
-            var genresForManga = genres.Where(x => manga.Genres_names.Contains(x.Name)).ToList();
+            var genresForManga = genres.Where(x => manga.Genres_Ids.Contains(x.Id)).ToList();
 
             var mangaEntity = manga.toEntity(genresForManga);
 
@@ -74,6 +84,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             throw new Exception(errorMessage);
         }
 
+        foreach (var genre in manga.Genres)
+        {
+            genre.CleanMangas();
+        }
+
         manga.PathToTitlePicture = $"{_localStorage.RelativePath}{manga.PathToTitlePicture}";
 
         foreach (var res in manga.PathToFoldersWithGlava)
@@ -96,11 +111,16 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         var list = await dbContext.Mangas
             .Include(m => m.Genres)
-            .AsNoTracking()
             .Include(m => m.PathToFoldersWithGlava)
             .Skip((numberOfPage - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+
+
+        foreach (var genre in list.SelectMany(x => x.Genres))
+        {
+            genre.CleanMangas();
+        }
 
         return list;
     }
@@ -115,26 +135,34 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         using var dbContext = CreateDbContext();
 
-        var result = await dbContext.Mangas
+        var list = await dbContext.Mangas
             .Include(m => m.Genres)
-            .AsNoTracking()
             .Include(i => i.PathToFoldersWithGlava)
             .Where(i => i.ReleaseYear > yearNum)
             .ToListAsync();
 
-        return result;
+        foreach (var genre in list.SelectMany(x => x.Genres))
+        {
+            genre.CleanMangas();
+        }
+
+        return list;
     }
     public async Task<IList<MangaEntity>> FiltrationByName(string name)
     {
         using var dbContext = CreateDbContext();
 
-        var result = await dbContext.Mangas
+        var list = await dbContext.Mangas
             .Include(m => m.Genres)
-            .AsNoTracking()
             .Include(i => i.PathToFoldersWithGlava)
             .Where(i => i.Name.ToLower().Contains(name.ToLower()))
             .ToListAsync();
 
-        return result;
+        foreach (var genre in list.SelectMany(x => x.Genres))
+        {
+            genre.CleanMangas();
+        }
+
+        return list;
     }
 }
