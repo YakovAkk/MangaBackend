@@ -46,6 +46,12 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .Include(m => m.Mangas)
             .FirstOrDefaultAsync(i => i.Id == id);
 
+        foreach (var manga in genre.Mangas)
+        {
+            manga.ClearGenre();
+            manga.ClearPathToFoldersWithGlava();
+        }
+
         if (genre == null)
         {
             var errorMessage = $"The genre doesn't exist!";
