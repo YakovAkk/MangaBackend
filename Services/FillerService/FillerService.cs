@@ -156,7 +156,7 @@ public class FillerService : IFillerService
     {
         var admin = new UserRegistrationDTO()
         {
-           UserName = "admin",
+           Name = "admin",
            Email = "admin@gmail.com",
            Password = "pa$$w0rd1",
            ConfirmPassword = "pa$$w0rd1"

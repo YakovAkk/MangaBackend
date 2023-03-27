@@ -42,7 +42,7 @@ public static class Mapper
         return new UserEntity()
         {
             DeviceToken = dto.DeviceToken,
-            Name = dto.UserName,
+            Name = dto.Name,
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
             Email = dto.Email,

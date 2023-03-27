@@ -1,7 +1,6 @@
 ﻿using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
-using Services.Model.DTO;
 using Services.Model.InputModel;
 
 namespace Services.Services.Base;
@@ -9,7 +8,7 @@ namespace Services.Services.Base;
 public interface IUserService
 {
     #region User
-    Task<bool> IsUserExists(UserRegistrationDTO userDTO);
+    Task<bool> IsUserExists(string email, string name);
     Task<bool> UpdateUserAsync(UserInputModel userInputModel);
     Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail);
     Task<IList<UserEntity>> GetAllAsync();

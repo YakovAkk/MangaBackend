@@ -21,7 +21,7 @@ namespace MangaBackend.Controllers
 
 
         #region Authorization
-        [HttpPost("sign in")]
+        [HttpPost("sign-in")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
         {
@@ -43,7 +43,7 @@ namespace MangaBackend.Controllers
             }
         }
 
-        [HttpPost("sign up")]
+        [HttpPost("sign-up")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
         {

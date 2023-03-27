@@ -4,7 +4,7 @@ namespace Services.Model.DTO;
 
 public class UserRegistrationDTO
 {
-    public string UserName { get; set; }
+    public string Name { get; set; }
     [EmailAddress(ErrorMessage = "Not a valid email address.")]
     public string Email { get; set; }
     public string Password { get; set; }
@@ -13,7 +13,7 @@ public class UserRegistrationDTO
 
     public override string ToString()
     {
-        return $"Name = {UserName} DeviceToken = {DeviceToken} " +
+        return $"Name = {Name} DeviceToken = {DeviceToken} " +
             $"Email = {Email} Password = {Password} ConfirmPassword = {ConfirmPassword}";
     }
 }

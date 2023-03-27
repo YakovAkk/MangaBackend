@@ -65,22 +65,12 @@ public class UserService : DbService<AppDBContext>, IUserService
     #endregion
 
     #region User
-    public async Task<bool> IsUserExists(UserRegistrationDTO userDTO)
+    public async Task<bool> IsUserExists(string email, string name)
     {
-        var userByName = await GetUserByNameOrEmail(userDTO.UserName);
-        var userByEmail = await GetUserByNameOrEmail(userDTO.Email);
+        var userByName = await GetUserByNameOrEmail(name);
+        var userByEmail = await GetUserByNameOrEmail(email);
 
-        if(userByName != null)
-        {
-            throw new Exception("User with the name is alteady registered!");
-        }
-
-        if (userByEmail != null)
-        {
-            throw new Exception("User with the email is alteady registered!");
-        }
-
-        return false;
+        return userByName != null || userByEmail != null;
     }
     public async Task<bool> UpdateUserAsync(UserInputModel userInputModel)
     {
@@ -132,15 +122,8 @@ public class UserService : DbService<AppDBContext>, IUserService
     {
         using var dbContext = CreateDbContext();
 
-        var userExist = await dbContext.Users
+        return await dbContext.Users
             .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
-
-        if(userExist == null)
-        {
-            throw new Exception("User doesn't exist!");
-        }
-
-        return userExist;
     }
 
     #endregion

@@ -40,16 +40,21 @@ namespace Services.Services
 
         public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
         {
-            var userExist = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
+            var user = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
 
-            if(string.IsNullOrEmpty(userExist.ResetPasswordToken))
+            if(user == null)
             {
-                var resetPasswordToken = CreateResetPasswordToken();
-                await _userService.SetResetPasswordToken(resetPasswordToken, userExist);
+                throw new Exception("User doesn't exist!");
             }
 
-            var message = new Message(new string[] { userExist.Email }, "Manga APP",
-                 $"Token : {userExist.ResetPasswordToken}");
+            if(string.IsNullOrEmpty(user.ResetPasswordToken))
+            {
+                var resetPasswordToken = CreateResetPasswordToken();
+                await _userService.SetResetPasswordToken(resetPasswordToken, user);
+            }
+
+            var message = new Message(new string[] { user.Email }, "Manga APP",
+                 $"Token : {user.ResetPasswordToken}");
 
             _emailService.SendEmail(message);
 
@@ -57,25 +62,30 @@ namespace Services.Services
         }
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
-            var userExist = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
+            var user = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
-            if (!VerifyPasswordHash(userDTOLogin.Password, userExist.PasswordHash, userExist.PasswordSalt))
+            if (user == null)
+            {
+                throw new Exception("User doesn't exist!");
+            }
+
+            if (!VerifyPasswordHash(userDTOLogin.Password, user.PasswordHash, user.PasswordSalt))
             {
                 throw new Exception("Password is incorrect!");
             }
 
-            if(userExist.VerifiedAt == null)
+            if(user.VerifiedAt == null)
             {
                 throw new Exception("Please, verify you email!");  
             }
 
             var refreshToken = CreateRefreshToken();
-            await _userService.SetRefreshToken(refreshToken, userExist);
+            await _userService.SetRefreshToken(refreshToken, user);
 
             var token = new TokensViewModel()
             {
-                User_Id = userExist.Id,
-                AccessToken = CreateAccessToken(userExist),
+                User_Id = user.Id,
+                AccessToken = CreateAccessToken(user),
                 RefreshToken = refreshToken.Token
             };
 
@@ -83,13 +93,16 @@ namespace Services.Services
         }
         public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
         {
+            if (await _userService.IsUserExists(userDTO.Email, userDTO.Name))
+            {
+                throw new Exception("User is already registered!");
+            }
+
             if (userDTO.Password != userDTO.ConfirmPassword)
             {
                 var errorMessage = "Both of passwords must be equal!";
                 throw new Exception(errorMessage);
             }
-
-            await _userService.IsUserExists(userDTO);
 
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -145,6 +158,11 @@ namespace Services.Services
         {
             var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
 
+            if (user == null)
+            {
+                throw new Exception("User doesn't exist!");
+            }
+
             VerifyResetPasswordTokenAsync(user, inputModel.Token);
 
             if (inputModel.Password != inputModel.ConfirmPassword)
@@ -172,6 +190,11 @@ namespace Services.Services
         public async Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel InputModel)
         {
             var user = await _userService.GetUserByNameOrEmail(InputModel.Email);
+
+            if (user == null)
+            {
+                throw new Exception("User doesn't exist!");
+            }
 
             var message = CreateVerifyEmailTemplate(user);
             _emailService.SendEmail(message);
