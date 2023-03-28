@@ -4,6 +4,7 @@ using Data.Helping.Model;
 using Data.Model.ViewModel;
 using EmailingService.Model;
 using EmailingService.Services.Base;
+using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -54,7 +55,7 @@ namespace Services.Services
             }
 
             var message = new Message(new string[] { user.Email }, "Manga APP",
-                 $"Token : {user.ResetPasswordToken}");
+                 $"{user.ResetPasswordToken}", EmailType.ResetPasswordTokenEmail);
 
             _emailService.SendEmail(message);
 
@@ -221,7 +222,7 @@ namespace Services.Services
         {
             var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
             return new Message(new string[] { user.Email }, "Manga APP",
-                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}");
+                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}", EmailType.ConfirmationEmail);
         }
         private ResetPasswordToken CreateResetPasswordToken()
         {

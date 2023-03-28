@@ -26,7 +26,7 @@ namespace EmailingService.Services
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(TextFormat.Html) { Text = $"<b>{message.Content}<b>" };
+            emailMessage.Body = new TextPart(TextFormat.Html) { Text = message.Content };
 
             return emailMessage;
         }

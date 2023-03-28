@@ -6,3 +6,11 @@
 2022-09-02 12:12:16.3784 Info Adding target FileTarget(Name=fileTarget)
 2022-09-02 12:12:16.4121 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\Programming\WholeProj\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
 2022-09-02 12:12:16.9986 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\Programming\WholeProj\MangaBackend\MangaBackend\bin\Debug\net6.0\NLog.config
+2023-03-28 13:34:40.2260 Info Message Template Auto Format enabled
+2023-03-28 13:34:40.2887 Info Registered target NLog.Targets.FileTarget(Name=fileTarget)
+2023-03-28 13:34:40.3060 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net7.0\NLog.config
+2023-03-28 13:34:40.6407 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net7.0\NLog.config
+2023-03-28 13:35:26.8572 Info Message Template Auto Format enabled
+2023-03-28 13:35:26.8894 Info Registered target NLog.Targets.FileTarget(Name=fileTarget)
+2023-03-28 13:35:26.9024 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net7.0\NLog.config
+2023-03-28 13:35:27.0108 Info Validating config: TargetNames=fileTarget, ConfigItems=22, FilePath=D:\PROGRAMING\Projects\MangaBackend\MangaBackend\bin\Debug\net7.0\NLog.config
