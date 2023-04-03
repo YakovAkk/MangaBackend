@@ -38,6 +38,8 @@ try
     builder.Services.AddTransient<IFillerService, FillerService>();
     builder.Services.AddTransient<INotificationService, NotificationService>();
 
+    builder.Services.AddTransient<IJavaTestService, JavaTestService>();
+
     builder.Services.AddHttpClient<FcmSender>();
     builder.Services.AddHttpClient<ApnSender>();
 
