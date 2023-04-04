@@ -22,6 +22,7 @@ using Swashbuckle.AspNetCore.Filters;
 using EmailingService.Services.Base;
 using EmailingService.Services;
 using EmailingService.Model;
+using System.Reflection;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -93,8 +94,11 @@ try
     );
 
     builder.Services.AddEndpointsApiExplorer();
+
     builder.Services.AddSwaggerGen(options =>
     {
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Manga application API", Version = "v1" });
+
         options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
         {
             Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
@@ -104,6 +108,11 @@ try
         });
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+        options.IncludeXmlComments(xmlPath);
     });
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(

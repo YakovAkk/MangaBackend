@@ -19,9 +19,11 @@ namespace MangaBackend.Controllers
             _authService = authService;
         }
 
-
         #region Authorization
-        [HttpPost("sign-in")]
+        /// <summary>
+        /// Return refresh-token in header  
+        /// </summary>
+        [HttpPost("sign-in")] 
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
         {
@@ -63,12 +65,15 @@ namespace MangaBackend.Controllers
         #endregion
 
         #region Refresh and send
+        /// <summary>
+        /// Header params user-id, refresh-token. Return refresh-token in header  
+        /// </summary>
         [HttpGet("update-refresh-token"), Authorize]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = HttpContext.Request.Headers["refresh-token"];
-            var userId = HttpContext.Request.Headers["userId"];
+            var userId = HttpContext.Request.Headers["user-id"];
 
             var tokenDTO = new RefreshTokenDTO()
             {
