@@ -1,5 +1,5 @@
 ﻿using Data.Entities;
-using Services.Core;
+using Services.Core.Paginated;
 using Services.Model.DTO;
 
 namespace Services.Services.Base;

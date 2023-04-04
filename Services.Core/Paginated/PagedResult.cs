@@ -1,4 +1,4 @@
-﻿namespace Services.Core
+﻿namespace Services.Core.Paginated
 {
     public class PagedResult<TResult, TFilter>
     {

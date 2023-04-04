@@ -2,6 +2,7 @@
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
+using Services.Core.Paginated;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
