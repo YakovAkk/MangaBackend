@@ -51,14 +51,4 @@ public static class WrapperResponseService
             ErrorMessage = ""
         };
     }
-
-    public static object Wrap<T>(PagedResult<List<GenreEntity>, object> result)
-    {
-        return new WrapViewModel()
-        {
-            Data = result,
-            StatusCode = HttpStatusCode.OK,
-            ErrorMessage = ""
-        };
-    }
 }

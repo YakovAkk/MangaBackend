@@ -5,7 +5,6 @@ using Services.Core;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
-using System.Data.Entity;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -73,9 +72,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         IQueryable<GenreEntity> Query(AppDBContext dbContext)
         {
-            var query = dbContext.Genres;
-
-            return query;
+            return dbContext.Genres;
         }
 
         int count;
@@ -89,6 +86,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();
+
             await Task.WhenAll(dataTask, countTask);
 
             genresResult = dataTask.Result;

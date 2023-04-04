@@ -1,6 +1,7 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Services.Core;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
@@ -21,7 +22,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
     {
         _localStorage = localStorage;
     }
-    
+
     public async Task<IList<MangaEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
@@ -34,7 +35,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         foreach (var genre in list.SelectMany(x => x.Genres))
         {
             genre.CleanMangas();
-        } 
+        }
 
         foreach (var item in list)
         {
@@ -98,7 +99,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return manga;
     }
-    public async Task<IList<MangaEntity>> GetCertainPage(string sizeOfPage, string page)
+    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(string sizeOfPage, string page)
     {
         int pageSize, numberOfPage;
 
@@ -107,22 +108,38 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             throw new Exception("Parameters aren't valid");
         }
 
-        using var dbContext = CreateDbContext();
+        IQueryable<MangaEntity> Query(AppDBContext dbContext)
+        {
+            return dbContext.Mangas;
+        }
 
-        var list = await dbContext.Mangas
-            .Include(m => m.Genres)
-            .Include(m => m.PathToFoldersWithGlava)
-            .Skip((numberOfPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        int count;
+        List<MangaEntity> mangaResult;
+
+        using (var contextPool = new ContextPool<AppDBContext>(() => CreateDbContext()))
+        {
+            var dataTask = Query(contextPool.NewContext())
+                  .Include(m => m.Genres)
+                  .Include(m => m.PathToFoldersWithGlava)
+                  .Skip((numberOfPage - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToListAsync();
+
+            var countTask = Query(contextPool.NewContext()).CountAsync();
+
+            await Task.WhenAll(dataTask, countTask);
+
+            mangaResult = dataTask.Result;
+            count = countTask.Result;
+        }
 
 
-        foreach (var genre in list.SelectMany(x => x.Genres))
+        foreach (var genre in mangaResult.SelectMany(x => x.Genres))
         {
             genre.CleanMangas();
         }
 
-        return list;
+        return new PagedResult<List<MangaEntity>, object>(count, mangaResult, null);
     }
     public async Task<List<MangaEntity>> FiltrationByDate(string year)
     {

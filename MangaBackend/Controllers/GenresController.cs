@@ -21,13 +21,13 @@ public class GenresController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] string pagesize, string page)
     {
         try
         {
             var result = await _genreService.GetPaginatedGenreList(pagesize, page);
 
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+            var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
             return Ok(wrapperResult);
         }
