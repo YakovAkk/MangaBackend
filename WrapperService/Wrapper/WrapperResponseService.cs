@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Data.Entities;
+using Services.Core;
+using System.Net;
 using WrapperService.Model.ResponseModel;
 
 namespace WrapperService.Wrapper;
@@ -45,6 +47,16 @@ public static class WrapperResponseService
         return new WrapViewModel()
         {
             Data = inputModel,
+            StatusCode = HttpStatusCode.OK,
+            ErrorMessage = ""
+        };
+    }
+
+    public static object Wrap<T>(PagedResult<List<GenreEntity>, object> result)
+    {
+        return new WrapViewModel()
+        {
+            Data = result,
             StatusCode = HttpStatusCode.OK,
             ErrorMessage = ""
         };

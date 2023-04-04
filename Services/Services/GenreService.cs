@@ -1,9 +1,11 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Services.Core;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
+using System.Data.Entity;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -60,7 +62,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return genre;
     }
-    public async Task<IList<GenreEntity>> GetCertainPage(string sizeOfPage, string page)
+    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(string sizeOfPage, string page)
     {
         int pageSize, numberOfPage;
 
@@ -69,14 +71,31 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             throw new Exception("Parameters aren't valid");
         }
 
-        using var dbContext = CreateDbContext();
+        IQueryable<GenreEntity> Query(AppDBContext dbContext)
+        {
+            var query = dbContext.Genres;
 
-        var list = await dbContext.Genres
-             .Skip((numberOfPage - 1) * pageSize)
-             .Take(pageSize)
-             .ToListAsync();
+            return query;
+        }
 
-        return list;
+        int count;
+        List<GenreEntity> genresResult;
+
+        using (var contextPool = new ContextPool<AppDBContext>(() => CreateDbContext()))
+        {
+            var dataTask = Query(contextPool.NewContext())
+                 .Skip((numberOfPage - 1) * pageSize)
+                 .Take(pageSize)
+            .ToListAsync();
+
+            var countTask = Query(contextPool.NewContext()).CountAsync();
+            await Task.WhenAll(dataTask, countTask);
+
+            genresResult = dataTask.Result;
+            count = countTask.Result;
+        }
+
+        return new PagedResult<List<GenreEntity>, object>(count, genresResult, null);
     }
     public async Task<IList<GenreEntity>> FiltrationByName(string name)
     {

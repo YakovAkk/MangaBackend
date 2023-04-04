@@ -25,7 +25,7 @@ public class GenresController : ControllerBase
     {
         try
         {
-            var result = await _genreService.GetCertainPage(pagesize, page);
+            var result = await _genreService.GetPaginatedGenreList(pagesize, page);
 
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
