@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Data.Entities;
+using Services.Core;
+using System.Net;
 using WrapperService.Model.ResponseModel;
 
 namespace WrapperService.Wrapper;

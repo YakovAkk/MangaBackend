@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Core;
+using Services.Services;
 using Services.Services.Base;
 using System.Net;
 using WrapperService.Model.ResponseModel;
@@ -53,17 +55,21 @@ public class MangasController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCertainNumber([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GetPaginatedMangaList([FromRoute] string pagesize, string page)
     {
-        var result = await _mangaService.GetCertainPage(pagesize, page);
-        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
-
-        if (wrapperResult.StatusCode != HttpStatusCode.OK)
+        try
         {
-            return NotFound(wrapperResult);
-        }
+            var result = await _mangaService.GetPagiantedMangaList(pagesize, page);
 
-        return Ok(wrapperResult);
+            var wrapperResult = WrapperResponseService.Wrap<object>(result);
+
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
     }
 
     [HttpGet("filtrarionbyname/{name}")]
