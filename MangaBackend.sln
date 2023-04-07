@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidateService", "Validate
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailingService", "EmailService\EmailingService.csproj", "{F3ABDE35-A5C0-48B3-80EF-C2A0E6E698A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Core", "Services.Core\Services.Core.csproj", "{F309DEF5-8DA6-4524-9870-128578365BD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Shared", "Services.Core\Services.Shared.csproj", "{F309DEF5-8DA6-4524-9870-128578365BD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
