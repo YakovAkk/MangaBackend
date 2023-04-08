@@ -20,7 +20,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_DataOfCompipation": "4/8/2023 10:56:54 AM"
+        "ASPNETCORE_DataOfCompipation": "4/8/2023 5:13:11 PM"
       },
       "applicationUrl": "https://localhost:5000;http://localhost:5001",
       "launchUrl": "https://localhost:5000/swagger/index.html"
@@ -32,7 +32,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "ASPNETCORE_DataOfCompipation": "10/5/2022 6:52:29 PM"
+        "ASPNETCORE_DataOfCompipation": "4/8/2023 5:13:11 PM"
       }
     }
   }
