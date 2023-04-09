@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace MangaBackend.Controllers;
 
@@ -6,15 +7,39 @@ namespace MangaBackend.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
+
+    private readonly string _path;
+    public TestController()
+    {
+        _path = "./Version.json";
+    }
+
     [HttpGet("/api/test")]
     public async Task<IActionResult> test()
     {
-        var result = new
+        try
         {
-            message = "it is working ....",
-            data = Environment.GetEnvironmentVariable("ASPNETCORE_DataOfCompipation")
-        };
+            string text = System.IO.File.ReadAllText(_path);
 
-        return Ok(result);
+            var json = JObject.Parse(text);
+            var result = new
+            {
+                message = "it is working ....",
+                version = json["version"],
+                data = json["data"]
+            };
+
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+
+            var result = new
+            {
+                message = "it is working ...."
+            };
+
+            return Ok(result);
+        }
     }
 }
