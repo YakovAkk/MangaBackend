@@ -40,7 +40,7 @@ namespace FileService
 
         public override string ToString()
         {
-            return $"Version = {Version}, Data of the last update = {Data}";
+            return $"Version of the application is {Version} and the data of the last update is {Data}";
         }
     }
 }
