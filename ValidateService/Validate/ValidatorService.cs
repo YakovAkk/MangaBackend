@@ -13,7 +13,6 @@ namespace ValidateService.Validate
             _configuration = configuration;
             _logger = logger;
         }
-
         public async Task<bool> ValidateAppSettingsJson()
         {
             var connercionStringMsSql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMSSQL"];

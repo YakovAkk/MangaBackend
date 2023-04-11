@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailingService", "EmailSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Shared", "Services.Core\Services.Shared.csproj", "{F309DEF5-8DA6-4524-9870-128578365BD9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService", "FileService\FileService.csproj", "{F4322FDF-690B-459F-B68A-C357AF3B8FFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{F309DEF5-8DA6-4524-9870-128578365BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F309DEF5-8DA6-4524-9870-128578365BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F309DEF5-8DA6-4524-9870-128578365BD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4322FDF-690B-459F-B68A-C357AF3B8FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4322FDF-690B-459F-B68A-C357AF3B8FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4322FDF-690B-459F-B68A-C357AF3B8FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4322FDF-690B-459F-B68A-C357AF3B8FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{61FC4066-A4D8-41C1-8603-F0071E5D9347} = {4C43870A-A60B-41C3-A3CA-12C91402C554}
 		{F3ABDE35-A5C0-48B3-80EF-C2A0E6E698A5} = {4C43870A-A60B-41C3-A3CA-12C91402C554}
 		{F309DEF5-8DA6-4524-9870-128578365BD9} = {4C43870A-A60B-41C3-A3CA-12C91402C554}
+		{F4322FDF-690B-459F-B68A-C357AF3B8FFC} = {4C43870A-A60B-41C3-A3CA-12C91402C554}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2E5A7B6-324D-460A-A54B-56B49E8DC552}

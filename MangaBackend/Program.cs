@@ -23,6 +23,7 @@ using EmailingService.Services.Base;
 using EmailingService.Services;
 using EmailingService.Model;
 using System.Reflection;
+using FileService;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -49,6 +50,9 @@ try
         .GetSection("EmailConfiguration")
         .Get<EmailConfiguration>();
     builder.Services.AddSingleton(emailConfig);
+
+    // log version
+    logger.Trace(new VersionFileConfig(logger).Version.ToString());
 
     // check if json app settings is correct
     var validator = new ValidatorService(builder.Configuration, logger);

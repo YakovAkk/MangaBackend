@@ -16,13 +16,16 @@ public class UserEntity : IEntity
     public virtual List<MangaEntity> FavoriteMangas { get; set; }
     public virtual List<GenreEntity> FavoriteGenres { get; set; }
 
+    // refresh token (to refresh access token)
     public string? RefreshToken { get; set; } = string.Empty;
     public DateTime? TokenCreated { get; set; }
     public DateTime? TokenExpires { get; set; }
 
+    // email verification token
     public string? VerificationToken { get; set; } = string.Empty;
     public DateTime? VerifiedAt { get; set; }
 
+    // reset password token
     public string? ResetPasswordToken { get; set; } = string.Empty;
     public DateTime? ResetPasswordTokenExpires { get; set; }
 
