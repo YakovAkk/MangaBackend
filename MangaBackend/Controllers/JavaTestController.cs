@@ -32,5 +32,14 @@ namespace MangaBackend.Controllers
 
             return Ok(data);
         }
+
+        [HttpGet("LastTest")]
+        [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetLastTest()
+        {
+            var data = await _service.GetLastTest();
+
+            return Ok(data);
+        }
     }
 }

@@ -3,6 +3,7 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using System.Linq;
 
 namespace Services.Services
 {
@@ -10,6 +11,22 @@ namespace Services.Services
     {
         public JavaTestService(DbContextOptions<AppDBContext> dbContextOptions)
         : base(dbContextOptions) { }
+
+        public async Task<JavaTestViewModel> GetLastTest()
+        {
+            using var dbContext = CreateDbContext();
+
+            var data = await dbContext.Tests.Include(x => x.TestCases).OrderBy(x => x.Id).LastOrDefaultAsync();
+
+            var result = new JavaTestViewModel()
+            {
+                Id = data.Id,
+                TestCases = data.TestCases.OrderBy(x => x.Order).Select(x => x.TestCase).ToList(),
+            };
+
+            return result;
+        }
+
         public async Task<List<JavaTestViewModel>> GetTests()
         {
             using var dbContext = CreateDbContext();

@@ -7,5 +7,6 @@ namespace Services.Services.Base
     {
         public Task<bool> PostTests(List<string> tests);
         public Task<List<JavaTestViewModel>> GetTests();
+        public Task<JavaTestViewModel> GetLastTest();
     }
 }
