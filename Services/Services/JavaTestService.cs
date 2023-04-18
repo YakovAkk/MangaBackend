@@ -57,7 +57,7 @@ namespace Services.Services
 
             var tempTests = dbContext.Tests.ToList();
 
-            var test = new TestEntity() { Id = tempTests.Count + 1 };
+            var test = new TestEntity();
 
             var testCases = new List<TestCasesEntity>();
 

@@ -10,7 +10,7 @@ public class AppDBContext : DbContext
     public DbSet<GlavaMangaEntity> GlavaManga { get; set; }
     public DbSet<MangaEntity> Mangas { get; set; }
     public DbSet<GenreEntity> Genres { get; set; }
-    public DbSet<TestCasesEntity> TestCasess { get; set; }
+    public DbSet<TestCasesEntity> TestCases { get; set; }
     public DbSet<TestEntity> Tests { get; set; }
 
     public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)

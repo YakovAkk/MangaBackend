@@ -6,7 +6,7 @@ namespace Data.Entities
     public class TestEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get ; set ; }
         public virtual List<TestCasesEntity> TestCases { get; set ; }
     }
