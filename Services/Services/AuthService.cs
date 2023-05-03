@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Services.ExtensionMapper;
+using Services.Model.Configuration;
 using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
@@ -25,17 +26,20 @@ namespace Services.Services
         private static readonly Random random = new Random();
 
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
+        private readonly TokenConfiguration _tokenConfiguration;
+        private readonly ApplicationConfiguration _appConfiguration;
         private readonly IEmailService _emailService;
         public AuthService(
-            IUserService userService, 
-            IConfiguration configuration, 
+            IUserService userService,
+            TokenConfiguration configuration,
             IEmailService emailService,
-            DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
+            DbContextOptions<AppDBContext> dbContextOptions,
+            ApplicationConfiguration appConfiguration) : base(dbContextOptions)
         {
             _userService = userService;
-            _configuration = configuration;
+            _tokenConfiguration = configuration;
             _emailService = emailService;
+            _appConfiguration = appConfiguration;
         }
 
         public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
@@ -219,9 +223,8 @@ namespace Services.Services
         }
         private Message CreateVerifyEmailTemplate(UserEntity user)
         {
-            var applicationURL = _configuration.GetSection("ApplicationSettings:url").Value;
             return new Message(new string[] { user.Email }, "Manga APP",
-                $"{applicationURL}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}", EmailType.ConfirmationEmail);
+                $"{_appConfiguration.AppUrl}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}", EmailType.ConfirmationEmail);
         }
         private ResetPasswordToken CreateResetPasswordToken()
         {
@@ -243,7 +246,7 @@ namespace Services.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("TokenSettings:Token").Value));
+                _tokenConfiguration.Token));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
