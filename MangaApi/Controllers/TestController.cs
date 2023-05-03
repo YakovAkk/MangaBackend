@@ -7,14 +7,13 @@ namespace MangaBackend.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
-
     private readonly string _path;
     public TestController()
     {
         _path = "./Version.json";
     }
 
-    [HttpGet("/api/test")]
+    [HttpGet]
     public async Task<IActionResult> test()
     {
         try
@@ -33,7 +32,6 @@ public class TestController : ControllerBase
         }
         catch (Exception)
         {
-
             var result = new
             {
                 message = "it is working ...."

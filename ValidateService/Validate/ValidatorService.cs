@@ -15,31 +15,11 @@ namespace ValidateService.Validate
         }
         public async Task<bool> ValidateAppSettingsJson()
         {
-            var connercionStringMsSql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMSSQL"];
-            var connercionStringMySql = _configuration.GetSection("ConnectionStrings")["LocalDatabaseMYSQL"];
-
-            var typeOfConnection = _configuration.GetSection("Others")["TypeOfConnection"];
             var relativePath = _configuration.GetSection("Others")["RelativePath"];
 
             var SenderId = _configuration.GetSection("FcmNotification")["SenderId"];
             var ServerKey = _configuration.GetSection("FcmNotification")["ServerKey"];
 
-
-
-            if (connercionStringMsSql == null)
-            {
-                _logger.Error($"Section ConnercionStringMsSql should be existed at the json file");
-            }
-
-            if (connercionStringMySql == null)
-            {
-                _logger.Error($"Section ConnercionStringMySql should be existed at the json file");
-            }
-
-            if (typeOfConnection == null)
-            {
-                _logger.Error($"Section TypeOfConnection should be existed at the json file");
-            }
 
             if (relativePath == null)
             {
@@ -52,12 +32,6 @@ namespace ValidateService.Validate
             if (ServerKey == null)
             {
                 _logger.Error($"Section ServerKey should be existed at the json file");
-            }
-
-            if (connercionStringMsSql == null || connercionStringMySql == null
-                || typeOfConnection == null || relativePath == null || SenderId == null || ServerKey == null)
-            {
-                return false;
             }
 
             return true;

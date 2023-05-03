@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
 using Services.Services.Base;
 using System.Net;
-using WrapperService.Model.InputModel;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 

@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  mssql-server: 
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+       ACCEPT_EULA: "Y"
+       MSSQL_SA_PASSWORD: "2!@Fsfsdfaa"
+       MSSQL_PID: Express
+    ports:
+      - "1443:1443"
+  mangaapi:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      DB_SERVER: "mssql-server"
+      DB_NAME: "test"
+      PASSWORD: "2!@Fsfsdfaa"
+    ports:
+      - "80:80"
