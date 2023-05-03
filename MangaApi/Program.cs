@@ -1,29 +1,28 @@
+using CorePush.Apple;
+using CorePush.Google;
+using Data.Database;
+using EmailingService.Model;
+using EmailingService.Services;
+using EmailingService.Services.Base;
+using FileService;
+using MangaBackend.Middleware.Extension;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Services.Services;
-using Services.Services.Base;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using Services.FillerService;
+using Services.FillerService.Base;
+using Services.NotificationService.Service;
+using Services.NotificationService.Service.Base;
+using Services.Services;
+using Services.Services.Base;
 using Services.Storage;
 using Services.Storage.Base;
-using Data.Database;
-using Services.FillerService.Base;
-using Services.FillerService;
-using Services.NotificationService.Service.Base;
-using Services.NotificationService.Service;
-using CorePush.Google;
-using CorePush.Apple;
-using MangaBackend.Middleware.Extension;
-using ValidateService.Validate;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using EmailingService.Services.Base;
-using EmailingService.Services;
-using EmailingService.Model;
 using System.Reflection;
-using FileService;
+using System.Text;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -54,41 +53,20 @@ try
     // log version
     logger.Trace(new VersionFileConfig(logger).Version.ToString());
 
-    // check if json app settings is correct
-    var validator = new ValidatorService(builder.Configuration, logger);
-
-    if (await validator.ValidateAppSettingsJson())
+    builder.Services.AddDbContext<AppDBContext>(options =>
     {
-        try
-        {
-            var typeOfConnection = builder.Configuration.GetSection("Others")["TypeOfConnection"];
+        var configuration = builder.Configuration;
 
-            switch (typeOfConnection)
-            {
-                case "LocalDatabaseMYSQL":
-                    {
-                        builder.Services.AddDbContext<AppDBContext>(options =>
-                        options.UseMySQL(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
-                        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
-                        break;
-                    }
-                case "LocalDatabaseMSSQL":
-                    {
-                        builder.Services.AddDbContext<AppDBContext>(options =>
-                        options.UseSqlServer(builder.Configuration.GetConnectionString(typeOfConnection)).EnableSensitiveDataLogging());
-                        logger.Debug("Conected was successfully completed. Connection String : " + builder.Configuration.GetConnectionString(typeOfConnection));
-                        break;
-                    }
-                default:
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.Error("Conected was intrerupted. Connection String : " + builder.Configuration.GetConnectionString("LocalDatabaseMYSQL") + "/n" + ex.Message);
-            throw;
-        }
-    }
+        var server = configuration["DB_SERVER"] ?? "DESKTOP-EL7FVD8";
+        var dbName = configuration["DB_NAME"] ?? "MangaDB";
+        var password = configuration["PASSWORD"] ?? "2!@Fsfsdfaa";
+
+        var connectionString = $"Data Source={server};Initial Catalog={dbName};User Id=sa;Password={password};TrustServerCertificate=True;";
+
+        Console.WriteLine(connectionString);
+
+        options.UseSqlServer(connectionString);
+    });
 
     builder.Services.AddControllers();
 
@@ -129,7 +107,7 @@ try
                 .GetBytes(builder.Configuration.GetSection("TokenSettings:Token").Value)),
                 ValidateIssuer = false,
                 ValidateAudience = false
-            };  
+            };
         });
 
     builder.Logging.ClearProviders();
@@ -161,7 +139,7 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
-   
+
     app.Run();
 }
 catch (Exception exception)
