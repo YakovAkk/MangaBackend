@@ -115,7 +115,7 @@ try
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("TokenSettings:Token").Value)),
+                .GetBytes(builder.Configuration.GetSection("TokenConfiguration:Token").Value)),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };
