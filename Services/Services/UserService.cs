@@ -79,11 +79,8 @@ public class UserService : DbService<AppDBContext>, IUserService
         var existingUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userInputModel.Id);
 
         if (existingUser == null)
-        {
-            var errorMessage = "User doesn't exist";
-            throw new Exception(errorMessage);
-        }
-
+            throw new Exception("User doesn't exist");
+        
         if(!string.IsNullOrEmpty(userInputModel.Name))
             existingUser.Name = userInputModel.Name;
 
@@ -101,7 +98,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return list;
     }
-    public async Task<UserEntity> GetByIdAsync(string userId)
+    public async Task<UserEntity> GetByIdAsync(int userId)
     {
         using var dbContext = CreateDbContext();
 
@@ -129,7 +126,7 @@ public class UserService : DbService<AppDBContext>, IUserService
     #endregion
 
     #region UsersFavorite
-    public async Task<bool> AddGenreToFavoriteAsync(string userid, string genreid)
+    public async Task<bool> AddGenreToFavoriteAsync(int userid, int genreid)
     {
         using var dbContext = CreateDbContext();
 
@@ -146,7 +143,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> AddMangaToFavoriteAsync(string userid, string mangaid)
+    public async Task<bool> AddMangaToFavoriteAsync(int userid, int mangaid)
     {
         using var dbContext = CreateDbContext();
 
@@ -163,7 +160,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> RemoveGenreFromFavoriteAsync(string userid, string genreid)
+    public async Task<bool> RemoveGenreFromFavoriteAsync(int userid, int genreid)
     {
         using var dbContext = CreateDbContext();
 
@@ -180,7 +177,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> RemoveMangaFromFavoriteAsync(string userid, string genreid)
+    public async Task<bool> RemoveMangaFromFavoriteAsync(int userid, int genreid)
     {
         using var dbContext = CreateDbContext();
 
@@ -197,7 +194,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(string userid)
+    public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(int userid)
     {
         using var dbContext = CreateDbContext();
 
@@ -205,7 +202,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return user.FavoriteMangas;
     }
-    public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(string userid)
+    public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(int userid)
     {
         using var dbContext = CreateDbContext();
 

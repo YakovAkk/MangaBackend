@@ -40,7 +40,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return list;
     }
-    public async Task<GenreEntity> GetByIdAsync(string id)
+    public async Task<GenreEntity> GetByIdAsync(int id)
     {
         using var dbContext = CreateDbContext();
 
@@ -62,11 +62,11 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return genre;
     }
-    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(string sizeOfPage, string page)
+    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(int sizeOfPage, int page)
     {
         int pageSize, numberOfPage;
 
-        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
         {
             throw new Exception("Parameters aren't valid");
         }
@@ -82,8 +82,8 @@ public class GenreService : DbService<AppDBContext>, IGenreService
         using (var contextPool = new ContextPool<AppDBContext>(() => CreateDbContext()))
         {
             var dataTask = Query(contextPool.NewContext())
-                 .Skip((numberOfPage - 1) * pageSize)
-                 .Take(pageSize)
+                 .Skip((page - 1) * sizeOfPage)
+                 .Take(sizeOfPage)
             .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();

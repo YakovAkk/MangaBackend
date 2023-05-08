@@ -61,11 +61,11 @@ public class UsersController : ControllerBase
 
     [HttpPut("favorite/genre/{userid}/{genreid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFavorite([FromRoute] string userid, string genreid)
+    public async Task<IActionResult> AddGenreToFavorite([FromRoute] int userid, int genreid)
     {
         try
         {
-            var result = await _userService.AddGenreToFavoriteAsync(userid,genreid);
+            var result = await _userService.AddGenreToFavoriteAsync(userid, genreid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -78,7 +78,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("favorite/manga/{userid}/{mangaid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFavorite([FromRoute] string userid, string mangaid)
+    public async Task<IActionResult> AddMangaToFavorite([FromRoute] int userid, int mangaid)
     {
         try
         {
@@ -95,7 +95,7 @@ public class UsersController : ControllerBase
 
     [HttpDelete("favorite/genre/{userid}/{genreid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RemoveGenreFromFavorite([FromRoute] string userid, string genreid)
+    public async Task<IActionResult> RemoveGenreFromFavorite([FromRoute] int userid, int genreid)
     {
         try
         {
@@ -112,7 +112,7 @@ public class UsersController : ControllerBase
 
     [HttpDelete("favorite/manga/{userid}/{mangaid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RemoveMangaFromFavorite([FromRoute] string userid, string mangaid)
+    public async Task<IActionResult> RemoveMangaFromFavorite([FromRoute] int userid, int mangaid)
     {
         try
         {
@@ -129,7 +129,7 @@ public class UsersController : ControllerBase
 
     [HttpGet("favorite/genre/{userid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllFavoriteGenre([FromRoute] string userid)
+    public async Task<IActionResult> GetAllFavoriteGenre([FromRoute] int userid)
     {
         var result = await _userService.GetAllFavoriteGenreAsync(userid);
 
@@ -145,7 +145,7 @@ public class UsersController : ControllerBase
 
     [HttpGet("favorite/manga/{userid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllFavoriteManga([FromRoute] string userid)
+    public async Task<IActionResult> GetAllFavoriteManga([FromRoute] int userid)
     {
         var result = await _userService.GetAllFavoriteMangaAsync(userid);
 

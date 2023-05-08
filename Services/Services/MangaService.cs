@@ -71,7 +71,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return await GetAllAsync();
     }
-    public async Task<MangaEntity> GetByIdAsync(string Id)
+    public async Task<MangaEntity> GetByIdAsync(int Id)
     {
         using var dbContext = CreateDbContext();
 
@@ -100,11 +100,9 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return manga;
     }
-    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(string sizeOfPage, string page)
+    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(int sizeOfPage, int page)
     {
-        int pageSize, numberOfPage;
-
-        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
         {
             throw new Exception("Parameters aren't valid");
         }
@@ -122,8 +120,8 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             var dataTask = Query(contextPool.NewContext())
                   .Include(m => m.Genres)
                   .Include(m => m.PathToFoldersWithGlava)
-                  .Skip((numberOfPage - 1) * pageSize)
-                  .Take(pageSize)
+                  .Skip((page - 1) * sizeOfPage)
+                  .Take(sizeOfPage)
                   .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();

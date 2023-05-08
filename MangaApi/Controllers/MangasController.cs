@@ -36,7 +36,7 @@ public class MangasController : ControllerBase
 
     [HttpGet("{Id}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetMangaById([FromRoute] string Id)
+    public async Task<IActionResult> GetMangaById([FromRoute] int Id)
     {
         try
         {
@@ -55,7 +55,7 @@ public class MangasController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPaginatedMangaList([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GetPaginatedMangaList([FromRoute] int pagesize, int page)
     {
         try
         {

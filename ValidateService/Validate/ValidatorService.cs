@@ -36,25 +36,12 @@ namespace ValidateService.Validate
 
             return true;
         }
-        public static bool IsValidPageAndPageSize(string pagesize, string page, out int pageSize, out int numberOfPage)
+        public static bool IsValidPageAndPageSize(int pagesize, int page)
         {
             bool isValid = true;
 
-            var IsCanParsePageSize = Int32.TryParse(pagesize, out pageSize);
-
-            if (!IsCanParsePageSize || pageSize < 0)
-            {
-                isValid = false;
-            }
-
-            numberOfPage = 0;
-
-            var IsCanParseNumberOfPage = Int32.TryParse(page, out numberOfPage);
-
-            if (!IsCanParseNumberOfPage || numberOfPage < 0)
-            {
-                isValid = false;
-            }
+            if (pagesize > 0 && page > 0)
+                return true;
 
             return isValid;
         }

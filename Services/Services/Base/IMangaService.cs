@@ -7,9 +7,9 @@ namespace Services.Services.Base;
 public interface IMangaService
 {
     Task<IList<MangaEntity>> FiltrationByName(string name);
-    Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(string sizeOfPage, string page);
+    Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(int sizeOfPage, int page);
     Task<IList<MangaEntity>> AddRange(IList<MangaInput> list);
-    Task<MangaEntity> GetByIdAsync(string id);
+    Task<MangaEntity> GetByIdAsync(int id);
     Task<IList<MangaEntity>> GetAllAsync();
     Task<List<MangaEntity>> FiltrationByDate(string year);
 }

@@ -19,7 +19,7 @@ public class GenresController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] int pagesize, int page)
     {
         try
         {
@@ -54,7 +54,7 @@ public class GenresController : ControllerBase
 
     [HttpGet("{Id}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGenreById([FromRoute] string Id)
+    public async Task<IActionResult> GetGenreById([FromRoute] int Id)
     {
         try
         {

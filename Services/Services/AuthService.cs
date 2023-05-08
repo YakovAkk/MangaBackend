@@ -6,7 +6,6 @@ using EmailingService.Model;
 using EmailingService.Services.Base;
 using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Services.ExtensionMapper;
 using Services.Model.Configuration;
@@ -25,16 +24,18 @@ namespace Services.Services
     {
         private static readonly Random random = new Random();
 
-        private readonly IUserService _userService;
         private readonly TokenConfiguration _tokenConfiguration;
         private readonly ApplicationConfiguration _appConfiguration;
+
+        private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         public AuthService(
-            IUserService userService,
+            ApplicationConfiguration appConfiguration,
             TokenConfiguration configuration,
+            IUserService userService,
             IEmailService emailService,
-            DbContextOptions<AppDBContext> dbContextOptions,
-            ApplicationConfiguration appConfiguration) : base(dbContextOptions)
+            DbContextOptions<AppDBContext> dbContextOptions
+            ) : base(dbContextOptions)
         {
             _userService = userService;
             _tokenConfiguration = configuration;
@@ -123,7 +124,12 @@ namespace Services.Services
         }
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
-            var userExist = await _userService.GetByIdAsync(tokenDTO.User_Id);
+            if(!Int32.TryParse(tokenDTO.User_Id, out var userId))
+            {
+                throw new Exception("Invalid id!");
+            }
+
+            var userExist = await _userService.GetByIdAsync(userId);
 
             if (userExist.RefreshToken != tokenDTO.RefreshToken)
             {
@@ -147,7 +153,12 @@ namespace Services.Services
         }
         public async Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO)
         {
-            var user = await _userService.GetByIdAsync(verifyDTO.UserID);
+            if (!Int32.TryParse(verifyDTO.UserID, out var userId))
+            {
+                throw new Exception("Invalid id!");
+            }
+
+            var user = await _userService.GetByIdAsync(userId);
 
             if(user.VerificationToken != verifyDTO.Token)
             {

@@ -198,7 +198,7 @@ public class FillerService : IFillerService
            "Survival"
         };
 
-        var genres_id = new List<string>();
+        var genres_id = new List<int>();
         foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
         {
             genres_id.Add(genre.Id);
@@ -268,7 +268,7 @@ public class FillerService : IFillerService
            "Cruel world"
         };
 
-        var genres_id = new List<string>();
+        var genres_id = new List<int>();
         foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
         {
             genres_id.Add(genre.Id);
@@ -330,7 +330,7 @@ public class FillerService : IFillerService
            "Amnesia / Memory Loss"
         };
 
-        var genres_id = new List<string>();
+        var genres_id = new List<int>();
         foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
         {
             genres_id.Add(genre.Id);
@@ -387,7 +387,7 @@ public class FillerService : IFillerService
            "Skills / abilities" 
         };
 
-        var genres_id = new List<string>();
+        var genres_id = new List<int>();
         foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
         {
             genres_id.Add(genre.Id);
