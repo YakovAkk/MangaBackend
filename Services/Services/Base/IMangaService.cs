@@ -6,11 +6,11 @@ namespace Services.Services.Base;
 
 public interface IMangaService
 {
-    Task<IList<MangaEntity>> FiltrationByName(string name);
+    Task<List<MangaEntity>> FiltrationByName(string name);
     Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(int sizeOfPage, int page);
-    Task<IList<MangaEntity>> AddRange(IList<MangaInput> list);
+    Task<List<MangaEntity>> AddRange(List<MangaInput> list);
     Task<MangaEntity> GetByIdAsync(int id);
-    Task<IList<MangaEntity>> GetAllAsync();
+    Task<List<MangaEntity>> GetAllAsync();
     Task<List<MangaEntity>> FiltrationByDate(int year);
     Task<bool> IsMangaExist(int mangaId);
 }

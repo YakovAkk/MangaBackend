@@ -24,7 +24,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         _localStorage = localStorage;
     }
 
-    public async Task<IList<MangaEntity>> GetAllAsync()
+    public async Task<List<MangaEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
@@ -48,7 +48,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<IList<MangaEntity>> AddRange(IList<MangaInput> mangas)
+    public async Task<List<MangaEntity>> AddRange(List<MangaInput> mangas)
     {
         using var dbContext = CreateDbContext();
 
@@ -155,7 +155,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<IList<MangaEntity>> FiltrationByName(string name)
+    public async Task<List<MangaEntity>> FiltrationByName(string name)
     {
         using var dbContext = CreateDbContext();
 

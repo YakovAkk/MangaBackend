@@ -15,7 +15,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
     public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
         : base(dbContextOptions) { }
     
-    public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> genres)
+    public async Task<List<GenreEntity>> AddRange(List<GenreInput> genres)
     {
         using var dbContext = CreateDbContext();
 
@@ -31,7 +31,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return await GetAllAsync();
     }
-    public async Task<IList<GenreEntity>> GetAllAsync()
+    public async Task<List<GenreEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
@@ -91,7 +91,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return new PagedResult<List<GenreEntity>, object>(count, genresResult, null);
     }
-    public async Task<IList<GenreEntity>> FiltrationByName(string name)
+    public async Task<List<GenreEntity>> FiltrationByName(string name)
     {
         using var dbContext = CreateDbContext();
 
