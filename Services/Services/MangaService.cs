@@ -7,8 +7,6 @@ using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using Services.Storage.Base;
-using System;
-using System.Collections.Generic;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -48,7 +46,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<List<MangaEntity>> AddRange(List<MangaInput> mangas)
+    public async Task<List<MangaEntity>> AddRangeAsync(List<MangaInput> mangas)
     {
         using var dbContext = CreateDbContext();
 
@@ -95,7 +93,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return manga;
     }
-    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(int sizeOfPage, int page)
+    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaListAsync(int sizeOfPage, int page)
     {
         if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
             throw new Exception("Parameters aren't valid");
@@ -133,7 +131,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return new PagedResult<List<MangaEntity>, object>(count, mangaResult, null);
     }
-    public async Task<List<MangaEntity>> FiltrationByDate(int year)
+    public async Task<List<MangaEntity>> FiltrationByDateAsync(int year)
     {
         int yearNum = 0;
 
@@ -155,7 +153,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<List<MangaEntity>> FiltrationByName(string name)
+    public async Task<List<MangaEntity>> FiltrationByNameAsync(string name)
     {
         using var dbContext = CreateDbContext();
 
@@ -172,8 +170,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-
-    public async Task<bool> IsMangaExist(int mangaId)
+    public async Task<bool> IsMangaExistAsync(int mangaId)
     {
         using var dbContext = CreateDbContext();
 

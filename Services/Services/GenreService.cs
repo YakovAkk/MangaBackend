@@ -15,7 +15,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
     public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
         : base(dbContextOptions) { }
     
-    public async Task<List<GenreEntity>> AddRange(List<GenreInput> genres)
+    public async Task<List<GenreEntity>> AddRangeAsync(List<GenreInput> genres)
     {
         using var dbContext = CreateDbContext();
 

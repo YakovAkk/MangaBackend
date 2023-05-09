@@ -1,11 +1,14 @@
 ﻿using Data.Database;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 
 namespace Manga.Tests.Base
 {
     public class BaseTest
     {
+        protected static int genreId = 1;
+
         protected DbContextOptions<AppDBContext> options;
         public BaseTest()
         {
@@ -48,6 +51,7 @@ namespace Manga.Tests.Base
                 Description = "Description",
                 Author = "Author",
                 NumbetOfChapters = 1,
+                ReleaseYear = 2000,
                 PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
                 {
                     LinkToFirstPicture = "./",
@@ -73,6 +77,26 @@ namespace Manga.Tests.Base
             dbInit.Genres.AddRange(genres);
 
             await dbInit.SaveChangesAsync();
+        }
+
+        protected void VerifyManga(MangaEntity expectedResult, MangaEntity actualResult)
+        {
+            Assert.Equal(expectedResult.Name, actualResult.Name);
+            Assert.Equal(expectedResult.AgeRating, actualResult.AgeRating);
+            Assert.Equal(expectedResult.Author, actualResult.Author);
+            Assert.Equal(expectedResult.Description, actualResult.Description);
+            Assert.Equal(expectedResult.PathToTitlePicture, actualResult.PathToTitlePicture);
+            Assert.Equal(expectedResult.ReleaseYear, actualResult.ReleaseYear);
+            Assert.Equal(expectedResult.NumbetOfChapters, actualResult.NumbetOfChapters);
+        }
+
+        protected void VerifyGenre(GenreEntity expectedResult, GenreEntity actualResult)
+        {
+            Assert.Equal(expectedResult.Name, actualResult.Name);
+
+            if(expectedResult.Mangas != null)
+                for (int i = 0; i < expectedResult.Mangas.Count; i++)
+                    VerifyManga(expectedResult.Mangas[i], actualResult.Mangas[i]);
         }
     }
 }

@@ -79,7 +79,7 @@ public class FillerService : IFillerService
 
         try
         {
-            var resultGenre = await _genreService.AddRange(listOfGenres);
+            var resultGenre = await _genreService.AddRangeAsync(listOfGenres);
 
             if (!resultGenre.Any())
             {
@@ -126,7 +126,7 @@ public class FillerService : IFillerService
 
         try
         {
-            var resultManga = await _mangaService.AddRange(mangas);
+            var resultManga = await _mangaService.AddRangeAsync(mangas);
 
             if (!resultManga.Any())
             {

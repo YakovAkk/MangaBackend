@@ -146,7 +146,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (await _mangaService.IsMangaExist(mangaId))
+        if (await _mangaService.IsMangaExistAsync(mangaId))
             user.FavoriteMangas.Add(manga);
         else
             throw new Exception("User has the manga in favorite already");
@@ -180,7 +180,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (await _mangaService.IsMangaExist(mangaId))
+        if (await _mangaService.IsMangaExistAsync(mangaId))
             user.FavoriteMangas.Add(manga);
         else
             throw new Exception("User doesn't have the manga in favorite already");

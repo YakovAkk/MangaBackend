@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Manga.Tests.Base;
 using Services.Core.Paginated;
+using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services;
 using Xunit;
@@ -20,30 +21,27 @@ namespace Manga.Tests
         public async void AddRangeAsyncTestRegularCase()
         {
             //Arrange
-            var list = new List<GenreInput>()
+            var genreInput = new List<GenreInput>()
             {
                new GenreInput("genreInput1"),
                new GenreInput("genreInput2"),
             };
+            var expectedResult = genreInput.Select(x => x.toEntity()).ToList();
 
             //Act
-            var result = await Service.AddRange(list);
+            var actualResult = await Service.AddRangeAsync(genreInput);
 
             //Assert
-            Assert.Equal(list.Count, result.Count);
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                Assert.Equal(list[i].Name, result[i].Name);
-            }
+            Assert.Equal(expectedResult.Count, actualResult.Count);
+            for (int i = 0; i < expectedResult.Count; i++)
+                VerifyGenre(expectedResult[i], actualResult[i]);
         }
         [Fact]
         public async void GetAllAsyncTestRegularCase()
         {
             //Arrange
             SetupEnvironmentData();
-
-            var expectedList = new List<GenreEntity>() 
+            var expectedResult = new List<GenreEntity>() 
             { 
                 new GenreEntity()
                 {
@@ -56,14 +54,12 @@ namespace Manga.Tests
             };
 
             //Act
-            var result = await Service.GetAllAsync();
+            var actualResult = await Service.GetAllAsync();
 
             //Assert          
-            Assert.Equal(expectedList.Count, result.Count);
-            for (int i = 0; i < expectedList.Count; i++)
-            {
-                Assert.Equal(expectedList[i].Name, result[i].Name);
-            }
+            Assert.Equal(expectedResult.Count, actualResult.Count);
+            for (int i = 0; i < expectedResult.Count; i++)
+                VerifyGenre(expectedResult[i], actualResult[i]);
         }
         [Fact]
         public async void GetByIdAsyncTestRegularCase()
@@ -82,6 +78,7 @@ namespace Manga.Tests
                         Description = "Description",
                         Author = "Author",
                         NumbetOfChapters = 1,
+                        ReleaseYear = 2000,
                         PathToFoldersWithGlava = new List<GlavaMangaEntity> { 
                             new GlavaMangaEntity()
                             {
@@ -95,67 +92,48 @@ namespace Manga.Tests
             };
 
             //Act
-            var result = await Service.GetByIdAsync(2);
+            var actualResult = await Service.GetByIdAsync(2);
 
             //Assert
-            Assert.Equal(expectedResult.Name, result.Name);
-            for (int i = 0; i < expectedResult.Mangas.Count; i++)
-            {
-                Assert.Equal(expectedResult.Mangas[i].Name, result.Mangas[i].Name);
-                Assert.Equal(expectedResult.Mangas[i].AgeRating, result.Mangas[i].AgeRating);
-                Assert.Equal(expectedResult.Mangas[i].Author, result.Mangas[i].Author);
-                Assert.Equal(expectedResult.Mangas[i].Description, result.Mangas[i].Description);
-                Assert.Equal(expectedResult.Mangas[i].PathToTitlePicture, result.Mangas[i].PathToTitlePicture);
-                Assert.Equal(expectedResult.Mangas[i].ReleaseYear, result.Mangas[i].ReleaseYear);
-                Assert.Equal(expectedResult.Mangas[i].NumbetOfChapters, result.Mangas[i].NumbetOfChapters);
-            }
+            VerifyGenre(expectedResult, actualResult);
         }
         [Fact]
         public async void GetPaginatedGenreListAsyncTestRegularCase()
         {
             //Arrange
             SetupEnvironmentData();
-
             var items = new List<GenreEntity>()
             {
                 new GenreEntity() {Name = "genre1"},
                 new GenreEntity() {Name = "aaa" }
             };
-
             var expectedResult = new PagedResult<List<GenreEntity>, object>(2, items, null);
 
             //Act
-            var result = await Service.GetPaginatedGenreListAsync(2,1);
+            var actualResult = await Service.GetPaginatedGenreListAsync(2,1);
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedResult.Meta.TotalCount, result.Meta.TotalCount);
-
+            Assert.Equal(expectedResult.Meta.TotalCount, actualResult.Meta.TotalCount);
             for (int i = 0; i < expectedResult.Items.Count; i++)
-            {
-                Assert.Equal(expectedResult.Items[i].Name, result.Items[i].Name);
-            }
+                VerifyGenre(expectedResult.Items[i], actualResult.Items[i]);
         }
         [Fact]
         public async void FiltrationByNameAsyncTestRegularCase()
         {
             //Arrange
             SetupEnvironmentData();
-
             var expectedResult = new List<GenreEntity>()
             {
                 new GenreEntity() { Name = "genre1" }
             };
 
             //Act
-            var result = await Service.FiltrationByNameAsync("genre");
+            var actualResult = await Service.FiltrationByNameAsync("genre");
 
             //Assert
-            Assert.NotNull(result);
+            Assert.NotNull(actualResult);
             for (int i = 0; i < expectedResult.Count; i++)
-            {
-                Assert.Equal(expectedResult[i].Name, result[i].Name);
-            }
+                VerifyGenre(expectedResult[i], actualResult[i]);
         }
 
         public static IEnumerable<object[]> DataForGenreExistMethod =>
@@ -163,7 +141,7 @@ namespace Manga.Tests
             {
                 new object[]
                 {
-                    1,
+                    genreId,
                     true
                 },
                 new object[]

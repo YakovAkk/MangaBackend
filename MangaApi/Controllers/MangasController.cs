@@ -59,7 +59,7 @@ public class MangasController : ControllerBase
     {
         try
         {
-            var result = await _mangaService.GetPagiantedMangaList(pagesize, page);
+            var result = await _mangaService.GetPagiantedMangaListAsync(pagesize, page);
 
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
@@ -78,7 +78,7 @@ public class MangasController : ControllerBase
     {
         try
         {
-            var result = await _mangaService.FiltrationByName(name);
+            var result = await _mangaService.FiltrationByNameAsync(name);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
             return Ok(wrapperResult);
         }
@@ -95,7 +95,7 @@ public class MangasController : ControllerBase
     {
         try
         {
-            var result = await _mangaService.FiltrationByDate(year);
+            var result = await _mangaService.FiltrationByDateAsync(year);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
             if (wrapperResult.StatusCode != HttpStatusCode.OK)
