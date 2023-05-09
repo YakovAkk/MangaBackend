@@ -23,7 +23,7 @@ public class GenresController : ControllerBase
     {
         try
         {
-            var result = await _genreService.GetPaginatedGenreList(pagesize, page);
+            var result = await _genreService.GetPaginatedGenreListAsync(pagesize, page);
 
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
@@ -75,7 +75,7 @@ public class GenresController : ControllerBase
     {
         try
         {
-            var result = await _genreService.FiltrationByName(name);
+            var result = await _genreService.FiltrationByNameAsync(name);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
             return Ok(wrapperResult);
         }

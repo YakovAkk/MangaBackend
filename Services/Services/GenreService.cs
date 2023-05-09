@@ -59,7 +59,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return genre;
     }
-    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(int sizeOfPage, int page)
+    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreListAsync(int sizeOfPage, int page)
     {
         int pageSize, numberOfPage;
 
@@ -91,7 +91,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return new PagedResult<List<GenreEntity>, object>(count, genresResult, null);
     }
-    public async Task<List<GenreEntity>> FiltrationByName(string name)
+    public async Task<List<GenreEntity>> FiltrationByNameAsync(string name)
     {
         using var dbContext = CreateDbContext();
 
@@ -101,7 +101,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return list;
     }
-    public async Task<bool> IsGenreExist(int genreId)
+    public async Task<bool> IsGenreExistAsync(int genreId)
     {
         using var dbContext = CreateDbContext();
 

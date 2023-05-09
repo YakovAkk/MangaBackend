@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
 using Manga.Tests.Base;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Services;
 using Services.Storage.Base;
@@ -21,12 +20,11 @@ namespace Manga.Tests
         }
 
         [Fact]
-        public async void CreateMangaRegularCase()
+        public async void GetByIdAsyncRegularCase()
         {
             //Arrange
-            using var db = CreateDbContext();
-
-            var manga = new MangaEntity()
+            SetupEnvironmentData();
+            var expectedManga = new MangaEntity()
             {
                 Name = "TestManga",
                 AgeRating = "18+",
@@ -42,23 +40,18 @@ namespace Manga.Tests
                 PathToTitlePicture = "./"
             };
 
-            db.Mangas.Add(manga);
-
-            await db.SaveChangesAsync();
-
             //Act
-            var result = await Service.GetByIdAsync(manga.Id);
+            var result = await Service.GetByIdAsync(1);
 
             //Assert
-            var expectedGenre = await db.Mangas.FirstOrDefaultAsync(u => u.Id == result.Id);
-
-            Assert.NotNull(expectedGenre);
-            Assert.Equal(expectedGenre.Name, result.Name);
-            Assert.Equal(expectedGenre.Author, result.Author);
-            Assert.Equal(expectedGenre.AgeRating, result.AgeRating);
-            Assert.Equal(expectedGenre.Description, result.Description);
-            Assert.Equal(expectedGenre.NumbetOfChapters, result.NumbetOfChapters);
-            Assert.Equal(expectedGenre.PathToTitlePicture, result.PathToTitlePicture);
+            
+            Assert.NotNull(expectedManga);
+            Assert.Equal(expectedManga.Name, result.Name);
+            Assert.Equal(expectedManga.Author, result.Author);
+            Assert.Equal(expectedManga.AgeRating, result.AgeRating);
+            Assert.Equal(expectedManga.Description, result.Description);
+            Assert.Equal(expectedManga.NumbetOfChapters, result.NumbetOfChapters);
+            Assert.Equal(expectedManga.PathToTitlePicture, result.PathToTitlePicture);
         }
     }
 }

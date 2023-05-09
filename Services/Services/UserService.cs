@@ -129,7 +129,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        if (await _genreService.IsGenreExist(genreid))
+        if (await _genreService.IsGenreExistAsync(genreid))
             user.FavoriteGenres.Add(genre);
         else
             throw new Exception("User has the genre in favorite already");
@@ -163,7 +163,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        if (await _genreService.IsGenreExist(genreid))
+        if (await _genreService.IsGenreExistAsync(genreid))
             user.FavoriteGenres.Remove(genre);
         else
             throw new Exception("User doesn't have the genre in favorite already");
