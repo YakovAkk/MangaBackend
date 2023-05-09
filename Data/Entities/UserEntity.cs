@@ -12,7 +12,7 @@ public class UserEntity : IEntity
     public string Email { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
-    public string? DeviceToken { get; set; }
+    public string DeviceToken { get; set; }
     public virtual List<MangaEntity> FavoriteMangas { get; set; }
     public virtual List<GenreEntity> FavoriteGenres { get; set; }
 
@@ -33,10 +33,5 @@ public class UserEntity : IEntity
     {
         FavoriteMangas = new List<MangaEntity>();
         FavoriteGenres= new List<GenreEntity>();
-    }
-
-    public override string ToString()
-    {
-        return $"Id = {Id} Name = {Name} DeviceToken = {DeviceToken}";
     }
 }

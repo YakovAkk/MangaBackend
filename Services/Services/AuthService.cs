@@ -48,9 +48,7 @@ namespace Services.Services
             var user = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
 
             if(user == null)
-            {
                 throw new Exception("User doesn't exist!");
-            }
 
             if(string.IsNullOrEmpty(user.ResetPasswordToken))
             {
@@ -61,7 +59,14 @@ namespace Services.Services
             var message = new Message(new string[] { user.Email }, "Manga APP",
                  $"{user.ResetPasswordToken}", EmailType.ResetPasswordTokenEmail);
 
-            _emailService.SendEmail(message);
+            try
+            {
+                _emailService.SendEmail(message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return true;
         }
@@ -70,19 +75,13 @@ namespace Services.Services
             var user = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
 
             if (user == null)
-            {
                 throw new Exception("User doesn't exist!");
-            }
 
             if (!VerifyPasswordHash(userDTOLogin.Password, user.PasswordHash, user.PasswordSalt))
-            {
                 throw new Exception("Password is incorrect!");
-            }
 
             if(user.VerifiedAt == null)
-            {
-                throw new Exception("Please, verify you email!");  
-            }
+                throw new Exception("Please, verify you email!");
 
             var refreshToken = CreateRefreshToken();
             await _userService.SetRefreshToken(refreshToken, user);
@@ -99,15 +98,10 @@ namespace Services.Services
         public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
         {
             if (await _userService.IsUserExists(userDTO.Email, userDTO.Name))
-            {
                 throw new Exception("User is already registered!");
-            }
-
-            if (userDTO.Password != userDTO.ConfirmPassword)
-            {
-                var errorMessage = "Both of passwords must be equal!";
-                throw new Exception(errorMessage);
-            }
+            
+            if (userDTO.Password != userDTO.ConfirmPassword)      
+                throw new Exception("Both of passwords must be equal!");
 
             CreatePasswordHash(userDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -125,28 +119,23 @@ namespace Services.Services
         public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
             if(!Int32.TryParse(tokenDTO.User_Id, out var userId))
-            {
                 throw new Exception("Invalid id!");
-            }
+            
 
-            var userExist = await _userService.GetByIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId);
 
-            if (userExist.RefreshToken != tokenDTO.RefreshToken)
-            {
+            if (user.RefreshToken != tokenDTO.RefreshToken)
                 throw new UnauthorizedAccessException("Invalid refresh token!");
-            }
-            else if (userExist.TokenExpires < DateTime.Now)
-            {
+            if (user.TokenExpires < DateTime.Now)
                 throw new UnauthorizedAccessException("Token Expired!");
-            }
-
-            var token = CreateAccessToken(userExist);
+            
+            var token = CreateAccessToken(user);
             var newRefreshToken = CreateRefreshToken();
-            await _userService.SetRefreshToken(newRefreshToken, userExist);
+            await _userService.SetRefreshToken(newRefreshToken, user);
 
             return new TokensViewModel()
             {
-                User_Id = userExist.Id,
+                User_Id = user.Id,
                 AccessToken = token,
                 RefreshToken = newRefreshToken.Token
             };
@@ -154,18 +143,14 @@ namespace Services.Services
         public async Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO)
         {
             if (!Int32.TryParse(verifyDTO.UserID, out var userId))
-            {
                 throw new Exception("Invalid id!");
-            }
 
             var user = await _userService.GetByIdAsync(userId);
 
             if(user.VerificationToken != verifyDTO.Token)
-            {
                 throw new UnauthorizedAccessException("Token isn't correct!");
-            }
 
-            await _userService.VerifyAsync(user);
+            await _userService.SetVerivicationAsync(user);
 
             return true;
         }
@@ -174,21 +159,17 @@ namespace Services.Services
             var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
 
             if (user == null)
-            {
                 throw new Exception("User doesn't exist!");
-            }
 
             VerifyResetPasswordTokenAsync(user, inputModel.Token);
 
             if (inputModel.Password != inputModel.ConfirmPassword)
-            {
-                var errorMessage = "Both of passwords must be equal!";
-                throw new Exception(errorMessage);
-            }
+                throw new Exception("Both of passwords must be equal!");
 
             CreatePasswordHash(inputModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var resetPasswordToken = CreateResetPasswordToken();
+
             await _userService.SetResetPasswordToken(resetPasswordToken, user);
 
             user.PasswordSalt = passwordSalt;
@@ -207,9 +188,8 @@ namespace Services.Services
             var user = await _userService.GetUserByNameOrEmail(InputModel.Email);
 
             if (user == null)
-            {
                 throw new Exception("User doesn't exist!");
-            }
+            
 
             var message = CreateVerifyEmailTemplate(user);
             _emailService.SendEmail(message);
@@ -221,15 +201,11 @@ namespace Services.Services
         private bool VerifyResetPasswordTokenAsync(UserEntity user, string token)
         {
             if (user.ResetPasswordToken != token)
-            {
                 throw new UnauthorizedAccessException("Token isn't correct!");
-            }
 
             if (user.ResetPasswordTokenExpires < DateTime.Now)
-            {
                 throw new UnauthorizedAccessException("Token Expired!");
-            }
-
+            
             return true;
         }
         private Message CreateVerifyEmailTemplate(UserEntity user)
@@ -278,6 +254,7 @@ namespace Services.Services
                 Expires = DateTime.Now.AddDays(7),
                 Created = DateTime.Now
             };
+
             return refreshToken;
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

@@ -3,7 +3,6 @@ using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Services.Base;
 
@@ -43,13 +42,12 @@ public class UserService : DbService<AppDBContext>, IUserService
         dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
     }
-    public async Task VerifyAsync(UserEntity user)
+    public async Task SetVerivicationAsync(UserEntity user)
     {
         using var dbContext = CreateDbContext();
-
         user.VerifiedAt = DateTime.UtcNow;
-
         dbContext.Users.Update(user);
+
         await dbContext.SaveChangesAsync();
     }
     public async Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity user)
@@ -108,11 +106,8 @@ public class UserService : DbService<AppDBContext>, IUserService
             .FirstOrDefaultAsync(i => i.Id == userId);
 
         if (user == null)
-        {
-            var errorMessage = $"The user doesn't exist!";
-            throw new Exception(errorMessage);
-        }
-
+            throw new Exception("The user doesn't exist!");
+        
         return user;
     }
     public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
@@ -134,7 +129,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        if (user.FavoriteGenres.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) == null)
+        if (await _genreService.IsGenreExist(genreid))
             user.FavoriteGenres.Add(genre);
         else
             throw new Exception("User has the genre in favorite already");
@@ -143,16 +138,16 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> AddMangaToFavoriteAsync(int userid, int mangaid)
+    public async Task<bool> AddMangaToFavoriteAsync(int userid, int mangaId)
     {
         using var dbContext = CreateDbContext();
 
         var user = await GetByIdAsync(userid);
 
-        var genre = await _mangaService.GetByIdAsync(mangaid);
+        var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (user.FavoriteMangas.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) == null)
-            user.FavoriteMangas.Add(genre);
+        if (await _mangaService.IsMangaExist(mangaId))
+            user.FavoriteMangas.Add(manga);
         else
             throw new Exception("User has the manga in favorite already");
 
@@ -168,7 +163,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        if (user.FavoriteGenres.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) != null)
+        if (await _genreService.IsGenreExist(genreid))
             user.FavoriteGenres.Remove(genre);
         else
             throw new Exception("User doesn't have the genre in favorite already");
@@ -177,16 +172,16 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> RemoveMangaFromFavoriteAsync(int userid, int genreid)
+    public async Task<bool> RemoveMangaFromFavoriteAsync(int userid, int mangaId)
     {
         using var dbContext = CreateDbContext();
 
         var user = await GetByIdAsync(userid);
 
-        var genre = await _mangaService.GetByIdAsync(genreid);
+        var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (user.FavoriteMangas.Select(x => x.Id).FirstOrDefault(x => x == genre.Id) != null)
-            user.FavoriteMangas.Add(genre);
+        if (await _mangaService.IsMangaExist(mangaId))
+            user.FavoriteMangas.Add(manga);
         else
             throw new Exception("User doesn't have the manga in favorite already");
 

@@ -11,4 +11,5 @@ public interface IGenreService
     Task<IList<GenreEntity>> AddRange(IList<GenreInput> list);
     Task<GenreEntity> GetByIdAsync(int id);
     Task<IList<GenreEntity>> GetAllAsync();
+    Task<bool> IsGenreExist(int genreId);
 }

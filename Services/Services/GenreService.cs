@@ -48,16 +48,13 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .Include(m => m.Mangas)
             .FirstOrDefaultAsync(i => i.Id == id);
 
+        if (genre == null)
+            throw new Exception("The genre doesn't exist!");
+
         foreach (var manga in genre.Mangas)
         {
             manga.ClearGenre();
             manga.ClearPathToFoldersWithGlava();
-        }
-
-        if (genre == null)
-        {
-            var errorMessage = $"The genre doesn't exist!";
-            throw new Exception(errorMessage);
         }
 
         return genre;
@@ -67,9 +64,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
         int pageSize, numberOfPage;
 
         if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
-        {
             throw new Exception("Parameters aren't valid");
-        }
 
         IQueryable<GenreEntity> Query(AppDBContext dbContext)
         {
@@ -105,5 +100,13 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .ToListAsync();
 
         return list;
+    }
+    public async Task<bool> IsGenreExist(int genreId)
+    {
+        using var dbContext = CreateDbContext();
+
+        var genre = await dbContext.Genres.FirstOrDefaultAsync(x => x.Id == genreId);
+
+        return genre != null;
     }
 }

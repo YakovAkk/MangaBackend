@@ -11,5 +11,6 @@ public interface IMangaService
     Task<IList<MangaEntity>> AddRange(IList<MangaInput> list);
     Task<MangaEntity> GetByIdAsync(int id);
     Task<IList<MangaEntity>> GetAllAsync();
-    Task<List<MangaEntity>> FiltrationByDate(string year);
+    Task<List<MangaEntity>> FiltrationByDate(int year);
+    Task<bool> IsMangaExist(int mangaId);
 }

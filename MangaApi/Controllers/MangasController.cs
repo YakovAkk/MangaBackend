@@ -91,7 +91,7 @@ public class MangasController : ControllerBase
 
     [HttpGet("filtrarionbydate/{year}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
+    public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] int year)
     {
         try
         {

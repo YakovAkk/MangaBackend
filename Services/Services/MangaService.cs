@@ -34,9 +34,8 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             .ToListAsync();
 
         foreach (var genre in list.SelectMany(x => x.Genres))
-        {
             genre.CleanMangas();
-        }
+        
 
         foreach (var item in list)
         {
@@ -81,15 +80,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             .FirstOrDefaultAsync(i => i.Id == Id);
 
         if (manga == null)
-        {
-            var errorMessage = $"The manga with id = {Id} isn't contained in the database!";
-            throw new Exception(errorMessage);
-        }
+            throw new Exception($"The manga isn't contained in the database!");
+        
 
         foreach (var genre in manga.Genres)
-        {
             genre.CleanMangas();
-        }
 
         manga.PathToTitlePicture = $"{_localStorage.RelativePath}{manga.PathToTitlePicture}";
 
@@ -103,9 +98,8 @@ public class MangaService : DbService<AppDBContext>, IMangaService
     public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(int sizeOfPage, int page)
     {
         if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
-        {
             throw new Exception("Parameters aren't valid");
-        }
+        
 
         IQueryable<MangaEntity> Query(AppDBContext dbContext)
         {
@@ -125,7 +119,6 @@ public class MangaService : DbService<AppDBContext>, IMangaService
                   .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();
-
             await Task.WhenAll(dataTask, countTask);
 
             mangaResult = dataTask.Result;
@@ -140,14 +133,12 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return new PagedResult<List<MangaEntity>, object>(count, mangaResult, null);
     }
-    public async Task<List<MangaEntity>> FiltrationByDate(string year)
+    public async Task<List<MangaEntity>> FiltrationByDate(int year)
     {
         int yearNum = 0;
 
-        if (!ValidatorService.IsValidYear(year, out yearNum))
-        {
+        if (!ValidatorService.IsValidYear(year))
             throw new Exception("Parameters aren't valid");
-        }
 
         using var dbContext = CreateDbContext();
 
@@ -180,5 +171,14 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         }
 
         return list;
+    }
+
+    public async Task<bool> IsMangaExist(int mangaId)
+    {
+        using var dbContext = CreateDbContext();
+
+        var manga = await dbContext.Mangas.FirstOrDefaultAsync(x => x.Id == mangaId);
+
+        return manga != null;
     }
 }
