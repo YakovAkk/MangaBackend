@@ -2,8 +2,8 @@
 {
     public class FileWorker
     {
-        private readonly string _confirmationEmailPath = "../../../../MangaApi/Templates/ConfirmationEmailTemplate.html";
-        private readonly string _resetPasswordTokenEmailPath = "../../MangaApi/Templates/ResetPasswordTokenEmailTemplate.html";
+        private readonly string _confirmationEmailPath = "./Templates/ConfirmationEmailTemplate.html";
+        private readonly string _resetPasswordTokenEmailPath = "./Templates/ResetPasswordTokenEmailTemplate.html";
         private readonly string _logoPath = "https://play-lh.googleusercontent.com/o6kXY8vstMP3ZPHHGwwJbziG6CJMuQHqL_t4yq7A7zQrMhfG7nuY3XPHrDkLmOSafvk_";
         
         public string GetConfirmationEmailHTMLFile(string data)
