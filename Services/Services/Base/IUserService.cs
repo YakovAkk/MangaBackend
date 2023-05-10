@@ -8,9 +8,10 @@ namespace Services.Services.Base;
 public interface IUserService
 {
     #region User
-    Task<bool> IsUserExists(string email, string name);
+    Task<bool> IsUserExistsAsync(string email, string name);
     Task<bool> UpdateUserAsync(UserInputModel userInputModel);
-    Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail);
+    Task<UserEntity> GetUserByNameAsync(string name);
+    Task<UserEntity> GetUserByEmailAsync(string email);
     Task<IList<UserEntity>> GetAllAsync();
     Task<UserEntity> GetByIdAsync(int user_id);
     #endregion

@@ -63,10 +63,10 @@ public class UserService : DbService<AppDBContext>, IUserService
     #endregion
 
     #region User
-    public async Task<bool> IsUserExists(string email, string name)
+    public async Task<bool> IsUserExistsAsync(string email, string name)
     {
-        var userByName = await GetUserByNameOrEmail(name);
-        var userByEmail = await GetUserByNameOrEmail(email);
+        var userByName = await GetUserByNameAsync(name);
+        var userByEmail = await GetUserByEmailAsync(email);
 
         return userByName != null || userByEmail != null;
     }
@@ -110,13 +110,25 @@ public class UserService : DbService<AppDBContext>, IUserService
         
         return user;
     }
-    public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
+    public async Task<UserEntity> GetUserByNameAsync(string name)
     {
         using var dbContext = CreateDbContext();
 
-        return await dbContext.Users
-            .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
+        return await dbContext.Users.FirstOrDefaultAsync(x => x.Name == name);
     }
+    public async Task<UserEntity> GetUserByEmailAsync(string email)
+    {
+        using var dbContext = CreateDbContext();
+
+        return await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+    }
+    //public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
+    //{
+    //    using var dbContext = CreateDbContext();
+
+    //    return await dbContext.Users
+    //        .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
+    //}
 
     #endregion
 

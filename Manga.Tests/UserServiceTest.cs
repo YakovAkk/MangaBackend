@@ -49,7 +49,6 @@ namespace Manga.Tests
             Assert.Equal(expectedUser.Name, result.Name);
             Assert.Equal(expectedUser.Email, result.Email);
         }
-
         [Fact]
         public async void UpdateUserTestChangeNameCase()
         {
@@ -74,6 +73,18 @@ namespace Manga.Tests
             Assert.True(result);
             Assert.NotNull(expectedUser);
             Assert.Equal(expectedUser.Name, userToUpdate.Name);
+        }
+        [Fact]
+        public async void IsUserExistsAsyncTestChangeNameCase()
+        {
+            //Arrange
+            SetupEnvironmentData();
+
+            //Act
+            var actualResult = await Service.IsUserExistsAsync("User@gmail.com", "TestUser");
+
+            //Assert
+            Assert.True(actualResult);
         }
     }
 }

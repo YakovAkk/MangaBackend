@@ -45,7 +45,7 @@ namespace Services.Services
 
         public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
         {
-            var user = await _userService.GetUserByNameOrEmail(sendResetTokenDTO.Email);
+            var user = await _userService.GetUserByEmailAsync(sendResetTokenDTO.Email);
 
             if(user == null)
                 throw new Exception("User doesn't exist!");
@@ -72,10 +72,15 @@ namespace Services.Services
         }
         public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
-            var user = await _userService.GetUserByNameOrEmail(userDTOLogin.NameOrEmail);
+            UserEntity user;
 
-            if (user == null)
+            var userByName = await _userService.GetUserByNameAsync(userDTOLogin.NameOrEmail);
+            var userByEmail = await _userService.GetUserByEmailAsync(userDTOLogin.NameOrEmail);
+
+            if (userByName == null && userByEmail == null)
                 throw new Exception("User doesn't exist!");
+
+            user = userByEmail ?? userByName;
 
             if (!VerifyPasswordHash(userDTOLogin.Password, user.PasswordHash, user.PasswordSalt))
                 throw new Exception("Password is incorrect!");
@@ -97,7 +102,7 @@ namespace Services.Services
         }
         public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
         {
-            if (await _userService.IsUserExists(userDTO.Email, userDTO.Name))
+            if (await _userService.IsUserExistsAsync(userDTO.Email, userDTO.Name))
                 throw new Exception("User is already registered!");
             
             if (userDTO.Password != userDTO.ConfirmPassword)      
@@ -112,7 +117,15 @@ namespace Services.Services
             var user = await _userService.CreateAsync(userModel);
 
             var message = CreateVerifyEmailTemplate(user);
-            _emailService.SendEmail(message);
+
+            try
+            {
+                _emailService.SendEmail(message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return user.toViewModel();
         }
@@ -156,7 +169,7 @@ namespace Services.Services
         }
         public async Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel)
         {
-            var user = await _userService.GetUserByNameOrEmail(inputModel.Email);
+            var user = await _userService.GetUserByEmailAsync(inputModel.Email);
 
             if (user == null)
                 throw new Exception("User doesn't exist!");
@@ -185,14 +198,21 @@ namespace Services.Services
         }
         public async Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel InputModel)
         {
-            var user = await _userService.GetUserByNameOrEmail(InputModel.Email);
+            var user = await _userService.GetUserByEmailAsync(InputModel.Email);
 
             if (user == null)
                 throw new Exception("User doesn't exist!");
             
-
             var message = CreateVerifyEmailTemplate(user);
-            _emailService.SendEmail(message);
+
+            try
+            {
+                _emailService.SendEmail(message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return true;
         }
