@@ -12,7 +12,7 @@ public interface IUserService
     Task<bool> UpdateUserAsync(UserInputModel userInputModel);
     Task<UserEntity> GetUserByNameAsync(string name);
     Task<UserEntity> GetUserByEmailAsync(string email);
-    Task<IList<UserEntity>> GetAllAsync();
+    Task<List<UserEntity>> GetAllAsync();
     Task<UserEntity> GetByIdAsync(int user_id);
     #endregion
 
@@ -21,8 +21,8 @@ public interface IUserService
     Task<bool> AddGenreToFavoriteAsync(int userid, int genreid);
     Task<bool> RemoveGenreFromFavoriteAsync(int userid, int genreid);
     Task<bool> RemoveMangaFromFavoriteAsync(int userid, int mangaid);
-    Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(int userid);
-    Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(int userid);
+    Task<List<MangaEntity>> GetAllFavoriteMangaAsync(int userid);
+    Task<List<GenreEntity>> GetAllFavoriteGenreAsync(int userid);
     #endregion
 
     #region Auth

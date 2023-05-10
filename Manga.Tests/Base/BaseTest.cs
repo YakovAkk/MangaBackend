@@ -25,6 +25,7 @@ namespace Manga.Tests.Base
 
             var user = new UserEntity()
             {
+                Id = 1,
                 Email = "User@gmail.com",
                 Name = "TestUser",
                 DeviceToken = "test device token",
@@ -97,6 +98,28 @@ namespace Manga.Tests.Base
             if(expectedResult.Mangas != null)
                 for (int i = 0; i < expectedResult.Mangas.Count; i++)
                     VerifyManga(expectedResult.Mangas[i], actualResult.Mangas[i]);
+        }
+
+        protected void VerifyUser(UserEntity expectedResult, UserEntity actualResult)
+        {
+            Assert.Equal(expectedResult.Id, actualResult.Id);
+            Assert.Equal(expectedResult.Name, actualResult.Name);
+            Assert.Equal(expectedResult.Email, actualResult.Email);
+            Assert.Equal(expectedResult.PasswordHash, actualResult.PasswordHash);
+            Assert.Equal(expectedResult.PasswordSalt, actualResult.PasswordSalt);
+            Assert.Equal(expectedResult.DeviceToken, actualResult.DeviceToken);
+
+            if(expectedResult.FavoriteGenres != null)
+                for (int i = 0; i < expectedResult.FavoriteGenres.Count; i++)
+                {
+                    VerifyGenre(expectedResult.FavoriteGenres[i], actualResult.FavoriteGenres[i]);
+                }
+
+            if (expectedResult.FavoriteMangas != null)
+                for (int i = 0; i < expectedResult.FavoriteMangas.Count; i++)
+                {
+                    VerifyManga(expectedResult.FavoriteMangas[i], actualResult.FavoriteMangas[i]);
+                }
         }
     }
 }

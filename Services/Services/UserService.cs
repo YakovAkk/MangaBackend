@@ -88,7 +88,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<IList<UserEntity>> GetAllAsync()
+    public async Task<List<UserEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
@@ -122,13 +122,6 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
-    //public async Task<UserEntity> GetUserByNameOrEmail(string nameOrEmail)
-    //{
-    //    using var dbContext = CreateDbContext();
-
-    //    return await dbContext.Users
-    //        .FirstOrDefaultAsync(x => x.Name == nameOrEmail || x.Email == nameOrEmail);
-    //}
 
     #endregion
 
@@ -141,7 +134,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var genre = await _genreService.GetByIdAsync(genreid);
 
-        if (await _genreService.IsGenreExistAsync(genreid))
+        if (!user.FavoriteGenres.Select(x => x.Id).Contains(genreid))
             user.FavoriteGenres.Add(genre);
         else
             throw new Exception("User has the genre in favorite already");
@@ -158,7 +151,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (await _mangaService.IsMangaExistAsync(mangaId))
+        if (!user.FavoriteMangas.Select(x => x.Id).Contains(mangaId))
             user.FavoriteMangas.Add(manga);
         else
             throw new Exception("User has the manga in favorite already");
@@ -201,7 +194,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<IList<MangaEntity>> GetAllFavoriteMangaAsync(int userid)
+    public async Task<List<MangaEntity>> GetAllFavoriteMangaAsync(int userid)
     {
         using var dbContext = CreateDbContext();
 
@@ -209,7 +202,7 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return user.FavoriteMangas;
     }
-    public async Task<IList<GenreEntity>> GetAllFavoriteGenreAsync(int userid)
+    public async Task<List<GenreEntity>> GetAllFavoriteGenreAsync(int userid)
     {
         using var dbContext = CreateDbContext();
 
