@@ -21,8 +21,8 @@ public interface IUserService
     Task<bool> AddGenreToFavoriteAsync(int userid, int genreid);
     Task<bool> RemoveGenreFromFavoriteAsync(int userid, int genreid);
     Task<bool> RemoveMangaFromFavoriteAsync(int userid, int mangaid);
-    Task<List<MangaEntity>> GetAllFavoriteMangaAsync(int userid);
-    Task<List<GenreEntity>> GetAllFavoriteGenreAsync(int userid);
+    Task<List<MangaEntity>> GetAllFavoriteMangasAsync(int userid);
+    Task<List<GenreEntity>> GetAllFavoriteGenresAsync(int userid);
     #endregion
 
     #region Auth

@@ -1,7 +1,6 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Services.Base;
 using System.Net;
@@ -9,7 +8,7 @@ using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
@@ -131,7 +130,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllFavoriteGenre([FromRoute] int userid)
     {
-        var result = await _userService.GetAllFavoriteGenreAsync(userid);
+        var result = await _userService.GetAllFavoriteGenresAsync(userid);
 
         var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
@@ -147,7 +146,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllFavoriteManga([FromRoute] int userid)
     {
-        var result = await _userService.GetAllFavoriteMangaAsync(userid);
+        var result = await _userService.GetAllFavoriteMangasAsync(userid);
 
         var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 

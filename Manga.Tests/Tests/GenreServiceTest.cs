@@ -1,12 +1,13 @@
 ﻿using Data.Entities;
-using Manga.Tests.Base;
+using Manga.Tests.Tests.Base;
+using Manga.Tests.Utility;
 using Services.Core.Paginated;
 using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services;
 using Xunit;
 
-namespace Manga.Tests
+namespace Manga.Tests.Tests
 {
     public class GenreServiceTest : BaseTest
     {
@@ -41,12 +42,9 @@ namespace Manga.Tests
         {
             //Arrange
             SetupEnvironmentData();
-            var expectedResult = new List<GenreEntity>() 
-            { 
-                new GenreEntity()
-                {
-                    Name = "genre1"
-                },
+            var expectedResult = new List<GenreEntity>()
+            {
+                Util.GetGenre(),
                 new GenreEntity()
                 {
                     Name = "aaa"
@@ -71,23 +69,7 @@ namespace Manga.Tests
                 Name = "aaa",
                 Mangas = new List<MangaEntity>()
                 {
-                    new MangaEntity()
-                    {
-                        Name = "TestManga",
-                        AgeRating = "18+",
-                        Description = "Description",
-                        Author = "Author",
-                        NumbetOfChapters = 1,
-                        ReleaseYear = 2000,
-                        PathToFoldersWithGlava = new List<GlavaMangaEntity> { 
-                            new GlavaMangaEntity()
-                            {
-                                LinkToFirstPicture = "./",
-                                NumberOfGlava = 2,
-                                NumberOfPictures = 1,
-                            }},
-                        PathToTitlePicture = "./"
-                    }
+                    Util.GetManga()
                 }
             };
 
@@ -104,13 +86,13 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var items = new List<GenreEntity>()
             {
-                new GenreEntity() {Name = "genre1"},
+                Util.GetGenre(),
                 new GenreEntity() {Name = "aaa" }
             };
             var expectedResult = new PagedResult<List<GenreEntity>, object>(2, items, null);
 
             //Act
-            var actualResult = await Service.GetPaginatedGenreListAsync(2,1);
+            var actualResult = await Service.GetPaginatedGenreListAsync(2, 1);
 
             //Assert
             Assert.Equal(expectedResult.Meta.TotalCount, actualResult.Meta.TotalCount);
@@ -124,7 +106,7 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var expectedResult = new List<GenreEntity>()
             {
-                new GenreEntity() { Name = "genre1" }
+                Util.GetGenre()
             };
 
             //Act
@@ -161,7 +143,7 @@ namespace Manga.Tests
             var result = await Service.IsGenreExistAsync(genreId);
 
             //Assert
-            Assert.Equal(expectedResult,result);
+            Assert.Equal(expectedResult, result);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
-using Manga.Tests.Base;
+using Manga.Tests.Tests.Base;
+using Manga.Tests.Utility;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Core.Paginated;
@@ -9,7 +10,7 @@ using Services.Services;
 using Services.Storage.Base;
 using Xunit;
 
-namespace Manga.Tests
+namespace Manga.Tests.Tests
 {
     public class MangaServiceTest : BaseTest
     {
@@ -30,22 +31,7 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var expectedResult = new List<MangaEntity>()
             {
-                new MangaEntity()
-                {
-                    Name = "TestManga",
-                    AgeRating = "18+",
-                    Description = "Description",
-                    Author = "Author",
-                    NumbetOfChapters = 1,
-                    ReleaseYear = 2000,
-                    PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                    {
-                        LinkToFirstPicture = "./",
-                        NumberOfGlava = 2,
-                        NumberOfPictures = 1,
-                    }},
-                    PathToTitlePicture = "./"
-                }
+                Util.GetManga()
             };
 
             //Act
@@ -102,22 +88,7 @@ namespace Manga.Tests
         {
             //Arrange
             SetupEnvironmentData();
-            var expectedResult = new MangaEntity()
-            {
-                Name = "TestManga",
-                AgeRating = "18+",
-                Description = "Description",
-                Author = "Author",
-                NumbetOfChapters = 1,
-                ReleaseYear = 2000,
-                PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                {
-                    LinkToFirstPicture = "./",
-                    NumberOfGlava = 2,
-                    NumberOfPictures = 1,
-                }},
-                PathToTitlePicture = "./"
-            };
+            var expectedResult = Util.GetManga();
 
             //Act
             var actualResult = await Service.GetByIdAsync(1);
@@ -133,27 +104,12 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var items = new List<MangaEntity>()
             {
-                new MangaEntity()
-                {
-                    Name = "TestManga",
-                    AgeRating = "18+",
-                    Description = "Description",
-                    Author = "Author",
-                    NumbetOfChapters = 1,
-                    ReleaseYear = 2000,
-                    PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                    {
-                        LinkToFirstPicture = "./",
-                        NumberOfGlava = 2,
-                        NumberOfPictures = 1,
-                    }},
-                    PathToTitlePicture = "./"
-                }
+                Util.GetManga()
             };
             var expectedResult = new PagedResult<List<MangaEntity>, object>(1, items, null);
 
             //Act
-            var actualResult = await Service.GetPagiantedMangaListAsync(1,1);
+            var actualResult = await Service.GetPagiantedMangaListAsync(1, 1);
 
             //Assert
             Assert.Equal(expectedResult.Meta.TotalCount, actualResult.Meta.TotalCount);
@@ -167,22 +123,7 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var expectedResult = new List<MangaEntity>()
             {
-                new MangaEntity()
-                {
-                    Name = "TestManga",
-                    AgeRating = "18+",
-                    Description = "Description",
-                    Author = "Author",
-                    NumbetOfChapters = 1,
-                    ReleaseYear = 2000,
-                    PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                    {
-                        LinkToFirstPicture = "./",
-                        NumberOfGlava = 2,
-                        NumberOfPictures = 1,
-                    }},
-                    PathToTitlePicture = "./"
-                }
+                Util.GetManga()
             };
 
             //Act
@@ -200,22 +141,7 @@ namespace Manga.Tests
             SetupEnvironmentData();
             var expectedResult = new List<MangaEntity>()
             {
-                new MangaEntity()
-                {
-                    Name = "TestManga",
-                    AgeRating = "18+",
-                    Description = "Description",
-                    Author = "Author",
-                    NumbetOfChapters = 1,
-                    ReleaseYear = 2000,
-                    PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                    {
-                        LinkToFirstPicture = "./",
-                        NumberOfGlava = 2,
-                        NumberOfPictures = 1,
-                    }},
-                    PathToTitlePicture = "./"
-                }
+                Util.GetManga()
             };
 
             //Act

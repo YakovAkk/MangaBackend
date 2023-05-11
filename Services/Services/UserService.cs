@@ -101,8 +101,10 @@ public class UserService : DbService<AppDBContext>, IUserService
         using var dbContext = CreateDbContext();
 
         var user = await dbContext.Users
-            .Include(m => m.FavoriteMangas)
-            .Include(m => m.FavoriteGenres)
+            .Include(x => x.FavoriteGenresItems)
+                .ThenInclude(x => x.Genre)
+            .Include(x => x.FavoriteMangasItems)
+                .ThenInclude(x => x.Manga)
             .FirstOrDefaultAsync(i => i.Id == userId);
 
         if (user == null)
@@ -126,87 +128,87 @@ public class UserService : DbService<AppDBContext>, IUserService
     #endregion
 
     #region UsersFavorite
-    public async Task<bool> AddGenreToFavoriteAsync(int userid, int genreid)
+    public async Task<bool> AddGenreToFavoriteAsync(int userId, int genreId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
+        var user = await GetByIdAsync(userId);
+        var genre = await _genreService.GetByIdAsync(genreId);
 
-        var genre = await _genreService.GetByIdAsync(genreid);
-
-        if (!user.FavoriteGenres.Select(x => x.Id).Contains(genreid))
-            user.FavoriteGenres.Add(genre);
+        if (!user.FavoriteGenres.Select(x => x.Id).Contains(genreId))
+            user.FavoriteGenresItems.Add(new FavoriteGenreEntity(user, genre));
         else
             throw new Exception("User has the genre in favorite already");
 
+        dbContext.Update(user);
         await dbContext.SaveChangesAsync();
 
         return true;
     }
-    public async Task<bool> AddMangaToFavoriteAsync(int userid, int mangaId)
+    public async Task<bool> AddMangaToFavoriteAsync(int userId, int mangaId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
-
+        var user = await GetByIdAsync(userId);
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
         if (!user.FavoriteMangas.Select(x => x.Id).Contains(mangaId))
-            user.FavoriteMangas.Add(manga);
+            user.FavoriteMangasItems.Add(new FavoriteMangaEntity(user, manga));
         else
             throw new Exception("User has the manga in favorite already");
 
+        dbContext.Update(user);
         await dbContext.SaveChangesAsync();
 
         return true;
     }
-    public async Task<bool> RemoveGenreFromFavoriteAsync(int userid, int genreid)
+    public async Task<bool> RemoveGenreFromFavoriteAsync(int userId, int genreId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
+        var user = await GetByIdAsync(userId);
+        var genre = await _genreService.GetByIdAsync(genreId);
 
-        var genre = await _genreService.GetByIdAsync(genreid);
-
-        if (await _genreService.IsGenreExistAsync(genreid))
-            user.FavoriteGenres.Remove(genre);
+        if (user.FavoriteGenres.Select(x => x.Id).Contains(genreId))
+            user.FavoriteGenresItems.Remove(user.FavoriteGenresItems.Where(x => x.Genre.Id == genreId).Single());
         else
             throw new Exception("User doesn't have the genre in favorite already");
 
+        dbContext.Update(user);
         await dbContext.SaveChangesAsync();
 
         return true;
     }
-    public async Task<bool> RemoveMangaFromFavoriteAsync(int userid, int mangaId)
+    public async Task<bool> RemoveMangaFromFavoriteAsync(int userId, int mangaId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
-
+        var user = await GetByIdAsync(userId);
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
-        if (await _mangaService.IsMangaExistAsync(mangaId))
-            user.FavoriteMangas.Add(manga);
+        if (user.FavoriteMangas.Select(x => x.Id).Contains(mangaId))
+            user.FavoriteMangasItems.Add(user.FavoriteMangasItems.Where(x => x.Manga.Id == mangaId).Single());
         else
             throw new Exception("User doesn't have the manga in favorite already");
 
+        dbContext.Update(user);
         await dbContext.SaveChangesAsync();
 
         return true;
     }
-    public async Task<List<MangaEntity>> GetAllFavoriteMangaAsync(int userid)
+    public async Task<List<MangaEntity>> GetAllFavoriteMangasAsync(int userId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
+        var user = await GetByIdAsync(userId);
 
         return user.FavoriteMangas;
     }
-    public async Task<List<GenreEntity>> GetAllFavoriteGenreAsync(int userid)
+    public async Task<List<GenreEntity>> GetAllFavoriteGenresAsync(int userId)
     {
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userid);
+        var user = await GetByIdAsync(userId);
 
         return user.FavoriteGenres;
     }

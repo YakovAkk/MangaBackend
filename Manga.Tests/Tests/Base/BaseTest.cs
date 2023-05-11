@@ -1,9 +1,10 @@
 ﻿using Data.Database;
 using Data.Entities;
+using Manga.Tests.Utility;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Manga.Tests.Base
+namespace Manga.Tests.Tests.Base
 {
     public class BaseTest
     {
@@ -23,50 +24,15 @@ namespace Manga.Tests.Base
         {
             using var dbInit = CreateDbContext();
 
-            var user = new UserEntity()
-            {
-                Id = 1,
-                Email = "User@gmail.com",
-                Name = "TestUser",
-                DeviceToken = "test device token",
-                PasswordHash = new byte[] { 1, 2, 3, 4, 5, 6, },
-                PasswordSalt = new byte[] { 1, 1, 2, 45, 6 }
-            };
+            dbInit.Users.Add(Util.GetUser());
 
-            dbInit.Users.Add(user);
-
-            var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
-            {
-                new GlavaMangaEntity()
-                {
-                    NumberOfGlava = 1,
-                    LinkToFirstPicture = "manga/tokyoghoul/glava1/1.jpg",
-                    NumberOfPictures = 46
-                }
-            };
-
-            var manga = new MangaEntity()
-            {
-                Name = "TestManga",
-                AgeRating = "18+",
-                Description = "Description",
-                Author = "Author",
-                NumbetOfChapters = 1,
-                ReleaseYear = 2000,
-                PathToFoldersWithGlava = new List<GlavaMangaEntity> { new GlavaMangaEntity()
-                {
-                    LinkToFirstPicture = "./",
-                    NumberOfGlava = 2,
-                    NumberOfPictures = 1,
-                }},
-                PathToTitlePicture = "./"
-            };
+            var manga = Util.GetManga();
 
             dbInit.Mangas.Add(manga);
 
             var genres = new List<GenreEntity>()
             {
-                new GenreEntity() {Name = "genre1"},
+                Util.GetGenre(),
                 new GenreEntity() {Name = "aaa",
                     Mangas = new List<MangaEntity> ()
                     {
@@ -76,6 +42,27 @@ namespace Manga.Tests.Base
             };
 
             dbInit.Genres.AddRange(genres);
+
+            var userWithFavoriteItems = new UserEntity()
+            {
+                Id = 2,
+                Email = "UserWithFavoriteItems@gmail.com",
+                Name = "UserWithFavoriteItems",
+                DeviceToken = "test device token",
+                PasswordHash = new byte[] { 1, 2, 3, 4, 5, 6, },
+                PasswordSalt = new byte[] { 1, 1, 2, 45, 6 }
+            };
+
+            userWithFavoriteItems.FavoriteGenresItems = new List<FavoriteGenreEntity>()
+            {
+                new FavoriteGenreEntity(userWithFavoriteItems, genres[0]),
+            };
+            userWithFavoriteItems.FavoriteMangasItems = new List<FavoriteMangaEntity>()
+            {
+                new FavoriteMangaEntity(userWithFavoriteItems, manga)
+            };
+
+            dbInit.Users.Add(userWithFavoriteItems);
 
             await dbInit.SaveChangesAsync();
         }
@@ -95,7 +82,7 @@ namespace Manga.Tests.Base
         {
             Assert.Equal(expectedResult.Name, actualResult.Name);
 
-            if(expectedResult.Mangas != null)
+            if (expectedResult.Mangas != null)
                 for (int i = 0; i < expectedResult.Mangas.Count; i++)
                     VerifyManga(expectedResult.Mangas[i], actualResult.Mangas[i]);
         }
@@ -109,7 +96,7 @@ namespace Manga.Tests.Base
             Assert.Equal(expectedResult.PasswordSalt, actualResult.PasswordSalt);
             Assert.Equal(expectedResult.DeviceToken, actualResult.DeviceToken);
 
-            if(expectedResult.FavoriteGenres != null)
+            if (expectedResult.FavoriteGenres != null)
                 for (int i = 0; i < expectedResult.FavoriteGenres.Count; i++)
                 {
                     VerifyGenre(expectedResult.FavoriteGenres[i], actualResult.FavoriteGenres[i]);

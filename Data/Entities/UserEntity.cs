@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Data.Entities.Base;
 
 namespace Data.Entities;
-public class UserEntity : IEntity
+public partial class UserEntity : IEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,25 +13,27 @@ public class UserEntity : IEntity
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     public string DeviceToken { get; set; }
-    public virtual List<MangaEntity> FavoriteMangas { get; set; }
-    public virtual List<GenreEntity> FavoriteGenres { get; set; }
 
-    // refresh token (to refresh access token)
+    // Refresh token (to refresh access token)
     public string? RefreshToken { get; set; } = string.Empty;
     public DateTime? TokenCreated { get; set; }
     public DateTime? TokenExpires { get; set; }
 
-    // email verification token
+    // Email verification token
     public string? VerificationToken { get; set; } = string.Empty;
     public DateTime? VerifiedAt { get; set; }
 
-    // reset password token
+    // Reset password token
     public string? ResetPasswordToken { get; set; } = string.Empty;
     public DateTime? ResetPasswordTokenExpires { get; set; }
 
     public UserEntity()
     {
-        FavoriteMangas = new List<MangaEntity>();
-        FavoriteGenres= new List<GenreEntity>();
+        FavoriteMangasItems = new List<FavoriteMangaEntity>();
+        FavoriteGenresItems = new List<FavoriteGenreEntity>();
     }
+
+    // Navigation fields
+    public virtual List<FavoriteMangaEntity> FavoriteMangasItems { get; set; }
+    public virtual List<FavoriteGenreEntity> FavoriteGenresItems { get; set; }
 }
