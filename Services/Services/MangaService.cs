@@ -7,8 +7,6 @@ using Services.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using Services.Storage.Base;
-using System;
-using System.Collections.Generic;
 using ValidateService.Validate;
 
 namespace Services.Services;
@@ -24,7 +22,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         _localStorage = localStorage;
     }
 
-    public async Task<IList<MangaEntity>> GetAllAsync()
+    public async Task<List<MangaEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
@@ -34,9 +32,8 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             .ToListAsync();
 
         foreach (var genre in list.SelectMany(x => x.Genres))
-        {
             genre.CleanMangas();
-        }
+        
 
         foreach (var item in list)
         {
@@ -49,7 +46,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<IList<MangaEntity>> AddRange(IList<MangaInput> mangas)
+    public async Task<List<MangaEntity>> AddRangeAsync(List<MangaInput> mangas)
     {
         using var dbContext = CreateDbContext();
 
@@ -71,7 +68,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return await GetAllAsync();
     }
-    public async Task<MangaEntity> GetByIdAsync(string Id)
+    public async Task<MangaEntity> GetByIdAsync(int Id)
     {
         using var dbContext = CreateDbContext();
 
@@ -81,15 +78,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             .FirstOrDefaultAsync(i => i.Id == Id);
 
         if (manga == null)
-        {
-            var errorMessage = $"The manga with id = {Id} isn't contained in the database!";
-            throw new Exception(errorMessage);
-        }
+            throw new Exception($"The manga isn't contained in the database!");
+        
 
         foreach (var genre in manga.Genres)
-        {
             genre.CleanMangas();
-        }
 
         manga.PathToTitlePicture = $"{_localStorage.RelativePath}{manga.PathToTitlePicture}";
 
@@ -100,14 +93,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return manga;
     }
-    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaList(string sizeOfPage, string page)
+    public async Task<PagedResult<List<MangaEntity>, object>> GetPagiantedMangaListAsync(int sizeOfPage, int page)
     {
-        int pageSize, numberOfPage;
-
-        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
-        {
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
             throw new Exception("Parameters aren't valid");
-        }
+        
 
         IQueryable<MangaEntity> Query(AppDBContext dbContext)
         {
@@ -122,12 +112,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             var dataTask = Query(contextPool.NewContext())
                   .Include(m => m.Genres)
                   .Include(m => m.PathToFoldersWithGlava)
-                  .Skip((numberOfPage - 1) * pageSize)
-                  .Take(pageSize)
+                  .Skip((page - 1) * sizeOfPage)
+                  .Take(sizeOfPage)
                   .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();
-
             await Task.WhenAll(dataTask, countTask);
 
             mangaResult = dataTask.Result;
@@ -142,14 +131,12 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return new PagedResult<List<MangaEntity>, object>(count, mangaResult, null);
     }
-    public async Task<List<MangaEntity>> FiltrationByDate(string year)
+    public async Task<List<MangaEntity>> FiltrationByDateAsync(int year)
     {
         int yearNum = 0;
 
-        if (!ValidatorService.IsValidYear(year, out yearNum))
-        {
+        if (!ValidatorService.IsValidYear(year))
             throw new Exception("Parameters aren't valid");
-        }
 
         using var dbContext = CreateDbContext();
 
@@ -166,7 +153,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return list;
     }
-    public async Task<IList<MangaEntity>> FiltrationByName(string name)
+    public async Task<List<MangaEntity>> FiltrationByNameAsync(string name)
     {
         using var dbContext = CreateDbContext();
 
@@ -182,5 +169,13 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         }
 
         return list;
+    }
+    public async Task<bool> IsMangaExistAsync(int mangaId)
+    {
+        using var dbContext = CreateDbContext();
+
+        var manga = await dbContext.Mangas.FirstOrDefaultAsync(x => x.Id == mangaId);
+
+        return manga != null;
     }
 }

@@ -7,7 +7,7 @@ public class GlavaMangaEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
     public int NumberOfGlava { get; set; }
     public string LinkToFirstPicture { get; set; }
     public int NumberOfPictures { get; set; }

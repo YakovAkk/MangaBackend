@@ -15,7 +15,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
     public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
         : base(dbContextOptions) { }
     
-    public async Task<IList<GenreEntity>> AddRange(IList<GenreInput> genres)
+    public async Task<List<GenreEntity>> AddRangeAsync(List<GenreInput> genres)
     {
         using var dbContext = CreateDbContext();
 
@@ -31,7 +31,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return await GetAllAsync();
     }
-    public async Task<IList<GenreEntity>> GetAllAsync()
+    public async Task<List<GenreEntity>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
@@ -40,7 +40,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return list;
     }
-    public async Task<GenreEntity> GetByIdAsync(string id)
+    public async Task<GenreEntity> GetByIdAsync(int id)
     {
         using var dbContext = CreateDbContext();
 
@@ -48,28 +48,23 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .Include(m => m.Mangas)
             .FirstOrDefaultAsync(i => i.Id == id);
 
+        if (genre == null)
+            throw new Exception("The genre doesn't exist!");
+
         foreach (var manga in genre.Mangas)
         {
             manga.ClearGenre();
             manga.ClearPathToFoldersWithGlava();
         }
 
-        if (genre == null)
-        {
-            var errorMessage = $"The genre doesn't exist!";
-            throw new Exception(errorMessage);
-        }
-
         return genre;
     }
-    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(string sizeOfPage, string page)
+    public async Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreListAsync(int sizeOfPage, int page)
     {
         int pageSize, numberOfPage;
 
-        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page, out pageSize, out numberOfPage))
-        {
+        if (!ValidatorService.IsValidPageAndPageSize(sizeOfPage, page))
             throw new Exception("Parameters aren't valid");
-        }
 
         IQueryable<GenreEntity> Query(AppDBContext dbContext)
         {
@@ -82,8 +77,8 @@ public class GenreService : DbService<AppDBContext>, IGenreService
         using (var contextPool = new ContextPool<AppDBContext>(() => CreateDbContext()))
         {
             var dataTask = Query(contextPool.NewContext())
-                 .Skip((numberOfPage - 1) * pageSize)
-                 .Take(pageSize)
+                 .Skip((page - 1) * sizeOfPage)
+                 .Take(sizeOfPage)
             .ToListAsync();
 
             var countTask = Query(contextPool.NewContext()).CountAsync();
@@ -96,7 +91,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return new PagedResult<List<GenreEntity>, object>(count, genresResult, null);
     }
-    public async Task<IList<GenreEntity>> FiltrationByName(string name)
+    public async Task<List<GenreEntity>> FiltrationByNameAsync(string name)
     {
         using var dbContext = CreateDbContext();
 
@@ -105,5 +100,13 @@ public class GenreService : DbService<AppDBContext>, IGenreService
             .ToListAsync();
 
         return list;
+    }
+    public async Task<bool> IsGenreExistAsync(int genreId)
+    {
+        using var dbContext = CreateDbContext();
+
+        var genre = await dbContext.Genres.FirstOrDefaultAsync(x => x.Id == genreId);
+
+        return genre != null;
     }
 }

@@ -19,11 +19,11 @@ public class GenresController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] int pagesize, int page)
     {
         try
         {
-            var result = await _genreService.GetPaginatedGenreList(pagesize, page);
+            var result = await _genreService.GetPaginatedGenreListAsync(pagesize, page);
 
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
@@ -54,7 +54,7 @@ public class GenresController : ControllerBase
 
     [HttpGet("{Id}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGenreById([FromRoute] string Id)
+    public async Task<IActionResult> GetGenreById([FromRoute] int Id)
     {
         try
         {
@@ -75,7 +75,7 @@ public class GenresController : ControllerBase
     {
         try
         {
-            var result = await _genreService.FiltrationByName(name);
+            var result = await _genreService.FiltrationByNameAsync(name);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
             return Ok(wrapperResult);
         }

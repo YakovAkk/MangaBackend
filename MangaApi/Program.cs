@@ -14,6 +14,7 @@ using NLog;
 using NLog.Web;
 using Services.FillerService;
 using Services.FillerService.Base;
+using Services.Model.Configuration;
 using Services.NotificationService.Service;
 using Services.NotificationService.Service.Base;
 using Services.Services;
@@ -44,6 +45,16 @@ try
 
     // Add email Conf
     builder.Services.AddScoped<IEmailService, EmailService>();
+
+    var tokenConfig = builder.Configuration
+        .GetSection("TokenConfiguration")
+        .Get<TokenConfiguration>();
+    builder.Services.AddSingleton(tokenConfig);
+
+    var appConfig = builder.Configuration
+        .GetSection("ApplicationConfiguration")
+        .Get<ApplicationConfiguration>();
+    builder.Services.AddSingleton(appConfig);
 
     var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
@@ -104,7 +115,7 @@ try
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("TokenSettings:Token").Value)),
+                .GetBytes(builder.Configuration.GetSection("TokenConfiguration:Token").Value)),
                 ValidateIssuer = false,
                 ValidateAudience = false
             };

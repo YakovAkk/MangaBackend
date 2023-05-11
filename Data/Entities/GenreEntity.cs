@@ -8,7 +8,7 @@ public partial class GenreEntity : IEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public virtual List<MangaEntity> Mangas { get; set; }
     public GenreEntity()

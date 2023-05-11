@@ -58,8 +58,8 @@ public static class Mapper
             Name = user.Name,
             DeviceToken = user.DeviceToken,
             Email = user.Email,
-            FavoriteGenres = user.FavoriteGenres,
-            FavoriteMangas = user.FavoriteMangas,
+            //FavoriteGenres = user.FavoriteGenres,
+            //FavoriteMangas = user.FavoriteMangas,
         };
     }
     #endregion

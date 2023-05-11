@@ -6,9 +6,10 @@ namespace Services.Services.Base;
 
 public interface IGenreService
 {
-    Task<IList<GenreEntity>> FiltrationByName(string name);
-    Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreList(string sizeOfPage, string page);
-    Task<IList<GenreEntity>> AddRange(IList<GenreInput> list);
-    Task<GenreEntity> GetByIdAsync(string id);
-    Task<IList<GenreEntity>> GetAllAsync();
+    Task<List<GenreEntity>> FiltrationByNameAsync(string name);
+    Task<PagedResult<List<GenreEntity>, object>> GetPaginatedGenreListAsync(int sizeOfPage, int page);
+    Task<List<GenreEntity>> AddRangeAsync(List<GenreInput> list);
+    Task<GenreEntity> GetByIdAsync(int id);
+    Task<List<GenreEntity>> GetAllAsync();
+    Task<bool> IsGenreExistAsync(int genreId);
 }

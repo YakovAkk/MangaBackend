@@ -36,7 +36,7 @@ public class MangasController : ControllerBase
 
     [HttpGet("{Id}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetMangaById([FromRoute] string Id)
+    public async Task<IActionResult> GetMangaById([FromRoute] int Id)
     {
         try
         {
@@ -55,11 +55,11 @@ public class MangasController : ControllerBase
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPaginatedMangaList([FromRoute] string pagesize, string page)
+    public async Task<IActionResult> GetPaginatedMangaList([FromRoute] int pagesize, int page)
     {
         try
         {
-            var result = await _mangaService.GetPagiantedMangaList(pagesize, page);
+            var result = await _mangaService.GetPagiantedMangaListAsync(pagesize, page);
 
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
@@ -78,7 +78,7 @@ public class MangasController : ControllerBase
     {
         try
         {
-            var result = await _mangaService.FiltrationByName(name);
+            var result = await _mangaService.FiltrationByNameAsync(name);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
             return Ok(wrapperResult);
         }
@@ -91,11 +91,11 @@ public class MangasController : ControllerBase
 
     [HttpGet("filtrarionbydate/{year}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] string year)
+    public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] int year)
     {
         try
         {
-            var result = await _mangaService.FiltrationByDate(year);
+            var result = await _mangaService.FiltrationByDateAsync(year);
             var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
             if (wrapperResult.StatusCode != HttpStatusCode.OK)
