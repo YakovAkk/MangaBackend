@@ -29,6 +29,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         var list = await dbContext.Mangas
             .Include(m => m.Genres)
             .Include(m => m.PathToFoldersWithGlava)
+            .OrderBy(m => m.Name)
             .ToListAsync();
 
         foreach (var genre in list.SelectMany(x => x.Genres))

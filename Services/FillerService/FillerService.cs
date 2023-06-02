@@ -74,7 +74,10 @@ public class FillerService : IFillerService
             new GenreInput("Erotica"),
             new GenreInput("Ecchi"),
             new GenreInput("Yuri"),
-            new GenreInput("Yaoi")
+            new GenreInput("Yaoi"),
+            new GenreInput("Burlesque"),
+            new GenreInput("Travesty"),
+            new GenreInput("Poem"),
         };
 
         try
@@ -123,6 +126,7 @@ public class FillerService : IFillerService
         mangas.Add(CreateNarutoManga(genres));
         mangas.Add(CreateSevenDeadlySinsManga(genres));
         mangas.Add(CreateTokyoGhoulSinsManga(genres));
+        mangas.Add(CreateEneidaItem(genres));
 
         try
         {
@@ -245,7 +249,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2009
         };
     }
-    private MangaInput CreateNarutoManga(IList<GenreEntity> genres)
+    private MangaInput CreateNarutoManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -278,8 +282,8 @@ public class FillerService : IFillerService
         {
             new GlavaMangaEntity()
             {
-                NumberOfGlava = 0,
-                LinkToFirstPicture = "manga/naruto/glava0/1.jpg",
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/naruto/glava1/1.jpg",
                 NumberOfPictures = 45
             }
         };
@@ -297,7 +301,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1999
         };
     }
-    private MangaInput CreateSevenDeadlySinsManga(IList<GenreEntity> genres)
+    private MangaInput CreateSevenDeadlySinsManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -340,8 +344,8 @@ public class FillerService : IFillerService
         {
             new GlavaMangaEntity()
             {
-                NumberOfGlava = 0,
-                LinkToFirstPicture = "manga/sevendeadlysins/glava0/1.jpg",
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/sevendeadlysins/glava1/1.jpg",
                 NumberOfPictures = 52
             }
         };
@@ -359,7 +363,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2012
         };
     }
-    private MangaInput CreateTokyoGhoulSinsManga(IList<GenreEntity> genres)
+    private MangaInput CreateTokyoGhoulSinsManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -415,6 +419,55 @@ public class FillerService : IFillerService
             AgeRating = "18+",
             Author = "ISHIDA Sui",
             ReleaseYear = 2011
+        };
+    }
+    private MangaInput CreateEneidaItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Action",
+           "Martial arts",
+           "Drama",
+           "Comedy",
+           "Adventures",
+           "Shounen",
+           "Sword fighting",
+           "War",
+           "GG man",
+           "Friendship",
+           "Revenge",
+           "Poem",
+           "Burlesque",
+           "Travesty"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/eneida/glava1/eneida.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Eneida",
+            PathToTitlePicture = "manga/eneida/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Українська бурлескно-травестійна поема, написана українським письменником Іваном Котляревським, заснована на сюжеті однойменної класичної поеми римського поета Вергілія. Складається з шести частин, на відміну від дванадцяти частин Вергілія. Написана чотиристопним ямбом.\r\n\r\nПоема написана в добу становлення романтизму і націоналізму в Європі, на тлі ностальгії частини української еліти за козацькою державою, ліквідованою Росією в 1775—1786 роках. «Енеїда» — перша масштабна пам'ятка українського письменства, укладена розмовною українською мовою. Поема започаткувала становлення новочасної української літератури. Перші три частини поеми були видані в 1798 році, в Санкт-Петербурзі, без відома автора, під назвою: «Енеида. На малороссійскій языкъ перелиціованная И. Котляревскимъ». Повністю «Енеїда» вийшла в світ після смерті Котляревського, в 1842 році. Цей твір є першокласним джерелом з українознавства, українського побуту та культури XVIII століття.\r\n\r\nЯк і оригінал, сюжет описує пригоди троянського отамана Енея, проте у викладі Котляревського вони подаються в антуражі тогочасної української культури. Після зруйнування батьківщини ворогами, Еней разом зі своїм козацьким військом шукає місця, де зміг би заснувати майбутню імперію. У його поневіряння втручаються боги, намагаючись хто допомогти, а хто завадити його подорожі.",
+            NumbetOfChapters = 12,
+            AgeRating = "0+",
+            Author = "Ivan Petrovich Kotlyarevskyi",
+            ReleaseYear = 1798
         };
     }
     #endregion

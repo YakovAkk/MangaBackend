@@ -36,6 +36,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
         using var dbContext = CreateDbContext();
 
         var list = await dbContext.Genres
+            .OrderBy(m => m.Name)
             .ToListAsync();
 
         return list;
