@@ -3,6 +3,7 @@ using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
+using Services.ExtensionMapper;
 using Services.Model.InputModel;
 using Services.Services.Base;
 
@@ -213,4 +214,59 @@ public class UserService : DbService<AppDBContext>, IUserService
         return user.FavoriteGenres;
     }
     #endregion
+
+    #region RememberReaading
+
+    public async Task<List<RememberReadingItem>> GetAllReadingItemsAsync(string userId)
+    {
+        var id = Convert.ToInt32(userId);
+
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await dbContext.Users.Include(x => x.RememberReadingItems).Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            return user.RememberReadingItems;
+        }
+    }
+
+    public async Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel)
+    {
+        var id = Convert.ToInt32(userId);
+
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await dbContext.Users.Include(x => x.RememberReadingItems).FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            var manga = await _mangaService.GetByIdAsync(inputModel.MangaId);
+
+            var readingModel = inputModel.toEntity(user, manga);
+
+            dbContext.RememberReadingItems.Add(readingModel);
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task<RememberReadingItem> GetReadingItemAsync(string userId, string mangaId)
+    {
+        var id = Convert.ToInt32(userId);
+        var mId = Convert.ToInt32(mangaId);
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await dbContext.Users.Include(x => x.RememberReadingItems).Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            return user.RememberReadingItems.FirstOrDefault(x => x.Manga.Id == mId);
+        }
+    }
+    #endregion
+
 }

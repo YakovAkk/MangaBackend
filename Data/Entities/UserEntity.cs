@@ -36,4 +36,5 @@ public partial class UserEntity : IEntity
     // Navigation fields
     public virtual List<FavoriteMangaEntity> FavoriteMangasItems { get; set; }
     public virtual List<FavoriteGenreEntity> FavoriteGenresItems { get; set; }
+    public virtual List<RememberReadingItem> RememberReadingItems { get; set;}
 }

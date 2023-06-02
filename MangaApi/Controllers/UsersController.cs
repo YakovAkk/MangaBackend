@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Model.InputModel;
 using Services.Services.Base;
 using System.Net;
+using System.Security.Claims;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
-//[Authorize]
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
@@ -159,4 +160,63 @@ public class UsersController : ControllerBase
     }
 
     #endregion
+
+    [HttpGet("remember-reading")]
+    public async Task<IActionResult> GetAllReadingItems()
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return BadRequest();
+
+        try
+        {
+            var result = await _userService.GetAllReadingItemsAsync(userId);
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
+    }
+
+    [HttpPost("remember-reading")]
+    public async Task<IActionResult> CreateReadingItem([FromBody] RememberReadingItemInputModel inputModel)
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return BadRequest();
+
+        try
+        {
+            await _userService.CreateReadingItemAsync(userId, inputModel);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
+    }
+
+    [HttpGet("remember-reading/{mangaId}")]
+    public async Task<IActionResult> GetReadingItem([FromRoute] string mangaId)
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return BadRequest();
+
+        try
+        {
+            var result = await _userService.GetReadingItemAsync(userId, mangaId);
+            var wrapperResult = WrapperResponseService.Wrap<object>(result);
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
+    }
 }

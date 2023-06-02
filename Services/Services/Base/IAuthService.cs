@@ -6,8 +6,8 @@ namespace Services.Services.Base
 {
     public interface IAuthService
     {
-        Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin);
-        Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
+        Task<TokenViewModel> LoginAsync(UserLoginDTO userDTOLogin);
+        Task<TokenViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
         Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO);
         Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email);
         Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel);

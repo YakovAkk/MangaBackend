@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
 
 namespace Services.ExtensionMapper;
@@ -60,6 +61,19 @@ public static class Mapper
             Email = user.Email,
             //FavoriteGenres = user.FavoriteGenres,
             //FavoriteMangas = user.FavoriteMangas,
+        };
+    }
+    #endregion
+
+    #region Remember reading
+    public static RememberReadingItem toEntity(this RememberReadingItemInputModel inputModel, UserEntity user, MangaEntity manga)
+    {
+        return new RememberReadingItem()
+        {
+            User = user,
+            Manga = manga,
+            ChapterNumber = inputModel.ChapterNumner,
+            Page = inputModel.Page
         };
     }
     #endregion

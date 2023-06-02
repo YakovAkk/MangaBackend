@@ -11,6 +11,7 @@ public class AppDBContext : DbContext
     public DbSet<GenreEntity> Genres { get; set; }
     public DbSet<FavoriteGenreEntity> FavoriteGenres { get; set; }
     public DbSet<FavoriteMangaEntity> FavoriteMangas { get; set; }
+    public DbSet<RememberReadingItem> RememberReadingItems { get; set; }
     public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
     {
         try

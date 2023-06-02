@@ -31,4 +31,10 @@ public interface IUserService
     Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist);
     Task SetVerivicationAsync(UserEntity user);
     #endregion
+
+    #region Remember reading
+    Task<List<RememberReadingItem>> GetAllReadingItemsAsync(string userId);
+    Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel);
+    Task<RememberReadingItem> GetReadingItemAsync(string userId, string mangaId);
+    #endregion
 }
