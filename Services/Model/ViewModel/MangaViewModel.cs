@@ -4,6 +4,7 @@ namespace Services.Model.ViewModel
 {
     public class MangaViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string PathToTitlePicture { get; set; }
         public string Description { get; set; }
