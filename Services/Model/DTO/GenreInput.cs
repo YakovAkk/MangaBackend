@@ -1,10 +1,7 @@
-﻿using Services.Model.DTO.Base;
+﻿namespace Services.Model.DTO;
 
-namespace Services.Model.DTO;
-
-public class GenreInput : IModelInput
+public class GenreInput 
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public GenreInput(string name)
     {

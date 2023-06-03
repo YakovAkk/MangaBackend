@@ -1,11 +1,9 @@
 ﻿using Data.Entities;
-using Services.Model.DTO.Base;
 
 namespace Services.Model.DTO;
 
-public class MangaInput : IModelInput
+public class MangaInput
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string PathToTitlePicture { get; set; }
     public int ReleaseYear { get; set; }

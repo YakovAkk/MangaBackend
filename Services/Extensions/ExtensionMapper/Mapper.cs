@@ -7,23 +7,12 @@ namespace Services.Extensions.ExtensionMapper;
 
 public static class Mapper
 {
-    #region GenreEntity
-    public static GenreEntity toEntity(this GenreInput dto)
-    {
-        return new GenreEntity()
-        {
-            Id = dto.Id,
-            Name = dto.Name
-        };
-    }
-    #endregion  
 
     #region MangaEntity
     public static MangaEntity toEntity(this MangaInput dto, List<GenreEntity> genres)
     {
         return new MangaEntity()
         {
-            Id = dto.Id,
             Name = dto.Name,
             PathToTitlePicture = dto.PathToTitlePicture,
             Description = dto.Description,
@@ -51,15 +40,6 @@ public static class Mapper
         };
     }
 
-    public static UserViewModel toViewModel(this UserEntity user)
-    {
-        return new UserViewModel()
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email
-        };
-    }
     #endregion
 
     #region Remember reading

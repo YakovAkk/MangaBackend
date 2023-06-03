@@ -6,6 +6,7 @@ using Services.Core.Paginated;
 using Services.Extensions.ExtensionMapper;
 using Services.Model.Configuration;
 using Services.Model.DTO;
+using Services.Model.ViewModel;
 using Services.Services.Base;
 using ValidateService.Validate;
 
@@ -22,21 +23,23 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         _othesConfiguration = othesConfiguration;
     }
 
-    public async Task<List<MangaEntity>> GetAllAsync()
+    public async Task<List<MangaViewModel>> GetAllAsync()
     {
-        using var dbContext = CreateDbContext();
+        List<MangaEntity> mangas;
 
-        var list = await dbContext.Mangas
+        using( var dbContext = CreateDbContext())
+        {
+            mangas = await dbContext.Mangas
             .Include(m => m.Genres)
             .Include(m => m.PathToFoldersWithGlava)
             .OrderBy(m => m.Name)
             .ToListAsync();
+        }
 
-        foreach (var genre in list.SelectMany(x => x.Genres))
+        foreach (var genre in mangas.SelectMany(x => x.Genres))
             genre.CleanMangas();
         
-
-        foreach (var item in list)
+        foreach (var item in mangas)
         {
             item.PathToTitlePicture = $"{_othesConfiguration.RelativePath}{item.PathToTitlePicture}";
             foreach (var res in item.PathToFoldersWithGlava)
@@ -45,9 +48,16 @@ public class MangaService : DbService<AppDBContext>, IMangaService
             }
         }
 
-        return list;
+        var viewModels = mangas.Select(x => x.MapTo<MangaViewModel>()).ToList();
+
+        for (int i = 0; i < mangas.Count; i++)
+        {
+            viewModels[i].PathToFoldersWithGlava = mangas[i].PathToFoldersWithGlava.Select(x => x.MapTo<GlavaMangaEntityViewModel>()).ToList();
+        }
+
+        return viewModels;
     }
-    public async Task<List<MangaEntity>> AddRangeAsync(List<MangaInput> mangas)
+    public async Task<List<MangaViewModel>> AddRangeAsync(List<MangaInput> mangas)
     {
         using var dbContext = CreateDbContext();
 

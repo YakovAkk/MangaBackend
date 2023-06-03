@@ -21,7 +21,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         foreach (var genre in genres)
         {
-            var genreEntity = genre.toEntity();
+            var genreEntity = genre.MapTo<GenreEntity>();
 
             if(dbContext.Genres.SingleOrDefault(x => x.Name == genreEntity.Name) == null)
                 dbContext.Genres.Add(genreEntity);

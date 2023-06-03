@@ -127,7 +127,7 @@ namespace Services.Services
                 throw;
             }
 
-            return user.toViewModel();
+            return user.MapTo<UserViewModel>();
         }
         public async Task<TokenViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {

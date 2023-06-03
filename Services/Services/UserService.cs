@@ -246,7 +246,7 @@ public class UserService : DbService<AppDBContext>, IUserService
             foreach (var item in user.RememberReadingItems)
             {
                 var manga = await _mangaService.GetByIdAsync(item.MangaId);
-                var userViewModel = user.toViewModel();
+                var userViewModel = user.MapTo<UserViewModel>();
 
                 result.Add(item.toViewModel(userViewModel,manga));
             }
@@ -292,7 +292,7 @@ public class UserService : DbService<AppDBContext>, IUserService
                 throw new Exception("User hasn't read the manga yet!");
 
             var manga = await _mangaService.GetByIdAsync(item.MangaId);
-            var userViewModel = user.toViewModel();
+            var userViewModel = user.MapTo<UserViewModel>();
 
             return item.toViewModel(userViewModel, manga);
         }

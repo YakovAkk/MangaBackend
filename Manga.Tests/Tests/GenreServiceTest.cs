@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
+using Services;
 using Services.Core.Paginated;
 using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
@@ -27,7 +28,7 @@ namespace Manga.Tests.Tests
                new GenreInput("genreInput1"),
                new GenreInput("genreInput2"),
             };
-            var expectedResult = genreInput.Select(x => x.toEntity()).ToList();
+            var expectedResult = genreInput.Select(x => x.MapTo<GenreEntity>()).ToList();
 
             //Act
             var actualResult = await Service.AddRangeAsync(genreInput);
