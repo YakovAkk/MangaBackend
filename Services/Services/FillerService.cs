@@ -1,9 +1,8 @@
 ﻿using Data.Entities;
-using Services.FillerService.Base;
 using Services.Model.DTO;
 using Services.Services.Base;
 
-namespace Services.FillerService;
+namespace Services.Services;
 
 public class FillerService : IFillerService
 {
@@ -154,21 +153,21 @@ public class FillerService : IFillerService
                 IsSuccess = false,
                 MessageWhatWrong = ex.Message
             };
-        }  
+        }
     }
     public async Task<ResponseFillDTO> AddAdmin()
     {
         var admin = new UserRegistrationDTO()
         {
-           Name = "admin",
-           Email = "admin@gmail.com",
-           Password = "pa$$w0rd1",
-           ConfirmPassword = "pa$$w0rd1"
+            Name = "admin",
+            Email = "admin@gmail.com",
+            Password = "pa$$w0rd1",
+            ConfirmPassword = "pa$$w0rd1"
         };
 
         var response = await _authService.RegisterAsync(admin);
 
-        if(response is null)
+        if (response is null)
         {
             return new ResponseFillDTO()
             {
@@ -388,7 +387,7 @@ public class FillerService : IFillerService
            "Strength Ranks",
            "Sentient races",
            "Friendship",
-           "Skills / abilities" 
+           "Skills / abilities"
         };
 
         var genres_id = new List<int>();

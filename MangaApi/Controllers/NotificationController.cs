@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Services.NotificationService.NotifyModels;
-using Services.NotificationService.Service.Base;
+using Services.NotifyService.NotifyModels;
+using Services.NotifyService.Service.Base;
 
 namespace MangaBackend.Controllers;
 

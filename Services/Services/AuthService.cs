@@ -7,7 +7,7 @@ using EmailingService.Services.Base;
 using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Services.ExtensionMapper;
+using Services.Extensions.ExtensionMapper;
 using Services.Model.Configuration;
 using Services.Model.DTO;
 using Services.Model.InputModel;

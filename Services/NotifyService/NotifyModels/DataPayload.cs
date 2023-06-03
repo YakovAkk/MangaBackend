@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Services.NotificationService.NotifyModels;
+namespace Services.NotifyService.NotifyModels;
 
 public class DataPayload
 {

@@ -8,7 +8,7 @@ using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
-//[Authorize]
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase

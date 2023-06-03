@@ -3,23 +3,23 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.ExtensionMapper;
+using Services.Extensions.ExtensionMapper;
+using Services.Model.Configuration;
 using Services.Model.DTO;
 using Services.Services.Base;
-using Services.Storage.Base;
 using ValidateService.Validate;
 
 namespace Services.Services;
 
 public class MangaService : DbService<AppDBContext>, IMangaService
 {
-    private readonly ILocalStorage _localStorage;
+    private readonly OthersConfiguration _othesConfiguration;
 
     public MangaService(
-        ILocalStorage localStorage,
+        OthersConfiguration othesConfiguration,
         DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
     {
-        _localStorage = localStorage;
+        _othesConfiguration = othesConfiguration;
     }
 
     public async Task<List<MangaEntity>> GetAllAsync()
@@ -38,10 +38,10 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         foreach (var item in list)
         {
-            item.PathToTitlePicture = $"{_localStorage.RelativePath}{item.PathToTitlePicture}";
+            item.PathToTitlePicture = $"{_othesConfiguration.RelativePath}{item.PathToTitlePicture}";
             foreach (var res in item.PathToFoldersWithGlava)
             {
-                res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
+                res.LinkToFirstPicture = $"{_othesConfiguration.RelativePath}{res.LinkToFirstPicture}";
             }
         }
 
@@ -85,11 +85,11 @@ public class MangaService : DbService<AppDBContext>, IMangaService
         foreach (var genre in manga.Genres)
             genre.CleanMangas();
 
-        manga.PathToTitlePicture = $"{_localStorage.RelativePath}{manga.PathToTitlePicture}";
+        manga.PathToTitlePicture = $"{_othesConfiguration.RelativePath}{manga.PathToTitlePicture}";
 
         foreach (var res in manga.PathToFoldersWithGlava)
         {
-            res.LinkToFirstPicture = $"{_localStorage.RelativePath}{res.LinkToFirstPicture}";
+            res.LinkToFirstPicture = $"{_othesConfiguration.RelativePath}{res.LinkToFirstPicture}";
         }
 
         return manga;
