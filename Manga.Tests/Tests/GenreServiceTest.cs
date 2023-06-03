@@ -2,7 +2,7 @@
 using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
 using Services.Core.Paginated;
-using Services.ExtensionMapper;
+using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services;
 using Xunit;

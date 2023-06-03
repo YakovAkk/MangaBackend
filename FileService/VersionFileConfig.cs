@@ -20,9 +20,7 @@ namespace FileService
             try
             {
                 string text = File.ReadAllText(_path);
-
                 var data = JsonConvert.DeserializeObject<VersionViewModel>(text);
-
                 return data;
             }
             catch (Exception ex)

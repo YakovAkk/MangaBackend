@@ -1,11 +1,11 @@
 ﻿using CorePush.Google;
 using Microsoft.Extensions.Configuration;
-using Services.NotificationService.NotifyModels;
-using Services.NotificationService.Service.Base;
-using Services.NotificationService.Setting;
+using Services.NotifyService.NotifyModels;
+using Services.NotifyService.Service.Base;
+using Services.NotifyService.Setting;
 using System.Net.Http.Headers;
 
-namespace Services.NotificationService.Service;
+namespace Services.NotifyService.Service;
 
 public class NotificationService : INotificationService
 {

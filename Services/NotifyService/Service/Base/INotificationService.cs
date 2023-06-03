@@ -1,6 +1,7 @@
-﻿using Services.NotificationService.NotifyModels;
+﻿
+using Services.NotifyService.NotifyModels;
 
-namespace Services.NotificationService.Service.Base;
+namespace Services.NotifyService.Service.Base;
 
 public interface INotificationService
 {

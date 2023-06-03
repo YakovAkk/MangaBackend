@@ -1,6 +1,6 @@
 ﻿using Services.Model.DTO;
 
-namespace Services.FillerService.Base;
+namespace Services.Services.Base;
 
 public interface IFillerService
 {

@@ -3,7 +3,7 @@ using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 
-namespace Services.ExtensionMapper;
+namespace Services.Extensions.ExtensionMapper;
 
 public static class Mapper
 {
@@ -47,7 +47,7 @@ public static class Mapper
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
             Email = dto.Email,
-            VerificationToken = verificationToken 
+            VerificationToken = verificationToken
         };
     }
 

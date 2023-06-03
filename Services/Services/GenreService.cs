@@ -3,7 +3,7 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.ExtensionMapper;
+using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using ValidateService.Validate;
@@ -36,6 +36,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
         using var dbContext = CreateDbContext();
 
         var list = await dbContext.Genres
+            .OrderBy(m => m.Name)
             .ToListAsync();
 
         return list;

@@ -1,4 +1,4 @@
-﻿namespace Services.NotificationService.Setting
+﻿namespace Services.NotifyService.Setting
 {
     public class FcmNotificationSetting
     {
