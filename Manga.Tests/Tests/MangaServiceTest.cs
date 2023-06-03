@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Core.Paginated;
 using Services.Extensions.ExtensionMapper;
+using Services.Model.Configuration;
 using Services.Model.DTO;
 using Services.Services;
-using Services.Storage.Base;
 using Xunit;
 
 namespace Manga.Tests.Tests
@@ -15,13 +15,11 @@ namespace Manga.Tests.Tests
     public class MangaServiceTest : BaseTest
     {
         private MangaService Service;
-        private Mock<ILocalStorage> _localServiceMock;
 
         public MangaServiceTest()
         {
-            _localServiceMock = new Mock<ILocalStorage>();
-
-            Service = new MangaService(_localServiceMock.Object, options);
+            var conf = new OthersConfiguration();
+            Service = new MangaService(conf, options);
         }
 
         [Fact]

@@ -29,12 +29,21 @@ namespace Services.Extensions.DbExtension
             }
             else
             {
-                services.AddDbContext<AppDBContext>(options =>
+                if (othersConfig.TypeOfConnection.Contains("MSSQL"))
                 {
-                    options.UseSqlServer(configuration.GetConnectionString(othersConfig.TypeOfConnection));
-                });
+                    services.AddDbContext<AppDBContext>(options =>
+                    {
+                        options.UseSqlServer(configuration.GetConnectionString(othersConfig.TypeOfConnection));
+                    });
+                }
+                else if (othersConfig.TypeOfConnection.Contains("MYSQL"))
+                {
+                    services.AddDbContext<AppDBContext>(options =>
+                    {
+                        options.UseMySql(configuration.GetConnectionString(othersConfig.TypeOfConnection), new MySqlServerVersion(new Version()));
+                    });
+                }
             }
-            
             return services;
         }
     }

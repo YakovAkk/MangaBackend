@@ -168,7 +168,7 @@ namespace Manga.Tests.Tests
             MockGenreService();
 
             //Act
-            var result = await Service.AddGenreToFavoriteAsync(1, 1);
+            var result = await Service.AddGenreToFavoriteAsync("1", 1);
 
             //Assert
             using var db = CreateDbContext();
@@ -196,7 +196,7 @@ namespace Manga.Tests.Tests
             MockMangaService();
 
             //Act
-            var result = await Service.AddMangaToFavoriteAsync(1, 1);
+            var result = await Service.AddMangaToFavoriteAsync("1", 1);
 
             //Assert
             using var db = CreateDbContext();
@@ -233,7 +233,7 @@ namespace Manga.Tests.Tests
             MockGenreService();
 
             //Act
-            var result = await Service.RemoveGenreFromFavoriteAsync(2, 1);
+            var result = await Service.RemoveGenreFromFavoriteAsync("2", 1);
 
             //Assert
             using var db = CreateDbContext();
@@ -272,7 +272,7 @@ namespace Manga.Tests.Tests
             MockMangaService();
 
             //Act
-            var result = await Service.RemoveGenreFromFavoriteAsync(2, 1);
+            var result = await Service.RemoveGenreFromFavoriteAsync("2", 1);
 
             //Assert
             using var db = CreateDbContext();
@@ -299,7 +299,7 @@ namespace Manga.Tests.Tests
             };
 
             //Act
-            var actualResult = await Service.GetAllFavoriteMangasAsync(2);
+            var actualResult = await Service.GetAllFavoriteMangasAsync("2");
 
             //Assert
             for (int i = 0; i < expectedResult.Count; i++)
@@ -319,7 +319,7 @@ namespace Manga.Tests.Tests
             };
 
             //Act
-            var actualResult = await Service.GetAllFavoriteGenresAsync(2);
+            var actualResult = await Service.GetAllFavoriteGenresAsync("2");
 
             //Assert
             for (int i = 0; i < expectedResult.Count; i++)
