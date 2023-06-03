@@ -40,7 +40,7 @@ namespace Services.Extensions.DbExtension
                 {
                     services.AddDbContext<AppDBContext>(options =>
                     {
-                        options.UseMySql(configuration.GetConnectionString(othersConfig.TypeOfConnection), new MySqlServerVersion(new Version()));
+                        options.UseMySql(configuration.GetConnectionString(othersConfig.TypeOfConnection), new MySqlServerVersion(new Version("8.0.33")));
                     });
                 }
             }
