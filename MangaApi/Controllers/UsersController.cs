@@ -59,13 +59,16 @@ public class UsersController : ControllerBase
 
     #region Favorite
 
-    [HttpPut("favorite/genre/{userid}/{genreid}")]
+    [HttpPut("favorite/genre/{genreid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddGenreToFavorite([FromRoute] int userid, int genreid)
+    public async Task<IActionResult> AddGenreToFavorite([FromRoute] int genreid)
     {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
         try
         {
-            var result = await _userService.AddGenreToFavoriteAsync(userid, genreid);
+            var result = await _userService.AddGenreToFavoriteAsync(userId, genreid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -76,13 +79,17 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut("favorite/manga/{userid}/{mangaid}")]
+    [HttpPut("favorite/manga{mangaid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddMangaToFavorite([FromRoute] int userid, int mangaid)
+    public async Task<IActionResult> AddMangaToFavorite([FromRoute] int mangaid)
     {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
+
         try
         {
-            var result = await _userService.AddMangaToFavoriteAsync(userid,mangaid);
+            var result = await _userService.AddMangaToFavoriteAsync(userId,mangaid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -93,13 +100,17 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpDelete("favorite/genre/{userid}/{genreid}")]
+    [HttpDelete("favorite/genre/{genreid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RemoveGenreFromFavorite([FromRoute] int userid, int genreid)
+    public async Task<IActionResult> RemoveGenreFromFavorite([FromRoute] int genreid)
     {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
+
         try
         {
-            var result = await _userService.RemoveGenreFromFavoriteAsync(userid, genreid);
+            var result = await _userService.RemoveGenreFromFavoriteAsync(userId, genreid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -110,13 +121,16 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpDelete("favorite/manga/{userid}/{mangaid}")]
+    [HttpDelete("favorite/manga/{mangaid}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RemoveMangaFromFavorite([FromRoute] int userid, int mangaid)
+    public async Task<IActionResult> RemoveMangaFromFavorite([FromRoute] int mangaid)
     {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
         try
         {
-            var result = await _userService.RemoveMangaFromFavoriteAsync(userid, mangaid);
+            var result = await _userService.RemoveMangaFromFavoriteAsync(userId, mangaid);
             var wrapperResult = WrapperResponseService.Wrap<object>(result);
             return Ok(wrapperResult);
         }
@@ -127,11 +141,15 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpGet("favorite/genre/{userid}")]
+    [HttpGet("favorite/genre")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllFavoriteGenre([FromRoute] int userid)
+    public async Task<IActionResult> GetAllFavoriteGenre()
     {
-        var result = await _userService.GetAllFavoriteGenresAsync(userid);
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
+
+        var result = await _userService.GetAllFavoriteGenresAsync(userId);
 
         var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
@@ -143,11 +161,15 @@ public class UsersController : ControllerBase
         return Ok(wrapperResult);
     }
 
-    [HttpGet("favorite/manga/{userid}")]
+    [HttpGet("favorite/manga")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllFavoriteManga([FromRoute] int userid)
+    public async Task<IActionResult> GetAllFavoriteManga()
     {
-        var result = await _userService.GetAllFavoriteMangasAsync(userid);
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
+
+        var result = await _userService.GetAllFavoriteMangasAsync(userId);
 
         var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
@@ -161,12 +183,13 @@ public class UsersController : ControllerBase
 
     #endregion
 
+    #region RememberReading
     [HttpGet("remember-reading")]
     public async Task<IActionResult> GetAllReadingItems()
     {
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
-            return BadRequest();
+            return Unauthorized();
 
         try
         {
@@ -186,12 +209,13 @@ public class UsersController : ControllerBase
     {
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
-            return BadRequest();
+            return Unauthorized();
 
         try
         {
             await _userService.CreateReadingItemAsync(userId, inputModel);
-            return Ok();
+            var wrapperResult = WrapperResponseService.Wrap<object>(true);
+            return Ok(wrapperResult);
         }
         catch (Exception ex)
         {
@@ -205,7 +229,7 @@ public class UsersController : ControllerBase
     {
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
-            return BadRequest();
+            return Unauthorized();
 
         try
         {
@@ -219,4 +243,6 @@ public class UsersController : ControllerBase
             return BadRequest(wrapperResult);
         }
     }
+    #endregion
+
 }

@@ -57,10 +57,7 @@ public static class Mapper
         {
             Id = user.Id,
             Name = user.Name,
-            DeviceToken = user.DeviceToken,
-            Email = user.Email,
-            //FavoriteGenres = user.FavoriteGenres,
-            //FavoriteMangas = user.FavoriteMangas,
+            Email = user.Email
         };
     }
     #endregion
@@ -71,9 +68,20 @@ public static class Mapper
         return new RememberReadingItem()
         {
             User = user,
-            Manga = manga,
+            MangaId = manga.Id,
             ChapterNumber = inputModel.ChapterNumner,
             Page = inputModel.Page
+        };
+    }
+
+    public static RememberReadingItemViewModel toViewModel(this RememberReadingItem entity, UserViewModel user, MangaEntity manga)
+    {
+        return new RememberReadingItemViewModel()
+        {
+            User = user,
+            Manga = manga,
+            ChapterNumber = entity.ChapterNumber,
+            Page = entity.Page
         };
     }
     #endregion
