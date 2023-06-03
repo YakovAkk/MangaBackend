@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Services.Base;
+using Services.Shared.Constants;
 using WrapperService.Model.ResponseModel;
 using WrapperService.Wrapper;
 
@@ -30,7 +31,7 @@ namespace MangaBackend.Controllers
             try
             {
                 var response = await _authService.LoginAsync(userLoginDTO);
-                HttpContext.Response.Headers.Add("refresh-token", response.RefreshToken);
+                HttpContext.Response.Headers.Add(Constants.RefreshToken, response.RefreshToken);
                 var wrapperResult = WrapperResponseService.Wrap<object>(
                     new { 
                         User_Id  = response.User_Id,
@@ -72,8 +73,8 @@ namespace MangaBackend.Controllers
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> RefreshToken()
         {
-            var refreshToken = HttpContext.Request.Headers["refresh-token"];
-            var userId = HttpContext.Request.Headers["user-id"];
+            var refreshToken = HttpContext.Request.Headers[Constants.RefreshToken];
+            var userId = HttpContext.Request.Headers[Constants.UserId];
 
             var tokenDTO = new RefreshTokenDTO()
             {
@@ -84,7 +85,7 @@ namespace MangaBackend.Controllers
             try
             {
                 var response = await _authService.RefreshToken(tokenDTO);
-                HttpContext.Response.Headers.Add("refresh-token", response.RefreshToken);
+                HttpContext.Response.Headers.Add(Constants.RefreshToken, response.RefreshToken);
                 var wrapperResult = WrapperResponseService.Wrap<object>(
                     new
                     {
@@ -100,7 +101,9 @@ namespace MangaBackend.Controllers
                 return BadRequest(wrapperResult);
             }
         }
-
+        /// <summary>
+        /// Header params user-id, token.
+        /// </summary>
         [HttpGet("verify-email")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Verify()
@@ -110,8 +113,8 @@ namespace MangaBackend.Controllers
                 var query = HttpContext.Request.Query;
                 var verifyDTO = new VerifyDTO() 
                 { 
-                    UserID = query["userId"],
-                    Token = query["token"]
+                    UserID = query[Constants.UserId],
+                    Token = query[Constants.Token]
                 };
                 var response = await _authService.VerifyEmailAsync(verifyDTO);
                 var wrapperResult = WrapperResponseService.Wrap<object>(response);

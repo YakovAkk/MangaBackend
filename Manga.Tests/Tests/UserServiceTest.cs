@@ -44,8 +44,6 @@ namespace Manga.Tests.Tests
             var actualResult = await Service.CreateAsync(expectedResult);
 
             //Assert
-            using var db = CreateDbContext();
-
             Assert.NotNull(actualResult);
             VerifyUser(expectedResult, actualResult);
         }

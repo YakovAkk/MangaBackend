@@ -23,13 +23,5 @@ public partial class MangaEntity : IEntity
         Genres = new List<GenreEntity>();
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
     }
-
-    public override string ToString()
-    {
-        return $"Id = {Id} Name = {Name} PathToTitlePicture = {PathToTitlePicture} " +
-            $"Description = {Description} ReleaseYear = {ReleaseYear} AgeRating = {AgeRating}" +
-            $"NumbetOfChapters = {NumbetOfChapters} Author = {Author} " +
-            $"Genres = {Genres} PathToFoldersWithGlava = {PathToFoldersWithGlava}";
-    }
 }
 

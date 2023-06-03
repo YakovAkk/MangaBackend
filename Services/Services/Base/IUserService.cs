@@ -2,6 +2,7 @@
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Services.Model.InputModel;
+using Services.Model.ViewModel;
 
 namespace Services.Services.Base;
 
@@ -17,12 +18,12 @@ public interface IUserService
     #endregion
 
     #region UsersFavorite
-    Task<bool> AddMangaToFavoriteAsync(int userid, int mangaid);
-    Task<bool> AddGenreToFavoriteAsync(int userid, int genreid);
-    Task<bool> RemoveGenreFromFavoriteAsync(int userid, int genreid);
-    Task<bool> RemoveMangaFromFavoriteAsync(int userid, int mangaid);
-    Task<List<MangaEntity>> GetAllFavoriteMangasAsync(int userid);
-    Task<List<GenreEntity>> GetAllFavoriteGenresAsync(int userid);
+    Task<bool> AddMangaToFavoriteAsync(string userId, int mangaId);
+    Task<bool> AddGenreToFavoriteAsync(string userId, int genreId);
+    Task<bool> RemoveGenreFromFavoriteAsync(string userId, int genreId);
+    Task<bool> RemoveMangaFromFavoriteAsync(string userId, int mangaId);
+    Task<List<MangaEntity>> GetAllFavoriteMangasAsync(string userId);
+    Task<List<GenreEntity>> GetAllFavoriteGenresAsync(string userId);
     #endregion
 
     #region Auth
@@ -30,5 +31,11 @@ public interface IUserService
     Task SetRefreshToken(RefreshToken refreshToken, UserEntity user);
     Task SetResetPasswordToken(ResetPasswordToken resetPasswordToken, UserEntity userExist);
     Task SetVerivicationAsync(UserEntity user);
+    #endregion
+
+    #region Remember reading
+    Task<List<RememberReadingItemViewModel>> GetAllReadingItemsAsync(string userId);
+    Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel);
+    Task<RememberReadingItemViewModel> GetReadingItemAsync(string userId, string mangaId);
     #endregion
 }

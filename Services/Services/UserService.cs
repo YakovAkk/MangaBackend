@@ -3,7 +3,9 @@ using Data.Entities;
 using Data.Helping.Model;
 using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
+using Services.Extensions.ExtensionMapper;
 using Services.Model.InputModel;
+using Services.Model.ViewModel;
 using Services.Services.Base;
 
 namespace Services.Services;
@@ -105,6 +107,7 @@ public class UserService : DbService<AppDBContext>, IUserService
                 .ThenInclude(x => x.Genre)
             .Include(x => x.FavoriteMangasItems)
                 .ThenInclude(x => x.Manga)
+            .Include(x => x.RememberReadingItems)
             .FirstOrDefaultAsync(i => i.Id == userId);
 
         if (user == null)
@@ -128,11 +131,13 @@ public class UserService : DbService<AppDBContext>, IUserService
     #endregion
 
     #region UsersFavorite
-    public async Task<bool> AddGenreToFavoriteAsync(int userId, int genreId)
+    public async Task<bool> AddGenreToFavoriteAsync(string userId, int genreId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
         var genre = await _genreService.GetByIdAsync(genreId);
 
         if (!user.FavoriteGenres.Select(x => x.Id).Contains(genreId))
@@ -145,11 +150,13 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> AddMangaToFavoriteAsync(int userId, int mangaId)
+    public async Task<bool> AddMangaToFavoriteAsync(string userId, int mangaId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
         if (!user.FavoriteMangas.Select(x => x.Id).Contains(mangaId))
@@ -162,11 +169,13 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> RemoveGenreFromFavoriteAsync(int userId, int genreId)
+    public async Task<bool> RemoveGenreFromFavoriteAsync(string userId, int genreId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
         var genre = await _genreService.GetByIdAsync(genreId);
 
         if (user.FavoriteGenres.Select(x => x.Id).Contains(genreId))
@@ -179,11 +188,13 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<bool> RemoveMangaFromFavoriteAsync(int userId, int mangaId)
+    public async Task<bool> RemoveMangaFromFavoriteAsync(string userId, int mangaId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
         var manga = await _mangaService.GetByIdAsync(mangaId);
 
         if (user.FavoriteMangas.Select(x => x.Id).Contains(mangaId))
@@ -196,21 +207,96 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<List<MangaEntity>> GetAllFavoriteMangasAsync(int userId)
+    public async Task<List<MangaEntity>> GetAllFavoriteMangasAsync(string userId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
 
         return user.FavoriteMangas;
     }
-    public async Task<List<GenreEntity>> GetAllFavoriteGenresAsync(int userId)
+    public async Task<List<GenreEntity>> GetAllFavoriteGenresAsync(string userId)
     {
+        var Id = Convert.ToInt32(userId);
+
         using var dbContext = CreateDbContext();
 
-        var user = await GetByIdAsync(userId);
+        var user = await GetByIdAsync(Id);
 
         return user.FavoriteGenres;
     }
     #endregion
+
+    #region RememberReaading
+
+    public async Task<List<RememberReadingItemViewModel>> GetAllReadingItemsAsync(string userId)
+    {
+        var id = Convert.ToInt32(userId);
+
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            var result = new List<RememberReadingItemViewModel>();
+
+            foreach (var item in user.RememberReadingItems)
+            {
+                var manga = await _mangaService.GetByIdAsync(item.MangaId);
+                var userViewModel = user.toViewModel();
+
+                result.Add(item.toViewModel(userViewModel,manga));
+            }
+
+            return result;
+        }
+    }
+
+    public async Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel)
+    {
+        var id = Convert.ToInt32(userId);
+
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            var manga = await _mangaService.GetByIdAsync(inputModel.MangaId);
+            var readingModel = inputModel.toEntity(user, manga);
+
+            user.RememberReadingItems.Add(readingModel);
+
+            dbContext.Users.Update(user);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task<RememberReadingItemViewModel> GetReadingItemAsync(string userId, string mangaId)
+    {
+        var id = Convert.ToInt32(userId);
+        var mId = Convert.ToInt32(mangaId);
+        using (var dbContext = CreateDbContext())
+        {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+                throw new Exception("User doesn't exist!");
+
+            var result = new RememberReadingItemViewModel();
+
+            var item = user.RememberReadingItems.FirstOrDefault(x => x.MangaId == mId);
+            if(item == null)
+                throw new Exception("User hasn't read the manga yet!");
+
+            var manga = await _mangaService.GetByIdAsync(item.MangaId);
+            var userViewModel = user.toViewModel();
+
+            return item.toViewModel(userViewModel, manga);
+        }
+    }
+    #endregion
+
 }

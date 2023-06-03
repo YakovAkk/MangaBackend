@@ -70,7 +70,7 @@ namespace Services.Services
 
             return true;
         }
-        public async Task<TokensViewModel> LoginAsync(UserLoginDTO userDTOLogin)
+        public async Task<TokenViewModel> LoginAsync(UserLoginDTO userDTOLogin)
         {
             UserEntity user;
 
@@ -91,7 +91,7 @@ namespace Services.Services
             var refreshToken = CreateRefreshToken();
             await _userService.SetRefreshToken(refreshToken, user);
 
-            var token = new TokensViewModel()
+            var token = new TokenViewModel()
             {
                 User_Id = user.Id,
                 AccessToken = CreateAccessToken(user),
@@ -129,7 +129,7 @@ namespace Services.Services
 
             return user.toViewModel();
         }
-        public async Task<TokensViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
+        public async Task<TokenViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
         {
             if(!Int32.TryParse(tokenDTO.User_Id, out var userId))
                 throw new Exception("Invalid id!");
@@ -146,7 +146,7 @@ namespace Services.Services
             var newRefreshToken = CreateRefreshToken();
             await _userService.SetRefreshToken(newRefreshToken, user);
 
-            return new TokensViewModel()
+            return new TokenViewModel()
             {
                 User_Id = user.Id,
                 AccessToken = token,
@@ -249,6 +249,7 @@ namespace Services.Services
         {
             var claims = new List<Claim>()
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name)
             };
 
@@ -293,6 +294,7 @@ namespace Services.Services
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
+
         #endregion
     }
 }
