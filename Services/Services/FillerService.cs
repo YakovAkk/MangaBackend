@@ -125,7 +125,21 @@ public class FillerService : IFillerService
         mangas.Add(CreateNarutoManga(genres));
         mangas.Add(CreateSevenDeadlySinsManga(genres));
         mangas.Add(CreateTokyoGhoulSinsManga(genres));
+        mangas.Add(CreatChornaRadaItem(genres));
+        mangas.Add(CreateInstytutkaItem(genres));
+        mangas.Add(CreateIntermezzoItem(genres));
+        mangas.Add(CreateZaDvomaZaizamiItem(genres));
+        mangas.Add(CreatIaRomantikaItem(genres));
+        mangas.Add(CreatMistoItem(genres));
+        mangas.Add(CreatMasterOfShipItem(genres));
         mangas.Add(CreateEneidaItem(genres));
+        mangas.Add(CreateTyhrolovyItem(genres));
+        mangas.Add(CreateTiniPredkivItem(genres));
+        mangas.Add(CreateZhovtyKniazItem(genres));
+        mangas.Add(CreatMarusiaOfShipItem(genres));
+        mangas.Add(CreatKhibaRevytVoluItem(genres));
+        mangas.Add(CreatKaydashevaSimiaItem(genres));
+        mangas.Add(CreatMarusiaChurayItem(genres));
 
         try
         {
@@ -467,6 +481,520 @@ public class FillerService : IFillerService
             AgeRating = "0+",
             Author = "Ivan Petrovich Kotlyarevskyi",
             ReleaseYear = 1798
+        };
+    }
+    private MangaInput CreateIntermezzoItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Martial arts",
+           "Drama"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/intermezzo/glava1/intermezzo.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Intermezzo",
+            PathToTitlePicture = "manga/intermezzo/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "імпресіоністична новела українського письменника Михайла Коцюбинського, написана в 1908 році в Чернігові. Новела складається з 11 частин, що пов’язані образом митця — учасника й оповідача зображуваного; розповідає про його духовне одужання при зустрічі з природою. У творі порушено проблеми душевної рівноваги, повноцінного життя, специфіки творчого процесу.",
+            NumbetOfChapters = 12,
+            AgeRating = "0+",
+            Author = "Mykhailo Mykhailovych Kotsyubynskyi",
+            ReleaseYear = 1908
+        };
+    }
+    private MangaInput CreateInstytutkaItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Poem"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/instytutka/glava1/instytutka.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Інститутка",
+            PathToTitlePicture = "manga/instytutka/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "повість української письменниці Марко Вовчок, вперше видана у 1862 році в українському діаспорному журналі Санкт-Петербургу «Основа». Перша в українській літературі соціальна повість.\r\nВ основі сюжету твору — наростання соціальних суперечностей в українському селі напередодні ліквідації кріпацтва, розкриття характерів двох антагоністичних сил: панів-кріпосників і селян-кріпаків, стихійний протест проти жорстокості та сваволі панства, засудження кріпацтва як великого соціального зла.",
+            NumbetOfChapters = 12,
+            AgeRating = "18+",
+            Author = "Marko Vovchok",
+            ReleaseYear = 1862
+        };
+    }
+    private MangaInput CreateZaDvomaZaizamiItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Poem"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/za-dvoma-zaytsiamy/glava1/za-dvoma-zaytsiamy.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "За двома зайцями",
+            PathToTitlePicture = "manga/za-dvoma-zaytsiamy/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "комедійна п'єса українського драматурга Михайла Старицького. Написана 1883 року українською мовою.\r\nУ ній розповідається про цирульника Свирида Голохвостого, який намагається розбагатіти, одружившись із багатою міщанкою Пронею Сірко, і, водночас, залицяється до бідної дівчини-красуні Галі.\r\nУ п'єсі порушується проблема соціальної нерівності, висміюється життя українських русифікованих міщан Києва.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Mykhailo Petrovich Starytskyi",
+            ReleaseYear = 1883
+        };
+    }
+    private MangaInput CreateTyhrolovyItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Action",
+           "Martial arts",
+           "Drama",
+           "Comedy",
+           "Adventures",
+           "GG man",
+           "Friendship",
+           "Revenge",
+           "Poem"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/tyhrolovy/glava1/tyhrolovy.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Тигролови",
+            PathToTitlePicture = "manga/tyhrolovy/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Пригодницький роман з автобіографічними елементами Івана Багряного, написаний та виданий 1944 року як «Звіролови» у львівському журналі «Вечірня година». Чернетка оригіналу тексту «Звіроловів/Тигроловів» залишилась в підрадянській Україні й відповідно після переїзду автора в Німеччину у 1944—1946 роках Багряному довелося повністю відновлювати текст з пам'яті; цю відновлену версію було видано 1946 року під назвою «Тигролови» у ной-ульмському видавництві «Прометей».",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Ivan Bagryany",
+            ReleaseYear = 1946
+        };
+    }
+    private MangaInput CreateTiniPredkivItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Poem"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/tini-zabutykh-predkiv/glava1/tini-zabutykh-predkiv.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Тіні забутих предків",
+            PathToTitlePicture = "manga/tini-zabutykh-predkiv/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "повість українського письменника Михайла Коцюбинського, написана під враженням його перебування на Гуцульщині в 1911 році.\r\nУ творі розповідається про кохання гуцулів Івана й Марічки з ворогуючих родів. У повісті яскраво передано гуцульські побут і життя з елементами фольклору.",
+            NumbetOfChapters = 12,
+            AgeRating = "12+",
+            Author = "Mykhailo Mykhailovych Kotsiubynskyi",
+            ReleaseYear = 1912
+        };
+    }
+    private MangaInput CreateZhovtyKniazItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Poem"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/zhovtyy-kniaz/glava1/zhovtyy-kniaz.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Жовтий князь",
+            PathToTitlePicture = "manga/zhovtyy-kniaz/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "роман українського письменника Василя Барки, присвячений Голодомору 1932—1933 років.",
+            NumbetOfChapters = 12,
+            AgeRating = "18+",
+            Author = "Vasyl Barka",
+            ReleaseYear = 1962
+        };
+    }
+    private MangaInput CreatChornaRadaItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/chorna-rada/glava1/chorna-rada.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Чорна рада",
+            PathToTitlePicture = "manga/chorna-rada/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Історичний роман українського письменника Пантелеймона Куліша, у якому зображено відому історичну подію — чорну раду, що відбулася в Ніжині 1663 року, відтворено соціальні суперечності в Україні після переможної визвольної війни та приєднання до Московського царства.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Panteleimon Oleksandrovich Kulish",
+            ReleaseYear = 1857
+        };
+    }
+    private MangaInput CreatMistoItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/misto/glava1/misto.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Місто",
+            PathToTitlePicture = "manga/misto/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Урбаністичний роман українського письменника Валер'яна Підмогильного, опублікований 1928 року.\r\nВалер'ян Підмогильний створив модерний роман, в якому, на відміну від традиційної селянської і соціальної тематики, акцент перенесений на урбаністичну проблематику, порушені філософські питання буття й аналізована психіка героїв, а конфлікт розгортається між людьми з різними світоглядами. «Місто» — перший урбаністичний роман в українській літературі, з новими героями, проблематикою та манерою оповіді.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Valerian Petrovych Podoghilnyi",
+            ReleaseYear = 1928
+        };
+    }
+    private MangaInput CreatMasterOfShipItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/mayster-korablia/glava1/mayster-korablia.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Майстер корабля",
+            PathToTitlePicture = "manga/mayster-korablia/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Дебютний роман українського письменника Юрія Яновського, що порушує низку питань, особливо актуальних для модерністського покоління митців, та відображає творчу атмосферу 20–х років XX століття. Текст має ознаки містифікації, але все ж уважається автобіографічним. Роман написаний у 1928 році.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Yury Ivanovich Yanovskyi",
+            ReleaseYear = 1928
+        };
+    }
+    private MangaInput CreatMarusiaOfShipItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance",
+           "Drama"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/marusia/glava1/marusia.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Маруся",
+            PathToTitlePicture = "manga/marusia/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Драматична повість Григорія Квітки-Основ'яненка, написана в 1832 та опублікована в 1834 році.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Grigory Fedorovich Kvitka-Osnovyanenko",
+            ReleaseYear = 1834
+        };
+    }
+    private MangaInput CreatIaRomantikaItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/ia-(romantyka)/glava1/ia-(romantyka).pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Я (Романтика)",
+            PathToTitlePicture = "manga/ia-(romantyka)/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Психологічна новела українського письменника Миколи Хвильового, ідеєю якої є фатальна невідповідність між ідеалами революції та методами їх досягнення, засудження більшовицького революційного фанатизму; світ врятує любов, усепрощення.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Mykola Khvylovy",
+            ReleaseYear = 1924
+        };
+    }
+    private MangaInput CreatKhibaRevytVoluItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/khiba-revut-voly-iak-iasla-povni/glava1/khiba-revut-voly-iak-iasla-povni.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Хіба ревуть воли, як ясла повні?",
+            PathToTitlePicture = "manga/khiba-revut-voly-iak-iasla-povni/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Роман українського письменника Панаса Мирного, написаний у співавторстві з Іваном Біликом, Створювався 4 роки (1872-1875). У листопаді 1872 р. була написана повість «Чіпка». Остаточний варіант твору під назвою «Пропаща сила» або «Хіба ревуть воли, як ясла повні» був опублікований 1880 року в Женеві.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Panas Mirnyi",
+            ReleaseYear = 1875
+        };
+    }
+    private MangaInput CreatKaydashevaSimiaItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/kaydasheva-simia/glava1/kaydasheva-simia.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Кайдашева сім'я",
+            PathToTitlePicture = "manga/kaydasheva-simia/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Реалістична соціально-побутова повість українського письменника Івана Семеновича Нечуя-Левицького, написана 1878 року та вперше надрукована 1879 року у львівському журналі «Правда».\r\nУ повісті через серію трагікомічних ситуацій з життя родини Кайдашів демонструється шкода від духовної роз'єднаності, яка призводить до егоїзму, розбрату, невмілого користування спадком попередніх поколінь.",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Nechuy-Levytsky Ivan Semenovych",
+            ReleaseYear = 1879
+        };
+    }
+    private MangaInput CreatMarusiaChurayItem(List<GenreEntity> genres)
+    {
+        var genresForTheManga = new List<string>()
+        {
+           "Romance"
+        };
+
+        var genres_id = new List<int>();
+        foreach (var genre in genres.Where(i => genresForTheManga.Contains(i.Name)))
+        {
+            genres_id.Add(genre.Id);
+        }
+
+        var PathToFoldersWithGlava = new List<GlavaMangaEntity>()
+        {
+            new GlavaMangaEntity()
+            {
+                NumberOfGlava = 1,
+                LinkToFirstPicture = "manga/marusia-churay/glava1/marusia-churay.pdf",
+                NumberOfPictures = 1
+            }
+        };
+
+        return new MangaInput()
+        {
+            Name = "Маруся Чурай",
+            PathToTitlePicture = "manga/marusia-churay/titleimage.jpg",
+            Genres_Ids = genres_id,
+            PathToFoldersWithGlava = PathToFoldersWithGlava,
+            Description = "Історичний роман у віршах української письменниці Ліни Костенко, опублікований 1979 року. Сюжет вибудовано навколо легенди про Марусю Чурай — відому українську піснярку. У міні-пролозі роману є вказівка на історичну основу твору: «Влітку 1658 року Полтава згоріла дощенту»[1]. Справжні події XVII ст., на тлі яких розвивається сюжет твору, відтворено в образах Богдана Хмельницького, Якова Остряниці, Северина Наливайка, Павла Павлюка, Яреми Вишневецького. У 1987 році за роман авторка була відзначена премією імені Тараса Шевченка[2].",
+            NumbetOfChapters = 12,
+            AgeRating = "16+",
+            Author = "Nechuy-Levytsky Ivan Semenovych",
+            ReleaseYear = 1979
         };
     }
     #endregion
