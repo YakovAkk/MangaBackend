@@ -304,7 +304,7 @@ namespace Manga.Tests.Tests
             //Assert
             for (int i = 0; i < expectedResult.Count; i++)
             {
-                VerifyManga(expectedResult[i], actualResult[i]);
+                VerifyMangaEntity(expectedResult[i], actualResult[i]);
             }
         }
         [Fact]

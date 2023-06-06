@@ -3,7 +3,6 @@ using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
 using Services;
 using Services.Core.Paginated;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services;
 using Xunit;
@@ -45,11 +44,12 @@ namespace Manga.Tests.Tests
             SetupEnvironmentData();
             var expectedResult = new List<GenreEntity>()
             {
-                Util.GetGenre(),
-                new GenreEntity()
+                 new GenreEntity()
                 {
                     Name = "aaa"
-                }
+                },
+                Util.GetGenre()
+               
             };
 
             //Act

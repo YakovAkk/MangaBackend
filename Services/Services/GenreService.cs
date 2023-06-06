@@ -3,7 +3,6 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services.Base;
 using ValidateService.Validate;
@@ -110,4 +109,13 @@ public class GenreService : DbService<AppDBContext>, IGenreService
 
         return genre != null;
     }
+
+    #region Internal
+    public IQueryable<GenreEntity> GetRangeByIdInternalAsync(List<int> recomendedGenresIds, AppDBContext context)
+    {
+        return context.Genres
+            .Include(x => x.Mangas)
+            .Where(x => recomendedGenresIds.Contains(x.Id));
+    }
+    #endregion
 }

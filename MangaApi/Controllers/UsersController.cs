@@ -245,4 +245,25 @@ public class UsersController : ControllerBase
     }
     #endregion
 
+    #region Recommendation
+    [HttpGet("recommendation")]
+    public async Task<IActionResult> GetRecommendationsItems()
+    {
+        var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return Unauthorized();
+
+        try
+        {
+            var result = await _userService.GetRecommendationsAsync(userId);
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+            return Ok(wrapperResult);
+        }
+        catch (Exception ex)
+        {
+            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
+            return BadRequest(wrapperResult);
+        }
+    }
+    #endregion
 }

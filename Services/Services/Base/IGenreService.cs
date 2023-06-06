@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
 using Services.Core.Paginated;
 using Services.Model.DTO;
 
@@ -12,4 +13,8 @@ public interface IGenreService
     Task<GenreEntity> GetByIdAsync(int id);
     Task<List<GenreEntity>> GetAllAsync();
     Task<bool> IsGenreExistAsync(int genreId);
+
+    #region Internal
+    IQueryable<GenreEntity> GetRangeByIdInternalAsync(List<int> recomendedGenresIds, AppDBContext context);
+    #endregion
 }

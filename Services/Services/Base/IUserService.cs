@@ -37,5 +37,6 @@ public interface IUserService
     Task<List<RememberReadingItemViewModel>> GetAllReadingItemsAsync(string userId);
     Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel);
     Task<RememberReadingItemViewModel> GetReadingItemAsync(string userId, string mangaId);
+    Task<List<MangaViewModel>> GetRecommendationsAsync(string userId);
     #endregion
 }

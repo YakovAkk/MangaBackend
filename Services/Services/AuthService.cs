@@ -7,7 +7,6 @@ using EmailingService.Services.Base;
 using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.Configuration;
 using Services.Model.DTO;
 using Services.Model.InputModel;
@@ -112,7 +111,10 @@ namespace Services.Services
 
             var verificationToken = CreateRandomToken();
 
-            var userModel = userDTO.toEntity(passwordHash, passwordSalt, verificationToken);
+            var userModel = userDTO.MapTo<UserEntity>();
+            userModel.PasswordHash = passwordHash;
+            userModel.PasswordSalt = passwordSalt;
+            userModel.VerificationToken = verificationToken;
 
             var user = await _userService.CreateAsync(userModel);
 

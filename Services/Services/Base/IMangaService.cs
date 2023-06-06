@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
 using Services.Core.Paginated;
 using Services.Model.DTO;
 using Services.Model.ViewModel;
@@ -14,4 +15,9 @@ public interface IMangaService
     Task<List<MangaViewModel>> GetAllAsync();
     Task<List<MangaEntity>> FiltrationByDateAsync(int year);
     Task<bool> IsMangaExistAsync(int mangaId);
+
+    #region Internal
+    IQueryable<MangaEntity> GetRangeByIdInternalAsync(List<int> sharedMangasIds, AppDBContext context);
+    IQueryable<MangaEntity> GetAllInternalAsync(AppDBContext context);
+    #endregion
 }
