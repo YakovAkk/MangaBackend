@@ -1,9 +1,8 @@
 ﻿using Data.Database;
 using Data.Entities;
-using Data.Helping.Model;
-using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
+using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;

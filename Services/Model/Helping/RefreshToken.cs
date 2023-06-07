@@ -1,4 +1,4 @@
-﻿namespace Data.Model.ViewModel
+﻿namespace Services.Model.Helping
 {
     public class RefreshToken
     {

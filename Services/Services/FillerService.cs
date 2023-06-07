@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
-using Services.Model.DTO;
+using Services.Model.InputModel;
+using Services.Model.ViewModel;
 using Services.Services.Base;
 
 namespace Services.Services;
@@ -16,67 +17,67 @@ public class FillerService : IFillerService
         _authService = authService;
     }
 
-    public async Task<ResponseFillDTO> AddGenres()
+    public async Task<ResponseViewModel> AddGenres()
     {
-        var listOfGenres = new List<GenreInput>()
+        var listOfGenres = new List<GenreInputModel>()
         {
-            new GenreInput("Action"),
-            new GenreInput("Romance"),
-            new GenreInput("Comedy"),
-            new GenreInput("Drama"),
-            new GenreInput("Fantasy"),
-            new GenreInput("Everyday life"),
-            new GenreInput("Adventures"),
-            new GenreInput("Art"),
-            new GenreInput("Madness"),
-            new GenreInput("Action movie"),
-            new GenreInput("Military"),
-            new GenreInput("Harem"),
-            new GenreInput("Gender intrigue"),
-            new GenreInput("Heroic fantasy"),
-            new GenreInput("Demons"),
-            new GenreInput("Detective"),
-            new GenreInput("Children's"),
-            new GenreInput("Josei"),
-            new GenreInput("The game"),
-            new GenreInput("Isekai"),
-            new GenreInput("Story"),
-            new GenreInput("Cyberpunk"),
-            new GenreInput("Kodomo"),
-            new GenreInput("Space"),
-            new GenreInput("Magic"),
-            new GenreInput("Maho-shoujo"),
-            new GenreInput("Cars"),
-            new GenreInput("Fur"),
-            new GenreInput("Mystic"),
-            new GenreInput("Music"),
-            new GenreInput("Science fiction"),
-            new GenreInput("Omegaverse"),
-            new GenreInput("Parody"),
-            new GenreInput("Police"),
-            new GenreInput("Post-apocalyptic"),
-            new GenreInput("Psychology"),
-            new GenreInput("Samurai fighter"),
-            new GenreInput("Supernatural"),
-            new GenreInput("Shojo"),
-            new GenreInput("Shojo-ai"),
-            new GenreInput("Shonen"),
-            new GenreInput("Shonen Ai"),
-            new GenreInput("Sport"),
-            new GenreInput("Superpower"),
-            new GenreInput("Seinen"),
-            new GenreInput("Tragedy"),
-            new GenreInput("Thriller"),
-            new GenreInput("Horror"),
-            new GenreInput("Fiction"),
-            new GenreInput("Schlola"),
-            new GenreInput("Erotica"),
-            new GenreInput("Ecchi"),
-            new GenreInput("Yuri"),
-            new GenreInput("Yaoi"),
-            new GenreInput("Burlesque"),
-            new GenreInput("Travesty"),
-            new GenreInput("Poem"),
+            new GenreInputModel("Action"),
+            new GenreInputModel("Romance"),
+            new GenreInputModel("Comedy"),
+            new GenreInputModel("Drama"),
+            new GenreInputModel("Fantasy"),
+            new GenreInputModel("Everyday life"),
+            new GenreInputModel("Adventures"),
+            new GenreInputModel("Art"),
+            new GenreInputModel("Madness"),
+            new GenreInputModel("Action movie"),
+            new GenreInputModel("Military"),
+            new GenreInputModel("Harem"),
+            new GenreInputModel("Gender intrigue"),
+            new GenreInputModel("Heroic fantasy"),
+            new GenreInputModel("Demons"),
+            new GenreInputModel("Detective"),
+            new GenreInputModel("Children's"),
+            new GenreInputModel("Josei"),
+            new GenreInputModel("The game"),
+            new GenreInputModel("Isekai"),
+            new GenreInputModel("Story"),
+            new GenreInputModel("Cyberpunk"),
+            new GenreInputModel("Kodomo"),
+            new GenreInputModel("Space"),
+            new GenreInputModel("Magic"),
+            new GenreInputModel("Maho-shoujo"),
+            new GenreInputModel("Cars"),
+            new GenreInputModel("Fur"),
+            new GenreInputModel("Mystic"),
+            new GenreInputModel("Music"),
+            new GenreInputModel("Science fiction"),
+            new GenreInputModel("Omegaverse"),
+            new GenreInputModel("Parody"),
+            new GenreInputModel("Police"),
+            new GenreInputModel("Post-apocalyptic"),
+            new GenreInputModel("Psychology"),
+            new GenreInputModel("Samurai fighter"),
+            new GenreInputModel("Supernatural"),
+            new GenreInputModel("Shojo"),
+            new GenreInputModel("Shojo-ai"),
+            new GenreInputModel("Shonen"),
+            new GenreInputModel("Shonen Ai"),
+            new GenreInputModel("Sport"),
+            new GenreInputModel("Superpower"),
+            new GenreInputModel("Seinen"),
+            new GenreInputModel("Tragedy"),
+            new GenreInputModel("Thriller"),
+            new GenreInputModel("Horror"),
+            new GenreInputModel("Fiction"),
+            new GenreInputModel("Schlola"),
+            new GenreInputModel("Erotica"),
+            new GenreInputModel("Ecchi"),
+            new GenreInputModel("Yuri"),
+            new GenreInputModel("Yaoi"),
+            new GenreInputModel("Burlesque"),
+            new GenreInputModel("Travesty"),
+            new GenreInputModel("Poem"),
         };
 
         try
@@ -85,14 +86,14 @@ public class FillerService : IFillerService
 
             if (!resultGenre.Any())
             {
-                return new ResponseFillDTO()
+                return new ResponseViewModel()
                 {
                     IsSuccess = false,
                     MessageWhatWrong = "The Ganres is already conteited in the database"
                 };
             }
 
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = true,
                 MessageWhatWrong = ""
@@ -100,27 +101,27 @@ public class FillerService : IFillerService
         }
         catch (Exception ex)
         {
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = false,
                 MessageWhatWrong = ex.Message
             };
         }
     }
-    public async Task<ResponseFillDTO> AddMangas()
+    public async Task<ResponseViewModel> AddMangas()
     {
         var genres = await _genreService.GetAllAsync();
 
         if (!genres.Any())
         {
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = false,
                 MessageWhatWrong = "The database doesn't have any genres!"
             };
         }
 
-        var mangas = new List<MangaInput>();
+        var mangas = new List<MangaInputModel>();
         mangas.Add(CreateAttackOfTheTitansManga(genres));
         mangas.Add(CreateNarutoManga(genres));
         mangas.Add(CreateSevenDeadlySinsManga(genres));
@@ -147,14 +148,14 @@ public class FillerService : IFillerService
 
             if (!resultManga.Any())
             {
-                return new ResponseFillDTO()
+                return new ResponseViewModel()
                 {
                     IsSuccess = false,
                     MessageWhatWrong = "The mangas is already conteined in the database!"
                 };
             }
 
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = true,
                 MessageWhatWrong = ""
@@ -162,16 +163,16 @@ public class FillerService : IFillerService
         }
         catch (Exception ex)
         {
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = false,
                 MessageWhatWrong = ex.Message
             };
         }
     }
-    public async Task<ResponseFillDTO> AddAdmin()
+    public async Task<ResponseViewModel> AddAdmin()
     {
-        var admin = new UserRegistrationDTO()
+        var admin = new UserRegistrationInputModel()
         {
             Name = "admin",
             Email = "admin@gmail.com",
@@ -183,14 +184,14 @@ public class FillerService : IFillerService
 
         if (response is null)
         {
-            return new ResponseFillDTO()
+            return new ResponseViewModel()
             {
                 IsSuccess = false,
                 MessageWhatWrong = "Error"
             };
         }
 
-        return new ResponseFillDTO()
+        return new ResponseViewModel()
         {
             IsSuccess = true,
             MessageWhatWrong = ""
@@ -198,7 +199,7 @@ public class FillerService : IFillerService
     }
 
     #region Private
-    private MangaInput CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
+    private MangaInputModel CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -249,7 +250,7 @@ public class FillerService : IFillerService
             },
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Attack of the Titans",
             PathToTitlePicture = "manga/attackofthetitans/titleimage.jpg",
@@ -262,7 +263,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2009
         };
     }
-    private MangaInput CreateNarutoManga(List<GenreEntity> genres)
+    private MangaInputModel CreateNarutoManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -301,7 +302,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Naruto",
             PathToTitlePicture = "manga/naruto/titleimage.jpg",
@@ -314,7 +315,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1999
         };
     }
-    private MangaInput CreateSevenDeadlySinsManga(List<GenreEntity> genres)
+    private MangaInputModel CreateSevenDeadlySinsManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -363,7 +364,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Seven Deadly Sins",
             PathToTitlePicture = "manga/sevendeadlysins/titleimage.jpg",
@@ -376,7 +377,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2012
         };
     }
-    private MangaInput CreateTokyoGhoulSinsManga(List<GenreEntity> genres)
+    private MangaInputModel CreateTokyoGhoulSinsManga(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -420,7 +421,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "TokyoGhoul",
             PathToTitlePicture = "manga/tokyoghoul/titleimage.jpg",
@@ -434,7 +435,7 @@ public class FillerService : IFillerService
             ReleaseYear = 2011
         };
     }
-    private MangaInput CreateEneidaItem(List<GenreEntity> genres)
+    private MangaInputModel CreateEneidaItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -470,7 +471,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Eneida",
             PathToTitlePicture = "manga/eneida/titleimage.jpg",
@@ -483,7 +484,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1798
         };
     }
-    private MangaInput CreateIntermezzoItem(List<GenreEntity> genres)
+    private MangaInputModel CreateIntermezzoItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -507,7 +508,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Intermezzo",
             PathToTitlePicture = "manga/intermezzo/titleimage.jpg",
@@ -520,7 +521,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1908
         };
     }
-    private MangaInput CreateInstytutkaItem(List<GenreEntity> genres)
+    private MangaInputModel CreateInstytutkaItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -543,7 +544,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Інститутка",
             PathToTitlePicture = "manga/instytutka/titleimage.jpg",
@@ -556,7 +557,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1862
         };
     }
-    private MangaInput CreateZaDvomaZaizamiItem(List<GenreEntity> genres)
+    private MangaInputModel CreateZaDvomaZaizamiItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -579,7 +580,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "За двома зайцями",
             PathToTitlePicture = "manga/za-dvoma-zaytsiamy/titleimage.jpg",
@@ -592,7 +593,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1883
         };
     }
-    private MangaInput CreateTyhrolovyItem(List<GenreEntity> genres)
+    private MangaInputModel CreateTyhrolovyItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -623,7 +624,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Тигролови",
             PathToTitlePicture = "manga/tyhrolovy/titleimage.jpg",
@@ -636,7 +637,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1946
         };
     }
-    private MangaInput CreateTiniPredkivItem(List<GenreEntity> genres)
+    private MangaInputModel CreateTiniPredkivItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -659,7 +660,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Тіні забутих предків",
             PathToTitlePicture = "manga/tini-zabutykh-predkiv/titleimage.jpg",
@@ -672,7 +673,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1912
         };
     }
-    private MangaInput CreateZhovtyKniazItem(List<GenreEntity> genres)
+    private MangaInputModel CreateZhovtyKniazItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -695,7 +696,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Жовтий князь",
             PathToTitlePicture = "manga/zhovtyy-kniaz/titleimage.jpg",
@@ -708,7 +709,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1962
         };
     }
-    private MangaInput CreatChornaRadaItem(List<GenreEntity> genres)
+    private MangaInputModel CreatChornaRadaItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -731,7 +732,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Чорна рада",
             PathToTitlePicture = "manga/chorna-rada/titleimage.jpg",
@@ -744,7 +745,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1857
         };
     }
-    private MangaInput CreatMistoItem(List<GenreEntity> genres)
+    private MangaInputModel CreatMistoItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -767,7 +768,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Місто",
             PathToTitlePicture = "manga/misto/titleimage.jpg",
@@ -780,7 +781,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1928
         };
     }
-    private MangaInput CreatMasterOfShipItem(List<GenreEntity> genres)
+    private MangaInputModel CreatMasterOfShipItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -803,7 +804,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Майстер корабля",
             PathToTitlePicture = "manga/mayster-korablia/titleimage.jpg",
@@ -816,7 +817,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1928
         };
     }
-    private MangaInput CreatMarusiaOfShipItem(List<GenreEntity> genres)
+    private MangaInputModel CreatMarusiaOfShipItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -840,7 +841,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Маруся",
             PathToTitlePicture = "manga/marusia/titleimage.jpg",
@@ -853,7 +854,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1834
         };
     }
-    private MangaInput CreatIaRomantikaItem(List<GenreEntity> genres)
+    private MangaInputModel CreatIaRomantikaItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -876,7 +877,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Я (Романтика)",
             PathToTitlePicture = "manga/ia-(romantyka)/titleimage.jpg",
@@ -889,7 +890,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1924
         };
     }
-    private MangaInput CreatKhibaRevytVoluItem(List<GenreEntity> genres)
+    private MangaInputModel CreatKhibaRevytVoluItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -912,7 +913,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Хіба ревуть воли, як ясла повні?",
             PathToTitlePicture = "manga/khiba-revut-voly-iak-iasla-povni/titleimage.jpg",
@@ -925,7 +926,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1875
         };
     }
-    private MangaInput CreatKaydashevaSimiaItem(List<GenreEntity> genres)
+    private MangaInputModel CreatKaydashevaSimiaItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -948,7 +949,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Кайдашева сім'я",
             PathToTitlePicture = "manga/kaydasheva-simia/titleimage.jpg",
@@ -961,7 +962,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1879
         };
     }
-    private MangaInput CreatMarusiaChurayItem(List<GenreEntity> genres)
+    private MangaInputModel CreatMarusiaChurayItem(List<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
         {
@@ -984,7 +985,7 @@ public class FillerService : IFillerService
             }
         };
 
-        return new MangaInput()
+        return new MangaInputModel()
         {
             Name = "Маруся Чурай",
             PathToTitlePicture = "manga/marusia-churay/titleimage.jpg",

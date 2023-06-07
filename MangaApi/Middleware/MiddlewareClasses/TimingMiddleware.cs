@@ -1,8 +1,7 @@
 ﻿namespace MangaBackend.Middleware.MiddlewareClasses;
 
-public class TimingMiddleware
+public class TimingMiddleware 
 {
-
     public ILogger<TimingMiddleware> _logger { get; }
     public RequestDelegate _next { get; }
     public TimingMiddleware(ILogger<TimingMiddleware> logger, RequestDelegate next)

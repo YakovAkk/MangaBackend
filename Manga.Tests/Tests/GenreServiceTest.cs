@@ -22,10 +22,10 @@ namespace Manga.Tests.Tests
         public async void AddRangeAsyncTestRegularCase()
         {
             //Arrange
-            var genreInput = new List<GenreInput>()
+            var genreInput = new List<GenreInputModel>()
             {
-               new GenreInput("genreInput1"),
-               new GenreInput("genreInput2"),
+               new GenreInputModel("genreInput1"),
+               new GenreInputModel("genreInput2"),
             };
             var expectedResult = genreInput.Select(x => x.MapTo<GenreEntity>()).ToList();
 

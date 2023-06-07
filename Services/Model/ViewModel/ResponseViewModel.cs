@@ -1,6 +1,6 @@
-﻿namespace Services.Model.DTO;
+﻿namespace Services.Model.ViewModel;
 
-public class ResponseFillDTO
+public class ResponseViewModel
 {
     public bool IsSuccess { get; set; }
     public string MessageWhatWrong { get; set; }

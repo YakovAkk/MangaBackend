@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
-using Data.Helping.Model;
-using Data.Model.ViewModel;
+using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 

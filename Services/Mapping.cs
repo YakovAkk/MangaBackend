@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
 using Omu.ValueInjecter;
-using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 
@@ -14,7 +13,7 @@ namespace Services
         {
             mapper = new MapperInstance();
 
-            mapper.AddMap<GenreInput, GenreEntity>((from) =>
+            mapper.AddMap<GenreInputModel, GenreEntity>((from) =>
             {
                 var entity = new GenreEntity().InjectFrom(from) as GenreEntity;
                 return entity;
@@ -25,7 +24,7 @@ namespace Services
                 var viewModel = new UserViewModel().InjectFrom(from) as UserViewModel;
                 return viewModel;
             });
-            mapper.AddMap<UserRegistrationDTO, UserEntity>((from) =>
+            mapper.AddMap<UserRegistrationInputModel, UserEntity>((from) =>
             {
                 var entity = new UserEntity().InjectFrom(from) as UserEntity;
                 return entity;
@@ -36,7 +35,7 @@ namespace Services
                 var viewModel = new MangaViewModel().InjectFrom(from) as MangaViewModel;
                 return viewModel;
             });
-            mapper.AddMap<MangaInput, MangaEntity>((from) =>
+            mapper.AddMap<MangaInputModel, MangaEntity>((from) =>
             {
                 var entity = new MangaEntity().InjectFrom(from) as MangaEntity;
                 return entity;

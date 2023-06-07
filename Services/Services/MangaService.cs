@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
 using Services.Model.Configuration;
-using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
 using ValidateService.Validate;
@@ -58,7 +58,7 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return viewModels;
     }
-    public async Task<List<MangaViewModel>> AddRangeAsync(List<MangaInput> mangas)
+    public async Task<List<MangaViewModel>> AddRangeAsync(List<MangaInputModel> mangas)
     {
         var genresIds = mangas.SelectMany(x => x.Genres_Ids).ToList();
         using (var dbContext = CreateDbContext()) 

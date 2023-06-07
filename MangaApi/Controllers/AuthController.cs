@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Model.DTO;
 using Services.Model.InputModel;
 using Services.Services.Base;
 using Services.Shared.Constants;
@@ -15,7 +14,7 @@ namespace MangaBackend.Controllers
     {
         private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService )
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -26,7 +25,7 @@ namespace MangaBackend.Controllers
         /// </summary>
         [HttpPost("sign-in")] 
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> Login([FromBody] UserLoginInputModel userLoginDTO)
         {
             try
             {
@@ -48,7 +47,7 @@ namespace MangaBackend.Controllers
 
         [HttpPost("sign-up")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Registration([FromBody] UserRegistrationDTO user)
+        public async Task<IActionResult> Registration([FromBody] UserRegistrationInputModel user)
         {
             try
             {
@@ -76,10 +75,10 @@ namespace MangaBackend.Controllers
             var refreshToken = HttpContext.Request.Headers[Constants.RefreshToken];
             var userId = HttpContext.Request.Headers[Constants.UserId];
 
-            var tokenDTO = new RefreshTokenDTO()
+            var tokenDTO = new TokenInputModel()
             {
-                User_Id = userId,
-                RefreshToken = refreshToken
+                UserId = userId,
+                Token = refreshToken
             };
 
             try
@@ -106,14 +105,14 @@ namespace MangaBackend.Controllers
         /// </summary>
         [HttpGet("verify-email")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Verify()
+        public async Task<IActionResult> VerifyEmail()
         {
             try
             {
                 var query = HttpContext.Request.Query;
-                var verifyDTO = new VerifyDTO() 
+                var verifyDTO = new TokenInputModel() 
                 { 
-                    UserID = query[Constants.UserId],
+                    UserId = query[Constants.UserId],
                     Token = query[Constants.Token]
                 };
                 var response = await _authService.VerifyEmailAsync(verifyDTO);
@@ -130,7 +129,7 @@ namespace MangaBackend.Controllers
 
         [HttpPost("resend-verify-email-letter")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email)
+        public async Task<IActionResult> ResendVerifyEmailLetter([FromBody] SendVerifyEmailLetterInputModel email)
         {
             try
             {
@@ -148,7 +147,7 @@ namespace MangaBackend.Controllers
 
         [HttpPost("send-reset-password-token")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendResetPasswordToken(SendResetTokenDTO sendResetTokenDTO)
+        public async Task<IActionResult> SendResetPasswordToken([FromBody] SendVerifyEmailLetterInputModel sendResetTokenDTO)
         {
             try
             {
@@ -166,7 +165,7 @@ namespace MangaBackend.Controllers
 
         [HttpPost("reset-password")]
         [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordInputModel inputModel)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordInputModel inputModel)
         {
             try
             {
@@ -181,8 +180,6 @@ namespace MangaBackend.Controllers
                 return BadRequest(wrapperResult);
             }
         }
-
-
         #endregion
     }
 }

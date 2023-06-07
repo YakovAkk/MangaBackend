@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Services.Model.DTO;
+namespace Services.Model.InputModel;
 
-public class UserLoginDTO
+public class UserLoginInputModel
 {
     public string NameOrEmail { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;

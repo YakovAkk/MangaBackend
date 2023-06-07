@@ -3,7 +3,7 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services.Base;
 using ValidateService.Validate;
 
@@ -14,7 +14,7 @@ public class GenreService : DbService<AppDBContext>, IGenreService
     public GenreService(DbContextOptions<AppDBContext> dbContextOptions) 
         : base(dbContextOptions) { }
     
-    public async Task<List<GenreEntity>> AddRangeAsync(List<GenreInput> genres)
+    public async Task<List<GenreEntity>> AddRangeAsync(List<GenreInputModel> genres)
     {
         using var dbContext = CreateDbContext();
 

@@ -1,14 +1,12 @@
 ﻿using Data.Database;
 using Data.Entities;
-using Data.Helping.Model;
-using Data.Model.ViewModel;
 using EmailingService.Model;
 using EmailingService.Services.Base;
 using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services.Model.Configuration;
-using Services.Model.DTO;
+using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
@@ -42,7 +40,7 @@ namespace Services.Services
             _appConfiguration = appConfiguration;
         }
 
-        public async Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO)
+        public async Task<bool> SendResetTokenAsync(SendVerifyEmailLetterInputModel sendResetTokenDTO)
         {
             var user = await _userService.GetUserByEmailAsync(sendResetTokenDTO.Email);
 
@@ -69,7 +67,7 @@ namespace Services.Services
 
             return true;
         }
-        public async Task<TokenViewModel> LoginAsync(UserLoginDTO userDTOLogin)
+        public async Task<TokenViewModel> LoginAsync(UserLoginInputModel userDTOLogin)
         {
             UserEntity user;
 
@@ -99,7 +97,7 @@ namespace Services.Services
 
             return token;
         }
-        public async Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO)
+        public async Task<UserViewModel> RegisterAsync(UserRegistrationInputModel userDTO)
         {
             if (await _userService.IsUserExistsAsync(userDTO.Email, userDTO.Name))
                 throw new Exception("User is already registered!");
@@ -131,15 +129,15 @@ namespace Services.Services
 
             return user.MapTo<UserViewModel>();
         }
-        public async Task<TokenViewModel> RefreshToken(RefreshTokenDTO tokenDTO)
+        public async Task<TokenViewModel> RefreshToken(TokenInputModel tokenDTO)
         {
-            if(!Int32.TryParse(tokenDTO.User_Id, out var userId))
+            if(!Int32.TryParse(tokenDTO.UserId, out var userId))
                 throw new Exception("Invalid id!");
             
 
             var user = await _userService.GetByIdAsync(userId);
 
-            if (user.RefreshToken != tokenDTO.RefreshToken)
+            if (user.RefreshToken != tokenDTO.Token)
                 throw new UnauthorizedAccessException("Invalid refresh token!");
             if (user.TokenExpires < DateTime.Now)
                 throw new UnauthorizedAccessException("Token Expired!");
@@ -155,9 +153,9 @@ namespace Services.Services
                 RefreshToken = newRefreshToken.Token
             };
         }
-        public async Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO)
+        public async Task<bool> VerifyEmailAsync(TokenInputModel verifyDTO)
         {
-            if (!Int32.TryParse(verifyDTO.UserID, out var userId))
+            if (!Int32.TryParse(verifyDTO.UserId, out var userId))
                 throw new Exception("Invalid id!");
 
             var user = await _userService.GetByIdAsync(userId);
@@ -198,7 +196,7 @@ namespace Services.Services
 
             return true;
         }
-        public async Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel InputModel)
+        public async Task<bool> ResendVerifyEmailLetter(SendVerifyEmailLetterInputModel InputModel)
         {
             var user = await _userService.GetUserByEmailAsync(InputModel.Email);
 

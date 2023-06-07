@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Services.Model.DTO;
+using Services.Model.ViewModel;
 using Services.Services.Base;
 
 namespace MangaBackend.Controllers;
@@ -21,7 +21,7 @@ public class FillerController : ControllerBase
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");
 
-        var result = new ResponseFillDTO
+        var result = new ResponseViewModel
         {
             IsSuccess = true,
             MessageWhatWrong = ""
