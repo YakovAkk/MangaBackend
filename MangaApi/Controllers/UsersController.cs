@@ -1,5 +1,4 @@
-﻿using Data.Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Model.InputModel;
 using Services.Services.Base;
@@ -42,17 +41,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UserInputModel userInputModel)
     {
-        try
-        {
-            var result = await _userService.UpdateUserAsync(userInputModel);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+        var result = await _userService.UpdateUserAsync(userInputModel);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     #endregion
@@ -66,17 +57,10 @@ public class UsersController : ControllerBase
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
             return Unauthorized();
-        try
-        {
-            var result = await _userService.AddGenreToFavoriteAsync(userId, genreid);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+
+        var result = await _userService.AddGenreToFavoriteAsync(userId, genreid);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpPut("favorite/manga{mangaid}")]
@@ -87,17 +71,9 @@ public class UsersController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _userService.AddMangaToFavoriteAsync(userId,mangaid);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+        var result = await _userService.AddMangaToFavoriteAsync(userId, mangaid);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpDelete("favorite/genre/{genreid}")]
@@ -108,17 +84,9 @@ public class UsersController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _userService.RemoveGenreFromFavoriteAsync(userId, genreid);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+        var result = await _userService.RemoveGenreFromFavoriteAsync(userId, genreid);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpDelete("favorite/manga/{mangaid}")]
@@ -128,17 +96,10 @@ public class UsersController : ControllerBase
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
             return Unauthorized();
-        try
-        {
-            var result = await _userService.RemoveMangaFromFavoriteAsync(userId, mangaid);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+
+        var result = await _userService.RemoveMangaFromFavoriteAsync(userId, mangaid);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpGet("favorite/genre")]
@@ -191,17 +152,9 @@ public class UsersController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _userService.GetAllReadingItemsAsync(userId);
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
-            return BadRequest(wrapperResult);
-        }
+        var result = await _userService.GetAllReadingItemsAsync(userId);
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpPost("remember-reading")]
@@ -211,17 +164,9 @@ public class UsersController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        try
-        {
-            await _userService.CreateReadingItemAsync(userId, inputModel);
-            var wrapperResult = WrapperResponseService.Wrap<object>(true);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
-            return BadRequest(wrapperResult);
-        }
+        await _userService.CreateReadingItemAsync(userId, inputModel);
+        var wrapperResult = WrapperResponseService.Wrap<object>(true);
+        return Ok(wrapperResult);
     }
 
     [HttpGet("remember-reading/{mangaId}")]
@@ -230,18 +175,9 @@ public class UsersController : ControllerBase
         var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
             return Unauthorized();
-
-        try
-        {
-            var result = await _userService.GetReadingItemAsync(userId, mangaId);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return BadRequest(wrapperResult);
-        }
+        var result = await _userService.GetReadingItemAsync(userId, mangaId);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
     #endregion
 
@@ -253,17 +189,9 @@ public class UsersController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _userService.GetRecommendationsAsync(userId);
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(errorMessage: ex.Message);
-            return BadRequest(wrapperResult);
-        }
+        var result = await _userService.GetRecommendationsAsync(userId);
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+        return Ok(wrapperResult);
     }
     #endregion
 }

@@ -71,6 +71,8 @@ try
 
     app.UseAuthorization();
 
+    app.UseExceptionsHandler();
+
     app.MapControllers();
 
     app.Run();

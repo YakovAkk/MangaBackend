@@ -49,7 +49,6 @@ namespace EmailingService.Services
             {
                 await client.DisconnectAsync(true);
             }
-
         }
     }
 }

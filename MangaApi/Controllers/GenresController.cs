@@ -21,19 +21,11 @@ public class GenresController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GEtPaginatedGenreList([FromRoute] int pagesize, int page)
     {
-        try
-        {
-            var result = await _genreService.GetPaginatedGenreListAsync(pagesize, page);
+        var result = await _genreService.GetPaginatedGenreListAsync(pagesize, page);
 
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return BadRequest(wrapperResult);
-        }
+        return Ok(wrapperResult);
     }
 
     [HttpGet]
@@ -56,33 +48,17 @@ public class GenresController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGenreById([FromRoute] int Id)
     {
-        try
-        {
-            var result = await _genreService.GetByIdAsync(Id);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+        var result = await _genreService.GetByIdAsync(Id);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpGet("filtrarion/{name}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionGenreByName([FromRoute] string name)
     {
-        try
-        {
-            var result = await _genreService.FiltrationByNameAsync(name);
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
-            return Ok(wrapperResult);
-        }
-        catch (Exception ex)
-        {
-            var wrapperResult = WrapperResponseService.Wrap<object>(errorMessage: ex.Message);
-            return NotFound(wrapperResult);
-        }
+        var result = await _genreService.FiltrationByNameAsync(name);
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+        return Ok(wrapperResult);
     }
 }

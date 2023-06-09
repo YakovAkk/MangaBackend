@@ -10,11 +10,11 @@ public class TimingMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext content)
+    public async Task Invoke(HttpContext context)
     {
         var start = DateTime.Now;
-        await _next.Invoke(content);
-        _logger.LogInformation($"Timing:  {content.Request.Path}: {(DateTime.Now - start).TotalMilliseconds} ms");
+        await _next.Invoke(context);
+        _logger.LogInformation($"Timing:  {context.Request.Path}: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 }
 
