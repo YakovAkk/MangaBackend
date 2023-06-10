@@ -1,20 +1,26 @@
-﻿using Data.Entities;
+﻿using Data.Database;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
 
 namespace Services.Services;
 
-public class FillerService : IFillerService
+public class FillerService : DbService<AppDBContext>, IFillerService
 {
     private readonly IMangaService _mangaService;
     private readonly IGenreService _genreService;
     private readonly IAuthService _authService;
-    public FillerService(IMangaService mangaService, IGenreService genreService, IAuthService authService)
+    private readonly IUserService _userService;
+    public FillerService(IMangaService mangaService, IGenreService genreService, IAuthService authService, 
+        IUserService userService, DbContextOptions<AppDBContext> dbContextOptions
+        ) : base(dbContextOptions)
     {
         _mangaService = mangaService;
         _genreService = genreService;
         _authService = authService;
+        _userService = userService;
     }
 
     public async Task<ResponseViewModel> AddGenres()
@@ -192,6 +198,24 @@ public class FillerService : IFillerService
         }
 
         return new ResponseViewModel()
+        {
+            IsSuccess = true,
+            MessageWhatWrong = ""
+        };
+    }
+    public async Task<ResponseViewModel> DeleteUser(UserInputModel userInputModel)
+    {
+        var user = await _userService.GetUserByNameAsync(userInputModel.Name);
+        if (user == null)
+            throw new Exception("User doesn't exist!");
+
+        using(var dbContext = CreateDbContext())
+        {
+            dbContext.Users.Remove(user);
+            await dbContext.SaveChangesAsync();
+        }
+
+        return new ResponseViewModel
         {
             IsSuccess = true,
             MessageWhatWrong = ""
@@ -998,5 +1022,7 @@ public class FillerService : IFillerService
             ReleaseYear = 1979
         };
     }
+
+ 
     #endregion
 }

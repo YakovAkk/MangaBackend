@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
+using Services.Services;
 using Services.Services.Base;
+using WrapperService.Wrapper;
 
 namespace MangaBackend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class FillerController : ControllerBase
+public class HelperController : ControllerBase
 {
     private readonly IFillerService _fillerService;
-    private readonly ILogger<FillerController> _logger;
-    public FillerController(IFillerService fillerService, ILogger<FillerController> logger)
+    private readonly ILogger<HelperController> _logger;
+    public HelperController(IFillerService fillerService, ILogger<HelperController> logger)
     {
         _fillerService = fillerService;
         _logger = logger;
     }
 
-    [HttpPost]
+    [HttpPost("filldata")]
     public async Task<IActionResult> FillTheDatabase()
     {
         _logger.LogDebug("FillTheDatabase was begun to fill database");
@@ -62,6 +65,13 @@ public class FillerController : ControllerBase
         _logger.LogDebug($"FillTheDatabase was ended to fill database");
 
         return Ok(result);
+    }
+    [HttpDelete]
+    public async Task<IActionResult> DeleteUser(UserInputModel user)
+    {
+        var result = await _fillerService.DeleteUser(user);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        return Ok(wrapperResult);
     }
 }
 

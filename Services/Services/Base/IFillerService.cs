@@ -1,10 +1,12 @@
-﻿using Services.Model.ViewModel;
+﻿using Services.Model.InputModel;
+using Services.Model.ViewModel;
 
 namespace Services.Services.Base;
 
 public interface IFillerService
 {
-    public Task<ResponseViewModel> AddGenres();
-    public Task<ResponseViewModel> AddMangas();
-    public Task<ResponseViewModel> AddAdmin();
+    Task<ResponseViewModel> AddGenres();
+    Task<ResponseViewModel> AddMangas();
+    Task<ResponseViewModel> AddAdmin();
+    Task<ResponseViewModel> DeleteUser(UserInputModel user);
 }
