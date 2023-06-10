@@ -1,9 +1,8 @@
 ﻿using Data.Database;
 using Data.Entities;
-using Data.Helping.Model;
-using Data.Model.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Services.Extensions.ExtensionMapper;
+using Services.Core;
+using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
@@ -248,7 +247,11 @@ public class UserService : DbService<AppDBContext>, IUserService
                 var manga = await _mangaService.GetByIdAsync(item.MangaId);
                 var userViewModel = user.MapTo<UserViewModel>();
 
-                result.Add(item.toViewModel(userViewModel,manga));
+                var viewModel = item.MapTo<RememberReadingItemViewModel>();
+                viewModel.User = userViewModel;
+                viewModel.Manga = manga;
+
+                result.Add(viewModel);
             }
 
             return result;
@@ -266,7 +269,10 @@ public class UserService : DbService<AppDBContext>, IUserService
                 throw new Exception("User doesn't exist!");
 
             var manga = await _mangaService.GetByIdAsync(inputModel.MangaId);
-            var readingModel = inputModel.toEntity(user, manga);
+
+            var readingModel = inputModel.MapTo<RememberReadingItem>();
+            readingModel.User = user;
+            readingModel.MangaId = manga.Id;
 
             user.RememberReadingItems.Add(readingModel);
 
@@ -294,8 +300,69 @@ public class UserService : DbService<AppDBContext>, IUserService
             var manga = await _mangaService.GetByIdAsync(item.MangaId);
             var userViewModel = user.MapTo<UserViewModel>();
 
-            return item.toViewModel(userViewModel, manga);
+            var viewModel = item.MapTo<RememberReadingItemViewModel>();
+            viewModel.User = userViewModel;
+            viewModel.Manga = manga;
+
+            return viewModel;
         }
+    }
+    #endregion
+
+    #region Recommendations
+    public async Task<List<MangaViewModel>> GetRecommendationsAsync(string id)
+    {
+        var userId = Convert.ToInt32(id);
+        var user = await GetByIdAsync(userId);
+
+        var sharedMangasIds = new List<int>();
+        var favoriteMangasIds = user.FavoriteMangasItems.Select(x => x.Id).ToList();
+
+        foreach (var item in user.RememberReadingItems)
+            if(favoriteMangasIds.Contains(item.MangaId))
+                sharedMangasIds.Add(item.MangaId);
+
+        List<int> allMangasWithoutSharedGenresIds;
+        List<int> sharedGenresIds;
+        List<GenreEntity> recomendedGenres;
+        using (var contextPool = new ContextPool<AppDBContext>(() => CreateDbContext()))
+        {
+            var allMangas = _mangaService.GetAllInternalAsync(contextPool.NewContext());
+
+            var allMangasWithoutSharedGenresIdsTask = allMangas
+                .Where(x => !sharedMangasIds.Contains(x.Id))
+                .SelectMany(x => x.Genres)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            var sharedGenresIdsTask = _mangaService
+                .GetRangeByIdInternalAsync(sharedMangasIds, contextPool.NewContext())
+                .SelectMany(x => x.Genres)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            await Task.WhenAll(allMangasWithoutSharedGenresIdsTask, sharedGenresIdsTask);
+
+            allMangasWithoutSharedGenresIds = allMangasWithoutSharedGenresIdsTask.Result;
+            sharedGenresIds = sharedGenresIdsTask.Result;
+
+            var recomendedGenresIds = new List<int>();
+
+            foreach (var item in allMangasWithoutSharedGenresIds)
+                if (sharedGenresIds.Contains(item))
+                    recomendedGenresIds.Add(item);
+
+            recomendedGenres = await _genreService.GetRangeByIdInternalAsync(recomendedGenresIds, contextPool.NewContext()).ToListAsync();
+        }
+        
+        var recomendedMangas = recomendedGenres
+            .SelectMany(x => x.Mangas)
+            .GroupBy(x => x.Id)
+            .Select(g => g.First())
+            .ToList();
+
+        var result = recomendedMangas.Select(x => x.MapTo<MangaViewModel>()).ToList();
+        return result;
     }
     #endregion
 

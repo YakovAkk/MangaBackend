@@ -2,6 +2,7 @@
 using Data.Entities;
 using Manga.Tests.Utility;
 using Microsoft.EntityFrameworkCore;
+using Services.Model.ViewModel;
 using Xunit;
 
 namespace Manga.Tests.Tests.Base
@@ -67,7 +68,18 @@ namespace Manga.Tests.Tests.Base
             await dbInit.SaveChangesAsync();
         }
 
-        protected void VerifyManga(MangaEntity expectedResult, MangaEntity actualResult)
+        protected void VerifyMangaEntity(MangaEntity expectedResult, MangaEntity actualResult)
+        {
+            Assert.Equal(expectedResult.Name, actualResult.Name);
+            Assert.Equal(expectedResult.AgeRating, actualResult.AgeRating);
+            Assert.Equal(expectedResult.Author, actualResult.Author);
+            Assert.Equal(expectedResult.Description, actualResult.Description);
+            Assert.Equal(expectedResult.PathToTitlePicture, actualResult.PathToTitlePicture);
+            Assert.Equal(expectedResult.ReleaseYear, actualResult.ReleaseYear);
+            Assert.Equal(expectedResult.NumbetOfChapters, actualResult.NumbetOfChapters);
+        }
+
+        protected void VerifyMangaViewModel(MangaViewModel expectedResult, MangaViewModel actualResult)
         {
             Assert.Equal(expectedResult.Name, actualResult.Name);
             Assert.Equal(expectedResult.AgeRating, actualResult.AgeRating);
@@ -84,7 +96,7 @@ namespace Manga.Tests.Tests.Base
 
             if (expectedResult.Mangas != null)
                 for (int i = 0; i < expectedResult.Mangas.Count; i++)
-                    VerifyManga(expectedResult.Mangas[i], actualResult.Mangas[i]);
+                    VerifyMangaEntity(expectedResult.Mangas[i], actualResult.Mangas[i]);
         }
 
         protected void VerifyUser(UserEntity expectedResult, UserEntity actualResult)
@@ -105,7 +117,7 @@ namespace Manga.Tests.Tests.Base
             if (expectedResult.FavoriteMangas != null)
                 for (int i = 0; i < expectedResult.FavoriteMangas.Count; i++)
                 {
-                    VerifyManga(expectedResult.FavoriteMangas[i], actualResult.FavoriteMangas[i]);
+                    VerifyMangaEntity(expectedResult.FavoriteMangas[i], actualResult.FavoriteMangas[i]);
                 }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
-using Data.Helping.Model;
-using Data.Model.ViewModel;
+using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 
@@ -37,5 +36,6 @@ public interface IUserService
     Task<List<RememberReadingItemViewModel>> GetAllReadingItemsAsync(string userId);
     Task CreateReadingItemAsync(string userId, RememberReadingItemInputModel inputModel);
     Task<RememberReadingItemViewModel> GetReadingItemAsync(string userId, string mangaId);
+    Task<List<MangaViewModel>> GetRecommendationsAsync(string userId);
     #endregion
 }

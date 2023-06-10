@@ -1,10 +1,10 @@
-﻿using Services.Model.DTO;
+﻿using Services.Model.ViewModel;
 
 namespace Services.Services.Base;
 
 public interface IFillerService
 {
-    public Task<ResponseFillDTO> AddGenres();
-    public Task<ResponseFillDTO> AddMangas();
-    public Task<ResponseFillDTO> AddAdmin();
+    public Task<ResponseViewModel> AddGenres();
+    public Task<ResponseViewModel> AddMangas();
+    public Task<ResponseViewModel> AddAdmin();
 }

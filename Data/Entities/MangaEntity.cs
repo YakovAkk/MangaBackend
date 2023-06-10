@@ -1,10 +1,9 @@
-﻿using Data.Entities.Base;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
-public partial class MangaEntity : IEntity
+public partial class MangaEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

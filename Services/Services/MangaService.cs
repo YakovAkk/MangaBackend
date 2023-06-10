@@ -3,9 +3,8 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.Configuration;
-using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
 using ValidateService.Validate;
@@ -15,12 +14,14 @@ namespace Services.Services;
 public class MangaService : DbService<AppDBContext>, IMangaService
 {
     private readonly OthersConfiguration _othesConfiguration;
-
+    private readonly IGenreService _genreService;
     public MangaService(
         OthersConfiguration othesConfiguration,
-        DbContextOptions<AppDBContext> dbContextOptions) : base(dbContextOptions)
+        DbContextOptions<AppDBContext> dbContextOptions,
+        IGenreService genreService) : base(dbContextOptions)
     {
         _othesConfiguration = othesConfiguration;
+        _genreService = genreService;
     }
 
     public async Task<List<MangaViewModel>> GetAllAsync()
@@ -57,25 +58,25 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return viewModels;
     }
-    public async Task<List<MangaViewModel>> AddRangeAsync(List<MangaInput> mangas)
+    public async Task<List<MangaViewModel>> AddRangeAsync(List<MangaInputModel> mangas)
     {
-        using var dbContext = CreateDbContext();
-
-        var genresIds = mangas.SelectMany(x => x.Genres_Ids);
-
-        var genres = dbContext.Genres.Where(x => genresIds.Contains(x.Id)).ToList();
-
-        foreach (var manga in mangas)
+        var genresIds = mangas.SelectMany(x => x.Genres_Ids).ToList();
+        using (var dbContext = CreateDbContext()) 
         {
-            var genresForManga = genres.Where(x => manga.Genres_Ids.Contains(x.Id)).ToList();
+            var genres = await _genreService.GetRangeByIdInternalAsync(genresIds, dbContext).ToListAsync();
+            foreach (var manga in mangas)
+            {
+                var genresForManga = genres.Where(x => manga.Genres_Ids.Contains(x.Id)).ToList();
 
-            var mangaEntity = manga.toEntity(genresForManga);
+                var mangaEntity = manga.MapTo<MangaEntity>();
+                mangaEntity.Genres = genresForManga;
 
-            if (dbContext.Mangas.SingleOrDefault(x => x.Name == mangaEntity.Name) == null)
-                dbContext.Mangas.Add(mangaEntity);
+                if (dbContext.Mangas.SingleOrDefault(x => x.Name == mangaEntity.Name) == null)
+                    dbContext.Mangas.Add(mangaEntity);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
-
-        await dbContext.SaveChangesAsync();
 
         return await GetAllAsync();
     }
@@ -189,4 +190,24 @@ public class MangaService : DbService<AppDBContext>, IMangaService
 
         return manga != null;
     }
+
+    #region Internal
+    public IQueryable<MangaEntity> GetRangeByIdInternalAsync(List<int> sharedMangasIds, AppDBContext context)
+    {
+            return context.Mangas
+                .Include(x => x.Genres)
+                .Where(x => sharedMangasIds.Contains(x.Id))
+                .OrderBy(m => m.Name);
+        
+    }
+    public IQueryable<MangaEntity> GetAllInternalAsync(AppDBContext context)
+    {
+            return context.Mangas
+            .Include(m => m.Genres)
+            .Include(m => m.PathToFoldersWithGlava)
+            .OrderBy(m => m.Name);
+        
+    }
+
+    #endregion
 }

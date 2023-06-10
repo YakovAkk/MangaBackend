@@ -1,8 +1,6 @@
-﻿using Data.Entities.Base;
-
-namespace Data.Entities
+﻿namespace Data.Entities
 {
-    public abstract class FavoriteItemEntity : IEntity
+    public abstract class FavoriteItemEntity
     {
         public int Id { get; set; }
         public UserEntity User { get; set; }

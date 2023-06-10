@@ -19,7 +19,7 @@ namespace Services.Model.ViewModel
     public class GlavaMangaEntityViewModel
     {
         public int NumberOfGlava { get; set; }
-        public List<string> LinkToPictures { get; set; }
+        public string LinkToFirstPicture { get; set; }
         public int NumberOfPictures { get; set; }
     }
 }

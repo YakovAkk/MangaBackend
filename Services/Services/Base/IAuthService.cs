@@ -1,17 +1,16 @@
-﻿using Services.Model.DTO;
-using Services.Model.InputModel;
+﻿using Services.Model.InputModel;
 using Services.Model.ViewModel;
 
 namespace Services.Services.Base
 {
     public interface IAuthService
     {
-        Task<TokenViewModel> LoginAsync(UserLoginDTO userDTOLogin);
-        Task<TokenViewModel> RefreshToken(RefreshTokenDTO tokenDTO);
-        Task<UserViewModel> RegisterAsync(UserRegistrationDTO userDTO);
-        Task<bool> ResendVerifyEmailLetter(ResendVerifyEmailLetterInputModel email);
+        Task<TokenViewModel> LoginAsync(UserLoginInputModel userDTOLogin);
+        Task<TokenViewModel> RefreshToken(TokenInputModel tokenDTO);
+        Task<UserViewModel> RegisterAsync(UserRegistrationInputModel userDTO);
+        Task<bool> ResendVerifyEmailLetter(SendVerifyEmailLetterInputModel email);
         Task<bool> ResetPasswordAsync(ResetPasswordInputModel inputModel);
-        Task<bool> SendResetTokenAsync(SendResetTokenDTO sendResetTokenDTO);
-        Task<bool> VerifyEmailAsync(VerifyDTO verifyDTO);
+        Task<bool> SendResetTokenAsync(SendVerifyEmailLetterInputModel sendResetTokenDTO);
+        Task<bool> VerifyEmailAsync(TokenInputModel verifyDTO);
     }
 }

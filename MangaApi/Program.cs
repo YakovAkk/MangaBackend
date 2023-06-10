@@ -53,8 +53,6 @@ try
 
     app.UseSwagger();
     app.UseSwaggerUI();
-
-
     app.UseCors(options =>
     {
         options.
@@ -72,6 +70,8 @@ try
     app.UseAuthentication();
 
     app.UseAuthorization();
+
+    app.UseExceptionsHandler();
 
     app.MapControllers();
 

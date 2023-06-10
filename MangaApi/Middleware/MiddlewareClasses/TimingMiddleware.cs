@@ -1,8 +1,7 @@
 ﻿namespace MangaBackend.Middleware.MiddlewareClasses;
 
-public class TimingMiddleware
+public class TimingMiddleware 
 {
-
     public ILogger<TimingMiddleware> _logger { get; }
     public RequestDelegate _next { get; }
     public TimingMiddleware(ILogger<TimingMiddleware> logger, RequestDelegate next)
@@ -11,11 +10,11 @@ public class TimingMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext content)
+    public async Task Invoke(HttpContext context)
     {
         var start = DateTime.Now;
-        await _next.Invoke(content);
-        _logger.LogInformation($"Timing:  {content.Request.Path}: {(DateTime.Now - start).TotalMilliseconds} ms");
+        await _next.Invoke(context);
+        _logger.LogInformation($"Timing:  {context.Request.Path}: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 }
 

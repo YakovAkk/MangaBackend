@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Services.Model.DTO;
+namespace Services.Model.InputModel;
 
-public class UserRegistrationDTO
+public class UserRegistrationInputModel
 {
     public string Name { get; set; }
     [EmailAddress(ErrorMessage = "Not a valid email address.")]

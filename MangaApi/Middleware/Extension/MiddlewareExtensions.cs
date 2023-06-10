@@ -1,4 +1,5 @@
-﻿using MangaBackend.Middleware.MiddlewareClasses;
+﻿using MangaApi.Middleware.MiddlewareClasses;
+using MangaBackend.Middleware.MiddlewareClasses;
 
 namespace MangaBackend.Middleware.Extension
 {
@@ -8,6 +9,9 @@ namespace MangaBackend.Middleware.Extension
         {
             return app.UseMiddleware<TimingMiddleware>();
         }
-
+        public static IApplicationBuilder UseExceptionsHandler(this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<HandlingExceptionsMiddleware>();
+        }
     }
 }

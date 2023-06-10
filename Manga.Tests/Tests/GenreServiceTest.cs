@@ -3,7 +3,6 @@ using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
 using Services;
 using Services.Core.Paginated;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.DTO;
 using Services.Services;
 using Xunit;
@@ -23,10 +22,10 @@ namespace Manga.Tests.Tests
         public async void AddRangeAsyncTestRegularCase()
         {
             //Arrange
-            var genreInput = new List<GenreInput>()
+            var genreInput = new List<GenreInputModel>()
             {
-               new GenreInput("genreInput1"),
-               new GenreInput("genreInput2"),
+               new GenreInputModel("genreInput1"),
+               new GenreInputModel("genreInput2"),
             };
             var expectedResult = genreInput.Select(x => x.MapTo<GenreEntity>()).ToList();
 
@@ -45,11 +44,12 @@ namespace Manga.Tests.Tests
             SetupEnvironmentData();
             var expectedResult = new List<GenreEntity>()
             {
-                Util.GetGenre(),
-                new GenreEntity()
+                 new GenreEntity()
                 {
                     Name = "aaa"
-                }
+                },
+                Util.GetGenre()
+               
             };
 
             //Act

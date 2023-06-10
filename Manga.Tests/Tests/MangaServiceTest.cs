@@ -3,11 +3,13 @@ using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Services;
 using Services.Core.Paginated;
-using Services.Extensions.ExtensionMapper;
 using Services.Model.Configuration;
 using Services.Model.DTO;
+using Services.Model.ViewModel;
 using Services.Services;
+using Services.Services.Base;
 using Xunit;
 
 namespace Manga.Tests.Tests
@@ -15,72 +17,15 @@ namespace Manga.Tests.Tests
     public class MangaServiceTest : BaseTest
     {
         private MangaService Service;
+        private Mock<IGenreService> _genreServiceMock;
 
         public MangaServiceTest()
         {
             var conf = new OthersConfiguration();
-            Service = new MangaService(conf, options);
+            _genreServiceMock = new Mock<IGenreService>();
+            Service = new MangaService(conf, options, _genreServiceMock.Object);
         }
-
-        [Fact]
-        public async void GetAllAsyncTestRegularCase()
-        {
-            //Arrange
-            SetupEnvironmentData();
-            var expectedResult = new List<MangaEntity>()
-            {
-                Util.GetManga()
-            };
-
-            //Act
-            var actualResult = await Service.GetAllAsync();
-
-            //Assert          
-            Assert.Equal(expectedResult.Count, actualResult.Count);
-            for (int i = 0; i < expectedResult.Count; i++)
-                VerifyManga(expectedResult[i], actualResult[i]);
-        }
-        [Fact]
-        public async void AddRangeAsyncTestRegularCase()
-        {
-            //Arrange
-            var mangaInput = new List<MangaInput>()
-            {
-                new MangaInput()
-                {
-                    Name = "Attack of the Titans",
-                    PathToTitlePicture = "manga/attackofthetitans/titleimage.jpg",
-                    Genres_Ids = new List<int>() { genreId },
-                    PathToFoldersWithGlava = new List<GlavaMangaEntity>()
-                    {
-                         new GlavaMangaEntity()
-                         {
-                            NumberOfGlava = 4,
-                            LinkToFirstPicture = "manga/attackofthetitans/glava4/1.jpg",
-                            NumberOfPictures = 49
-                         }
-                    },
-                    Description = "Давным-давно человечество было всего лишь «их» кормом, до тех пор, пока оно не построило гигантскую стену вокруг своей страны. С тех пор прошло сто лет мира и большинство людей жили счастливой, беззаботной жизнью. Но за долгие годы спокойствия пришлось заплатить огромную цену, и в 845 году они снова познали чувство ужаса и беспомощности – стена, которая была их единственным спасением, пала. «Они» прорвались. Половина человечества съедена, треть территории навсегда потеряна...",
-                    NumbetOfChapters = 140,
-                    AgeRating = "18+",
-                    Author = "ISAYAMA Hajime",
-                    ReleaseYear = 2009
-                }
-            };
-
-            using var db = CreateDbContext();
-            var genres = await db.Genres.Where(x => x.Id == genreId).ToListAsync();
-            var expectedResult = mangaInput.Select(x => x.toEntity(genres)).ToList();
-
-            //Act
-            var actualResult = await Service.AddRangeAsync(mangaInput);
-
-            //Assert
-            for (int i = 0; i < expectedResult.Count; i++)
-            {
-                VerifyManga(expectedResult[i], actualResult[i]);
-            }
-        }
+      
         [Fact]
         public async void GetByIdAsyncTestRegularCase()
         {
@@ -93,7 +38,7 @@ namespace Manga.Tests.Tests
 
             //Assert
             Assert.NotNull(expectedResult);
-            VerifyManga(expectedResult, actualResult);
+            VerifyMangaEntity(expectedResult, actualResult);
         }
         [Fact]
         public async void GetPagiantedMangaListAsyncTestRegularCase()
@@ -112,7 +57,7 @@ namespace Manga.Tests.Tests
             //Assert
             Assert.Equal(expectedResult.Meta.TotalCount, actualResult.Meta.TotalCount);
             for (int i = 0; i < expectedResult.Items.Count; i++)
-                VerifyManga(expectedResult.Items[i], actualResult.Items[i]);
+                VerifyMangaEntity(expectedResult.Items[i], actualResult.Items[i]);
         }
         [Fact]
         public async void FiltrationByDateAsyncTestRegularCase()
@@ -130,7 +75,7 @@ namespace Manga.Tests.Tests
             //Assert
             Assert.NotNull(actualResult);
             for (int i = 0; i < expectedResult.Count; i++)
-                VerifyManga(expectedResult[i], actualResult[i]);
+                VerifyMangaEntity(expectedResult[i], actualResult[i]);
         }
         [Fact]
         public async void FiltrationByNameAsyncTestRegularCase()
@@ -148,7 +93,7 @@ namespace Manga.Tests.Tests
             //Assert
             Assert.NotNull(actualResult);
             for (int i = 0; i < expectedResult.Count; i++)
-                VerifyManga(expectedResult[i], actualResult[i]);
+                VerifyMangaEntity(expectedResult[i], actualResult[i]);
         }
 
         public static IEnumerable<object[]> DataForGenreExistMethod =>

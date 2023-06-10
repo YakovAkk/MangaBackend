@@ -1,8 +1,8 @@
 ﻿using Data.Entities;
 
-namespace Services.Model.DTO;
+namespace Services.Model.InputModel;
 
-public class MangaInput
+public class MangaInputModel
 {
     public string Name { get; set; }
     public string PathToTitlePicture { get; set; }
@@ -14,7 +14,7 @@ public class MangaInput
     public List<GlavaMangaEntity> PathToFoldersWithGlava { get; set; }
     public List<int> Genres_Ids { get; set; }
 
-    public MangaInput()
+    public MangaInputModel()
     {
         PathToFoldersWithGlava = new List<GlavaMangaEntity>();
         Genres_Ids = new List<int>();

@@ -1,4 +1,4 @@
-﻿namespace Data.Helping.Model
+﻿namespace Services.Model.Helping
 {
     public class ResetPasswordToken
     {
