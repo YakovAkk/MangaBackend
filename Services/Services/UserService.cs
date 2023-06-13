@@ -89,13 +89,13 @@ public class UserService : DbService<AppDBContext>, IUserService
 
         return true;
     }
-    public async Task<List<UserEntity>> GetAllAsync()
+    public async Task<List<UserViewModel>> GetAllAsync()
     {
         using var dbContext = CreateDbContext();
 
         var list = await dbContext.Users.ToListAsync();
 
-        return list;
+        return list.Select(x => x.MapTo<UserViewModel>()).ToList();
     }
     public async Task<UserEntity> GetByIdAsync(int userId)
     {
@@ -107,6 +107,7 @@ public class UserService : DbService<AppDBContext>, IUserService
             .Include(x => x.FavoriteMangasItems)
                 .ThenInclude(x => x.Manga)
             .Include(x => x.RememberReadingItems)
+            .Include(x => x.Roles)
             .FirstOrDefaultAsync(i => i.Id == userId);
 
         if (user == null)

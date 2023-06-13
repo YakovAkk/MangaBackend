@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] UserLoginInputModel userLoginDTO)
     {
         var response = await _authService.LoginAsync(userLoginDTO);
-        HttpContext.Response.Headers.Add(Constants.RefreshToken, response.RefreshToken);
+        HttpContext.Response.Headers.Add(HeaderConstants.RefreshToken, response.RefreshToken);
         var wrapperResult = WrapperResponseService.Wrap<object>(
             new
             {
@@ -57,8 +57,8 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> RefreshToken()
     {
-        var refreshToken = HttpContext.Request.Headers[Constants.RefreshToken];
-        var userId = HttpContext.Request.Headers[Constants.UserId];
+        var refreshToken = HttpContext.Request.Headers[HeaderConstants.RefreshToken];
+        var userId = HttpContext.Request.Headers[HeaderConstants.UserId];
 
         var tokenDTO = new TokenInputModel()
         {
@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
         };
 
         var response = await _authService.RefreshToken(tokenDTO);
-        HttpContext.Response.Headers.Add(Constants.RefreshToken, response.RefreshToken);
+        HttpContext.Response.Headers.Add(HeaderConstants.RefreshToken, response.RefreshToken);
         var wrapperResult = WrapperResponseService.Wrap<object>(
             new
             {
@@ -87,8 +87,8 @@ public class AuthController : ControllerBase
         var query = HttpContext.Request.Query;
         var verifyDTO = new TokenInputModel()
         {
-            UserId = query[Constants.UserId],
-            Token = query[Constants.Token]
+            UserId = query[HeaderConstants.UserId],
+            Token = query[HeaderConstants.Token]
         };
         var response = await _authService.VerifyEmailAsync(verifyDTO);
         var wrapperResult = WrapperResponseService.Wrap<object>(response);

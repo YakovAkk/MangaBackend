@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Services.Model.InputModel;
+﻿namespace Services.Model.InputModel;
 
 public class UserLoginInputModel
 {

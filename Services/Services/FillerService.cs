@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using Services.Shared.Constants;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Services.Services;
 
@@ -178,23 +181,37 @@ public class FillerService : DbService<AppDBContext>, IFillerService
     }
     public async Task<ResponseViewModel> AddAdmin()
     {
-        var admin = new UserRegistrationInputModel()
+        var user = await _userService.GetUserByNameAsync("admin");
+        if (user != null)
+            throw new Exception("User already exists!");
+
+        CreatePasswordHash("pa$$w0rd1", out byte[] passwordHash, out byte[] passwordSalt);
+
+        var admin = new UserEntity()
         {
             Name = "admin",
             Email = "admin@gmail.com",
-            Password = "pa$$w0rd1",
-            ConfirmPassword = "pa$$w0rd1"
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
+            DeviceToken = "1245",
+            VerifiedAt = DateTime.Now,
+            Roles = new List<RoleEntity>()
+            {
+                new RoleEntity()
+                {
+                    Role = UserRoleConstants.User 
+                },
+                new RoleEntity()
+                {
+                    Role =  UserRoleConstants.Admin
+                }
+            }
         };
 
-        var response = await _authService.RegisterAsync(admin);
-
-        if (response is null)
+        using(var dbContext = CreateDbContext())
         {
-            return new ResponseViewModel()
-            {
-                IsSuccess = false,
-                MessageWhatWrong = "Error"
-            };
+            dbContext.Users.Add(admin);
+            await dbContext.SaveChangesAsync();
         }
 
         return new ResponseViewModel()
@@ -223,6 +240,14 @@ public class FillerService : DbService<AppDBContext>, IFillerService
     }
 
     #region Private
+    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+    {
+        using (var hmac = new HMACSHA512())
+        {
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+        }
+    }
     private MangaInputModel CreateAttackOfTheTitansManga(IList<GenreEntity> genres)
     {
         var genresForTheManga = new List<string>()
