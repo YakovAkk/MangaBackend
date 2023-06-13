@@ -80,7 +80,9 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         if (userByName == null && userByEmail == null)
             throw new Exception("User doesn't exist!");
 
-        user = userByEmail ?? userByName;
+        var userHelping = userByEmail ?? userByName;
+
+        user = await _userService.GetByIdAsync(userHelping.Id);
 
         if (!VerifyPasswordHash(userDTOLogin.Password, user.PasswordHash, user.PasswordSalt))
             throw new Exception("Password is incorrect!");
@@ -259,7 +261,8 @@ public class AuthService : DbService<AppDBContext>, IAuthService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Name)
         };
-        claims.Union(user.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role)));
+
+        claims.AddRange(user.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _tokenConfiguration.Token));

@@ -194,6 +194,7 @@ public class FillerService : DbService<AppDBContext>, IFillerService
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
             DeviceToken = "1245",
+            VerifiedAt = DateTime.Now,
             Roles = new List<RoleEntity>()
             {
                 new RoleEntity()

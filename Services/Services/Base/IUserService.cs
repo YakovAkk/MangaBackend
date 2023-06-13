@@ -12,7 +12,7 @@ public interface IUserService
     Task<bool> UpdateUserAsync(UserInputModel userInputModel);
     Task<UserEntity> GetUserByNameAsync(string name);
     Task<UserEntity> GetUserByEmailAsync(string email);
-    Task<List<UserEntity>> GetAllAsync();
+    Task<List<UserViewModel>> GetAllAsync();
     Task<UserEntity> GetByIdAsync(int user_id);
     #endregion
 
