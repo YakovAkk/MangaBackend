@@ -107,6 +107,7 @@ public class UserService : DbService<AppDBContext>, IUserService
             .Include(x => x.FavoriteMangasItems)
                 .ThenInclude(x => x.Manga)
             .Include(x => x.RememberReadingItems)
+            .Include(x => x.Roles)
             .FirstOrDefaultAsync(i => i.Id == userId);
 
         if (user == null)

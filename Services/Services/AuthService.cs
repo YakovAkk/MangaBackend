@@ -10,7 +10,10 @@ using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using Services.Shared.Constants;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -113,6 +116,10 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         userModel.PasswordHash = passwordHash;
         userModel.PasswordSalt = passwordSalt;
         userModel.VerificationToken = verificationToken;
+        userModel.Roles.Add(new RoleEntity()
+        {
+            Role = UserRoleConstants.User
+        });
 
         var user = await _userService.CreateAsync(userModel);
 
@@ -252,6 +259,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Name)
         };
+        claims.Union(user.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _tokenConfiguration.Token));
@@ -266,7 +274,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
         return jwt;
-    }
+    }   
     private RefreshToken CreateRefreshToken()
     {
         var refreshToken = new RefreshToken()
