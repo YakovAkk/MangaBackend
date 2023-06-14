@@ -1,10 +1,20 @@
-﻿namespace EmailingService.FileHelper
+﻿using Services.Shared.Configuration;
+
+namespace EmailingService.FileHelper
 {
     public class FileWorker
     {
-        private readonly string _confirmationEmailPath = "./Templates/ConfirmationEmailTemplate.html";
-        private readonly string _resetPasswordTokenEmailPath = "./Templates/ResetPasswordTokenEmailTemplate.html";
+        private readonly string _confirmationEmailPath;
+        private readonly string _resetPasswordTokenEmailPath;
         private readonly string _logoPath = "https://play-lh.googleusercontent.com/o6kXY8vstMP3ZPHHGwwJbziG6CJMuQHqL_t4yq7A7zQrMhfG7nuY3XPHrDkLmOSafvk_";
+
+        public readonly OthersConfiguration Configuration;
+        public FileWorker(OthersConfiguration configuration)
+        {
+            Configuration = configuration;
+            _confirmationEmailPath = $"{configuration.TemplatePath}/ConfirmationEmailTemplate.html";
+            _resetPasswordTokenEmailPath = $"{configuration.TemplatePath}/ResetPasswordTokenEmailTemplate.html";
+        }
         
         public string GetConfirmationEmailHTMLFile(string data)
         {

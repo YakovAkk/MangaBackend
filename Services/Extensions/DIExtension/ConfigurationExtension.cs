@@ -1,7 +1,7 @@
 ﻿using EmailingService.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Model.Configuration;
+using Services.Shared.Configuration;
 
 namespace Services.Extensions.DIExtension
 {

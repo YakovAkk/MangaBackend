@@ -3,10 +3,10 @@ using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Core;
 using Services.Core.Paginated;
-using Services.Model.Configuration;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using Services.Shared.Configuration;
 using ValidateService.Validate;
 
 namespace Services.Services;

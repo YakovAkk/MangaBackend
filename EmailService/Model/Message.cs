@@ -1,6 +1,7 @@
 ﻿using EmailingService.FileHelper;
 using EmailingService.Type;
 using MimeKit;
+using Services.Shared.Configuration;
 
 namespace EmailingService.Model
 {
@@ -8,19 +9,21 @@ namespace EmailingService.Model
     {
         public List<MailboxAddress> To { get; set; }
         public string Subject { get; set; }
+        public readonly OthersConfiguration Configuration;
         public string Content { get; set; }
 
-        public Message(IEnumerable<string> to, string subject, string data, EmailType emailType)
+        public Message(IEnumerable<string> to, string subject, string data, EmailType emailType, OthersConfiguration configuration)
         {
             To = new List<MailboxAddress>();
             To.AddRange(to.Select(x => new MailboxAddress("email", x)));
             Subject = subject;
+            Configuration = configuration;
             Content = GetEmailContent(data, emailType);
         }
 
         private string GetEmailContent(string data, EmailType EmailType)
         {
-            FileWorker fileWorker = new FileWorker();
+            FileWorker fileWorker = new FileWorker(Configuration);
 
             var content = string.Empty;
 

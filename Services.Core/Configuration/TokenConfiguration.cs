@@ -1,4 +1,4 @@
-﻿namespace Services.Model.Configuration
+﻿namespace Services.Shared.Configuration
 {
     public class TokenConfiguration
     {

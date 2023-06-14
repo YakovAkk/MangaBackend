@@ -10,4 +10,8 @@
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Services.Core\Services.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

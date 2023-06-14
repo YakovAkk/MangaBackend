@@ -5,15 +5,14 @@ using EmailingService.Services.Base;
 using EmailingService.Type;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Services.Model.Configuration;
 using Services.Model.Helping;
 using Services.Model.InputModel;
 using Services.Model.ViewModel;
 using Services.Services.Base;
+using Services.Shared.Configuration;
 using Services.Shared.Constants;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -25,6 +24,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
     private static readonly Random random = new Random();
 
     private readonly TokenConfiguration _tokenConfiguration;
+    private readonly OthersConfiguration _othersConfiguration;
     private readonly ApplicationConfiguration _appConfiguration;
 
     private readonly IUserService _userService;
@@ -32,6 +32,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
     public AuthService(
         ApplicationConfiguration appConfiguration,
         TokenConfiguration configuration,
+        OthersConfiguration othersConfiguration,
         IUserService userService,
         IEmailService emailService,
         DbContextOptions<AppDBContext> dbContextOptions
@@ -39,6 +40,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
     {
         _userService = userService;
         _tokenConfiguration = configuration;
+        _othersConfiguration = othersConfiguration;
         _emailService = emailService;
         _appConfiguration = appConfiguration;
     }
@@ -57,7 +59,7 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         }
 
         var message = new Message(new string[] { user.Email }, "Manga APP",
-             $"{user.ResetPasswordToken}", EmailType.ResetPasswordTokenEmail);
+             $"{user.ResetPasswordToken}", EmailType.ResetPasswordTokenEmail, _othersConfiguration);
 
         try
         {
@@ -118,10 +120,13 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         userModel.PasswordHash = passwordHash;
         userModel.PasswordSalt = passwordSalt;
         userModel.VerificationToken = verificationToken;
-        userModel.Roles.Add(new RoleEntity()
+        userModel.Roles = new List<RoleEntity>()
         {
-            Role = UserRoleConstants.User
-        });
+            new RoleEntity()
+            {
+                Role = UserRoleConstants.User
+            } 
+        };
 
         var user = await _userService.CreateAsync(userModel);
 
@@ -240,7 +245,8 @@ public class AuthService : DbService<AppDBContext>, IAuthService
     private Message CreateVerifyEmailTemplate(UserEntity user)
     {
         return new Message(new string[] { user.Email }, "Manga APP",
-            $"{_appConfiguration.AppUrl}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}", EmailType.ConfirmationEmail);
+            $"{_appConfiguration.AppUrl}/api/Auth/verify-email?userId={user.Id}&token={user.VerificationToken}", 
+            EmailType.ConfirmationEmail, _othersConfiguration);
     }
     private ResetPasswordToken CreateResetPasswordToken()
     {

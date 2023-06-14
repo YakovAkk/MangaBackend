@@ -1,15 +1,11 @@
 ﻿using Data.Entities;
 using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-using Services;
 using Services.Core.Paginated;
-using Services.Model.Configuration;
-using Services.Model.DTO;
-using Services.Model.ViewModel;
 using Services.Services;
 using Services.Services.Base;
+using Services.Shared.Configuration;
 using Xunit;
 
 namespace Manga.Tests.Tests

@@ -3,7 +3,7 @@ using Manga.Tests.Tests.Base;
 using Manga.Tests.Utility;
 using Services;
 using Services.Core.Paginated;
-using Services.Model.DTO;
+using Services.Model.InputModel;
 using Services.Services;
 using Xunit;
 
