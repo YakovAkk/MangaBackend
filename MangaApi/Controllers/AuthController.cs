@@ -66,7 +66,7 @@ public class AuthController : ControllerBase
             Token = refreshToken
         };
 
-        var response = await _authService.RefreshToken(tokenDTO);
+        var response = await _authService. RefreshToken(tokenDTO);
         HttpContext.Response.Headers.Add(HeaderConstants.RefreshToken, response.RefreshToken);
         var wrapperResult = WrapperResponseService.Wrap<object>(
             new

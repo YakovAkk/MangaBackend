@@ -28,7 +28,7 @@ public class MangasController : ControllerBase
         var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
         if (wrapperResult.StatusCode != HttpStatusCode.OK)
-        {    
+        {
             return NotFound(wrapperResult);
         }
         return Ok(wrapperResult);
@@ -38,44 +38,44 @@ public class MangasController : ControllerBase
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMangaById([FromRoute] int Id)
     {
-            var result = await _mangaService.GetByIdAsync(Id);
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
-            
-            return Ok(wrapperResult);
+        var result = await _mangaService.GetByIdAsync(Id);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
+
+        return Ok(wrapperResult);
     }
 
     [HttpGet("pagination/{pagesize}/{page}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPaginatedMangaList([FromRoute] int pagesize, int page)
     {
-            var result = await _mangaService.GetPagiantedMangaListAsync(pagesize, page);
+        var result = await _mangaService.GetPagiantedMangaListAsync(pagesize, page);
 
-            var wrapperResult = WrapperResponseService.Wrap<object>(result);
+        var wrapperResult = WrapperResponseService.Wrap<object>(result);
 
-            return Ok(wrapperResult);
+        return Ok(wrapperResult);
     }
 
     [HttpGet("filtrarionbyname/{name}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByName([FromRoute] string name)
     {
-            var result = await _mangaService.FiltrationByNameAsync(name);
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
-            return Ok(wrapperResult);
+        var result = await _mangaService.FiltrationByNameAsync(name);
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+        return Ok(wrapperResult);
     }
 
     [HttpGet("filtrarionbydate/{year}")]
     [ProducesResponseType(typeof(WrapViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> FiltrarionMangaByDate([FromRoute] int year)
     {
-            var result = await _mangaService.FiltrationByDateAsync(year);
-            var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
+        var result = await _mangaService.FiltrationByDateAsync(year);
+        var wrapperResult = WrapperResponseService.Wrap<IEnumerable<object>>(result);
 
-            if (wrapperResult.StatusCode != HttpStatusCode.OK)
-            {
-                return BadRequest(wrapperResult);
-            }
+        if (wrapperResult.StatusCode != HttpStatusCode.OK)
+        {
+            return BadRequest(wrapperResult);
+        }
 
-            return Ok(wrapperResult);
+        return Ok(wrapperResult);
     }
 }

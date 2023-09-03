@@ -148,7 +148,6 @@ public class AuthService : DbService<AppDBContext>, IAuthService
         if(!Int32.TryParse(tokenDTO.UserId, out var userId))
             throw new Exception("Invalid id!");
         
-
         var user = await _userService.GetByIdAsync(userId);
 
         if (user.RefreshToken != tokenDTO.Token)

@@ -14,7 +14,6 @@ public class FillerService : DbService<AppDBContext>, IFillerService
 {
     private readonly IMangaService _mangaService;
     private readonly IGenreService _genreService;
-    private readonly IAuthService _authService;
     private readonly IUserService _userService;
     public FillerService(IMangaService mangaService, IGenreService genreService, IAuthService authService, 
         IUserService userService, DbContextOptions<AppDBContext> dbContextOptions
@@ -22,7 +21,6 @@ public class FillerService : DbService<AppDBContext>, IFillerService
     {
         _mangaService = mangaService;
         _genreService = genreService;
-        _authService = authService;
         _userService = userService;
     }
 

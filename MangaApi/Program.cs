@@ -60,7 +60,6 @@ try
         AllowAnyHeader().
         SetIsOriginAllowed(origin => true).
         AllowCredentials();
-
     });
 
     app.UseTiming();
